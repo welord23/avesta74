@@ -664,7 +664,16 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		}
 		s << ".";
 	}
-	else if(it.armor != 0){
+	else if(it.armor != 0 || it.abilities.absorb.any()){
+		if(it.showCharges){
+			if(subType > 1){
+				s << " that has " << (int32_t)subType << " charges left";
+			}
+			else{
+				s << " that has 1 charge left";
+			}
+		}
+
 		s << " (Arm:" << it.armor << ").";
 	}
 	else if(it.isFluidContainer()){
