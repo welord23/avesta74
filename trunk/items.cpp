@@ -478,6 +478,7 @@ bool Items::loadFromXml(const std::string& datadir)
 							else if(asLowerCaseString(strValue) == "runespellname"){
 								if(readXMLString(itemAttributesNode, "value", strValue)){
 									it.runeSpellName = strValue;
+									it.type = ITEM_TYPE_RUNE;
 								}
 							}
 							else if(asLowerCaseString(strValue) == "weight"){
