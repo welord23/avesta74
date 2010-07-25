@@ -152,6 +152,7 @@ bool ConfigManager::loadFile(const std::string& _filename)
 	m_confInteger[REMOVE_AMMUNITION] = getGlobalBoolean(L, "RemoveAmmunition", true);
 	m_confInteger[REMOVE_RUNE_CHARGES] = getGlobalBoolean(L, "RemoveRuneCharges", true);
 	m_confInteger[REMOVE_WEAPON_CHARGES] = getGlobalBoolean(L, "RemoveWeaponCharges", true);
+	m_confInteger[UH_TRAP] = getGlobalBoolean(L, "UHTrap", false);
 
 	m_confInteger[PASSWORD_TYPE] = PASSWORD_TYPE_PLAIN;
 	m_confInteger[STATUSQUERY_TIMEOUT] = getGlobalNumber(L, "StatusTimeout", 30 * 1000);

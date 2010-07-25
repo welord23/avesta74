@@ -124,7 +124,7 @@ bool Tile::hasHeight(uint32_t n) const
 	return false;
 }
 
-uint32_t Tile::getHeight() const
+int32_t Tile::getHeight() const
 {
 	uint32_t height = 0;
 	Item* iiItem = NULL;

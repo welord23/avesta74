@@ -217,7 +217,6 @@ void Game::refreshMap(Map::TileMap::iterator* map_iter, int clean_max)
 	Tile* tile;
 	Item* item;
 
-
 	Map::TileMap::iterator begin_here = map->refreshTileMap.begin();
 	if(!map_iter)
 		map_iter = &begin_here;
@@ -934,10 +933,19 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 	}
 
 	toTile = map->getTile(destPos);
-
+	
+	Tile* toPos = getTile(destPos.x, destPos.y, destPos.z);
+	Tile* fromPos = getTile(currentPos.x, currentPos.y, currentPos.z);
+	
 	ReturnValue ret = RET_NOTPOSSIBLE;
+
 	if(toTile != NULL){
-		ret = internalMoveCreature(creature, fromTile, toTile, flags);
+		if (currentPos.z > destPos.z && toPos->getHeight() > 1);
+			// not possible
+		else if ((((toPos->getHeight() - fromPos->getHeight()) < 2)) || 
+			(fromPos->hasHeight(3) && (currentPos.z == destPos.z)) ||
+			((currentPos.z < destPos.z) && (toPos->hasHeight(3) && (fromPos->getHeight() < 2))))
+			ret = internalMoveCreature(creature, fromTile, toTile, flags);
 	}
 
 	if(ret != RET_NOERROR){

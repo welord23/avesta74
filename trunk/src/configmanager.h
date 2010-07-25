@@ -115,6 +115,7 @@ public:
 		REMOVE_WEAPON_CHARGES,
 		USE_ACCBALANCE,
 		TEMPLE_TP_ID,
+		UH_TRAP,
 		LAST_INTEGER_CONFIG /* this must be the last one */
 	};
 
