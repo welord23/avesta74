@@ -744,10 +744,10 @@ void Creature::onDie()
 	}
 
 	if (g_config.getNumber(ConfigManager::STORE_DEATHS) != 0) {
-		if (Player* player = this->getPlayer()) {
-			if (lastHitCreature && mostDamageCreature) {
-				IOPlayer::instance()->saveDeath(player->getName(), std::time(NULL), player->getLevel(), lastHitCreature->getName(), mostDamageCreature->getName());
-			}
+		Player* player = getPlayer();
+		if (player && lastHitCreature && mostDamageCreature) {
+			IOPlayer::instance()->saveDeath(player->getName(), std::time(NULL),
+				player->getLevel(), lastHitCreature->getName(), mostDamageCreature->getName());
 		}
 	}
 

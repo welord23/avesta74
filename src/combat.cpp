@@ -730,10 +730,12 @@ void Combat::CombatFunc(Creature* caster, const Position& pos,
 		if(canDoCombat(caster, *it, params.isAggressive) == RET_NOERROR){
 			for(CreatureVector::iterator cit = (*it)->creatures.begin(); bContinue && cit != (*it)->creatures.end(); ++cit){
 				if(params.targetCasterOrTopMost){
-					if(caster && caster->getTile() == (*it)){
-						if(*cit == caster){
-							bContinue = false;
-						}
+
+					if(g_config.getNumber(ConfigManager::UH_TRAP) == false && 
+						(caster && caster->getTile() == (*it))){
+							if(*cit == caster){
+								bContinue = false;
+							}
 					}
 					else if(*cit == (*it)->getTopCreature()){
 						bContinue = false;

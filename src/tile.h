@@ -154,7 +154,7 @@ public:
 		}
 	}
 	bool hasHeight(uint32_t n) const;
-	uint32_t getHeight() const;
+	int32_t getHeight() const;
 
 	virtual std::string getDescription(int32_t lookDistance) const;
 
