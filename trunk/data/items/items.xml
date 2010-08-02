@@ -6052,8 +6052,7 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="spear"/>
 		<attribute key="ammoAction" value="move"/>
-		<attribute key="range" value="5"/>
-		<attribute key="breakChance" value="50"/>
+		<attribute key="range" value="7"/>
 	</item>
 	<item id="2390" article="a" name="magic longsword">
 		<attribute key="description" value="It is the magic Cyclopmania Sword."/>
