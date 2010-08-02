@@ -2609,7 +2609,6 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="smallstone"/>
 		<attribute key="range" value="5"/>
-		<attribute key="breakChance" value="7"/>
 	</item>
 	<item id="1295" article="a" name="stone">
 		<attribute key="weight" value="3000"/>
@@ -6052,7 +6051,7 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="spear"/>
 		<attribute key="ammoAction" value="move"/>
-		<attribute key="range" value="7"/>
+		<attribute key="range" value="5"/>
 	</item>
 	<item id="2390" article="a" name="magic longsword">
 		<attribute key="description" value="It is the magic Cyclopmania Sword."/>
@@ -6123,7 +6122,6 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="throwingstar"/>
 		<attribute key="range" value="5"/>
-		<attribute key="breakChance" value="10"/>
 	</item>
 	<item id="2400" article="a" name="magic sword">
 		<attribute key="description" value="It is the Sword of Valor."/>
@@ -6199,7 +6197,6 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="throwingknife"/>
 		<attribute key="range" value="5"/>
-		<attribute key="breakChance" value="7"/>
 	</item>
 	<item id="2411" article="a" name="poison dagger">
 		<attribute key="weight" value="880"/>
@@ -6969,11 +6966,10 @@
 	<item id="2544" article="an" name="arrow" plural="arrows">
 		<attribute key="weight" value="70"/>
 		<attribute key="attack" value="25"/>
-                <attribute key="hitChance" value="90"/>
+        <attribute key="hitChance" value="90"/>
 		<attribute key="weaponType" value="ammunition"/>
 		<attribute key="ammoType" value="arrow"/>
 		<attribute key="shootType" value="arrow"/>
-		<attribute key="breakChance" value="80"/>
 	</item>
 	<item id="2545" article="a" name="poison arrow" plural="poison arrows">
 		<attribute key="weight" value="80"/>
