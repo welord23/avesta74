@@ -297,7 +297,7 @@ bool Condition::updateCondition(const Condition* addCondition)
 		return false;
 	}
 
-	if(addCondition->getTicks() > 0 && addCondition->getTicks() <= getTicks()){
+	if(addCondition->getTicks() >= 0 && getEndTime() > (OTSYS_TIME() + addCondition->getTicks())){
 		return false;
 	}
 
@@ -1151,6 +1151,10 @@ bool ConditionDamage::executeCondition(Creature* creature, int32_t interval)
 		}
 
 		if(!bRemove){
+			if(getTicks() > 0){
+				endTime = endTime + interval;
+			}
+
 			interval = 0;
 		}
 	}
@@ -1483,28 +1487,35 @@ void ConditionSpeed::endCondition(Creature* creature, ConditionEnd_t reason)
 
 void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondition)
 {
-	if(updateCondition(addCondition)){
-		setTicks( addCondition->getTicks() );
+	if(conditionType != addCondition->getType()){
+		return;
+	}
 
-		const ConditionSpeed& conditionSpeed = static_cast<const ConditionSpeed&>(*addCondition);
-		int32_t oldSpeedDelta = speedDelta;
-		speedDelta = conditionSpeed.speedDelta;
-		mina = conditionSpeed.mina;
-		maxa = conditionSpeed.maxa;
-		minb = conditionSpeed.minb;
-		maxb = conditionSpeed.maxb;
+	if(getTicks() == -1 && addCondition->getTicks() > 0){
+		return;
+	}
 
-		if(speedDelta == 0){
-			int32_t min;
-			int32_t max;
-			getFormulaValues(creature->getBaseSpeed(), min, max);
-			speedDelta = random_range(min, max);
-		}
 
-		int32_t newSpeedChange = (speedDelta - oldSpeedDelta);
-		if(newSpeedChange != 0){
-			g_game.changeSpeed(creature, newSpeedChange);
-		}
+	setTicks( addCondition->getTicks() );
+
+	const ConditionSpeed& conditionSpeed = static_cast<const ConditionSpeed&>(*addCondition);
+	int32_t oldSpeedDelta = speedDelta;
+	speedDelta = conditionSpeed.speedDelta;
+	mina = conditionSpeed.mina;
+	maxa = conditionSpeed.maxa;
+	minb = conditionSpeed.minb;
+	maxb = conditionSpeed.maxb;
+
+	if(speedDelta == 0){
+		int32_t min;
+		int32_t max;
+		getFormulaValues(creature->getBaseSpeed(), min, max);
+		speedDelta = random_range(min, max);
+	}
+
+	int32_t newSpeedChange = (speedDelta - oldSpeedDelta);
+	if(newSpeedChange != 0){
+		g_game.changeSpeed(creature, newSpeedChange);
 	}
 }
 

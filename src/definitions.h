@@ -23,7 +23,7 @@
 
 #define OTSERV_VERSION "0.6.3"
 #define OTSERV_NAME "Avesta"
-#define OTSERV_CLIENT_VERSION "7.60"
+#define OTSERV_CLIENT_VERSION "7.40"
 
 #if defined(WIN32) && !defined(__WINDOWS__)
 #define __WINDOWS__
