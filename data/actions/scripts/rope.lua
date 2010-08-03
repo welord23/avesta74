@@ -1,4 +1,10 @@
 function onUse(cid, item, frompos, item2, topos)
+	topos.stackpos = 1
+	local tmp = getThingfromPos(topos)
+	if (tmp.itemid ~= 0) then
+		return FALSE
+	end
+	
 	newPos = {x = topos.x, y = topos.y, z = topos.z, stackpos = 0}
 	groundItem = getThingfromPos(newPos)
 	if (isInArray(ROPE_SPOT, groundItem.itemid) == TRUE) then
