@@ -202,7 +202,9 @@ function playerExists(name)
 end
 
 function getConfigInfo(info)
-	if (type(info) ~= 'string') then return nil end
+	if (type(info) ~= 'string') then 
+		return nil 
+	end
 
 	dofile('config.lua')
 	return _G[info]
@@ -216,7 +218,7 @@ function getTibiaTime()
 		worldTime = worldTime - 60
 	end
 
-	return {hours = hours, minutes = worldTime}
+	return tostring(hours .. ':' .. worldTime)
 end
 
 exhaustion = 

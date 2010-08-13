@@ -33,7 +33,7 @@ function moveToCreature(id)
 end
 
 function selfGotoIdle()
-	-- is there any need for this function?
+
 end
 
 function isPlayerPremiumCallback(cid)
@@ -43,14 +43,9 @@ end
 -- keyword is supposed to be lowercase without lowering it
 function msgcontains(message, keyword)
 	message = string.lower(message)
-	if (message == keyword or 										-- exact match
-		string.sub(message, 1, string.len(keyword)) == keyword and 
-		string.find(message, keyword .. ' ') or 					-- starts with a greeting 
-		string.find(message, ' ' .. keyword .. ' ')) then 			-- greeting somewhere in the sentence
-		return true
-	end
-	
-	return false
+	return (string.find(message, keyword) and 
+			not string.find(message, '(%w+)' .. keyword) and 
+			not string.find(message, keyword .. '(%w+)'))
 end
 
 function selfSayChannel(cid, message)
@@ -67,26 +62,17 @@ function doPosRemoveItem(_itemid, n, position)
 	return true
 end
 
-function isInArray2(arr, val)
-	for i = 1, table.getn(arr) do
-		if (string.find(val, arr[i])) then
-			return arr[i]
+function getCount(message)
+	if (string.find(message, '[0-9]+')) then
+		i, j = string.find(message, '[0-9]+')
+		count = string.sub(message, i, j)
+		
+		if (msgcontains(message, count)) then
+			return tonumber(count)
 		end
 	end
 	
-	return nil
-end
-
-function isGreeting(message, greetings)
-	message = string.lower(message)
-	local greeting = isInArray2(greetings, message)
-	if (greeting ~= nil) then
-		if (msgcontains(message, greeting)) then
-			return true
-		end
-	end
-	
-	return false
+	return 1
 end
 
 
