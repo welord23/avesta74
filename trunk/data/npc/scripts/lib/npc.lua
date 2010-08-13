@@ -1,34 +1,3 @@
--- Including the Advanced NPC System
-dofile('data/npc/lib/npcsystem/npcsystem.lua')
-
-do
-	doPlayerAddStackable = doPlayerAddItem
-	--Returns table with UIDs of added items
-	doPlayerAddItem = function(cid, itemid, amount, subType)
-		local amount = amount or 1
-		local subAmount = 0
-		local subType = subType or 0
-
-		if(isItemStackable(itemid) == TRUE) then
-			return doPlayerAddStackable(cid, itemid, amount), amount
-		end
-
-		local items = {}
-		local ret = 0
-		local a = 0
-		for i = 1, amount do
-			items[i] = doCreateItemEx(itemid, subType)
-			ret = doPlayerAddItemEx(cid, items[i], 1)
-			if(ret ~= RETURNVALUE_NOERROR) then
-				break
-			end
-			a = a + 1
-		end
-
-		return items, a
-	end
-end
-
 function getDistanceToCreature(id)
 	if id == 0 or id == nil then
 		selfGotoIdle()
@@ -64,22 +33,24 @@ function moveToCreature(id)
 end
 
 function selfGotoIdle()
-	following = false
-	attacking = false
-	selfAttackCreature(0)
-	target = 0
+	-- is there any need for this function?
 end
 
 function isPlayerPremiumCallback(cid)
 	return isPremium(cid) == TRUE and true or false
 end
 
+-- keyword is supposed to be lowercase without lowering it
 function msgcontains(message, keyword)
-	local a, b = string.find(message, keyword)
-	if a == nil or b == nil then
-		return false
+	message = string.lower(message)
+	if (message == keyword or 										-- exact match
+		string.sub(message, 1, string.len(keyword)) == keyword and 
+		string.find(message, keyword .. ' ') or 					-- starts with a greeting 
+		string.find(message, ' ' .. keyword .. ' ')) then 			-- greeting somewhere in the sentence
+		return true
 	end
-	return true
+	
+	return false
 end
 
 function selfSayChannel(cid, message)
@@ -95,3 +66,34 @@ function doPosRemoveItem(_itemid, n, position)
 	end
 	return true
 end
+
+function isInArray2(arr, val)
+	for i = 1, table.getn(arr) do
+		if (string.find(val, arr[i])) then
+			return arr[i]
+		end
+	end
+	
+	return nil
+end
+
+function isGreeting(message, greetings)
+	message = string.lower(message)
+	local greeting = isInArray2(greetings, message)
+	if (greeting ~= nil) then
+		if (msgcontains(message, greeting)) then
+			return true
+		end
+	end
+	
+	return false
+end
+
+
+
+
+
+
+
+
+

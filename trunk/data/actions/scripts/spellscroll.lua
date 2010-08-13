@@ -7,8 +7,8 @@ function onUse(cid, item, frompos, item2, topos)
 
 		doSendMagicEffect(frompos,CONST_ME_HITBYFIRE)
 		doRemoveItem(item.uid, 1)
-		return 1
+		return true
 	end
 
-	return 0
+	return false
 end
