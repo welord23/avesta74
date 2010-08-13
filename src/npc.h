@@ -27,11 +27,9 @@
 
 //////////////////////////////////////////////////////////////////////
 // Defines an NPC...
-// Defines an NPC...
+
 class Npc;
 class Player;
-class NpcResponse;
-struct NpcState;
 
 typedef std::list<Npc*> NpcList;
 class Npcs{
@@ -49,9 +47,6 @@ public:
 
 	bool loadNpcLib(std::string file);
 
-	static void pushState(lua_State *L, NpcState* state);
-	static void popState(lua_State *L, NpcState* &state);
-
 protected:
 
 	virtual void registerFunctions();
@@ -65,14 +60,22 @@ protected:
 	static int luaCreatureGetName2(lua_State *L);
 	static int luaCreatureGetPos(lua_State *L);
 	static int luaSelfGetPos(lua_State *L);
-	static int luagetDistanceTo(lua_State *L);
-	static int luaSetNpcFocus(lua_State *L);
+	static int luaGetDistanceTo(lua_State *L);
 	static int luaGetNpcCid(lua_State *L);
 	static int luaGetNpcPos(lua_State *L);
-	static int luaGetNpcState(lua_State *L);
-	static int luaSetNpcState(lua_State *L);
 	static int luaGetNpcName(lua_State *L);
-	static int luaGetNpcParameter(lua_State *L);
+
+	static int luaSetNpcFocus(lua_State *L);
+	static int luaGetNpcFocus(lua_State *L);
+	static int luaIsNpcIdle(lua_State *L);
+	static int luaResetIdle(lua_State *L);
+	static int luaUpdateIdle(lua_State *L);
+	static int luaQueuePlayer(lua_State *L);
+	static int luaUnqueuePlayer(lua_State *L);
+	static int luaGetQueuedPlayer(lua_State *L);
+	static int luaClearQueue(lua_State *L);
+	static int luaIsQueueEmpty(lua_State *L);
+
 	
 private:
 	virtual bool initState();
@@ -119,277 +122,7 @@ private:
 	int32_t m_onCreatureDisappear;
 	int32_t m_onCreatureMove;
 	int32_t m_onCreatureSay;
-//	int32_t m_onPlayerCloseChannel;
-//	int32_t m_onPlayerEndTrade;
 	int32_t m_onThink;
-};
-
-enum RespondParam_t{
-	RESPOND_DEFAULT = 0,
-	RESPOND_MALE = 1,
-	RESPOND_FEMALE = 2,
-	RESPOND_PZBLOCK = 4,
-	RESPOND_LOWMONEY = 8,
-	RESPOND_NOAMOUNT = 16,
-	RESPOND_LOWAMOUNT = 32,
-	RESPOND_PREMIUM = 64,
-	RESPOND_DRUID = 128,
-	RESPOND_KNIGHT = 256,
-	RESPOND_PALADIN = 512,
-	RESPOND_SORCERER = 1024,
-	RESPOND_LOWLEVEL = 2048
-};
-
-enum ResponseType_t{
-	RESPONSE_DEFAULT,
-	RESPONSE_SCRIPT,
-};
-
-enum InteractType_t{
-	INTERACT_TEXT,
-	INTERACT_EVENT
-};
-
-enum ReponseActionParam_t{
-	ACTION_NONE,
-	ACTION_SETTOPIC,
-	ACTION_SETLEVEL,
-	ACTION_SETPRICE,
-	ACTION_SETBUYPRICE,
-	ACTION_SETSELLPRICE,
-	ACTION_TAKEMONEY,
-	ACTION_GIVEMONEY,
-	ACTION_SELLITEM,
-	ACTION_BUYITEM,
-	ACTION_GIVEITEM,
-	ACTION_TAKEITEM,
-	ACTION_SETAMOUNT,
-	ACTION_SETITEM,
-	ACTION_SETSUBTYPE,
-	ACTION_SETEFFECT,
-	ACTION_SETSPELL,
-	ACTION_SETLISTNAME,
-	ACTION_SETLISTPNAME,
-	ACTION_TEACHSPELL,
-	ACTION_SETSTORAGE,
-	ACTION_SETTELEPORT,
-	ACTION_SCRIPT,
-	ACTION_SCRIPTPARAM,
-	ACTION_ADDQUEUE,
-	ACTION_SETIDLE
-};
-
-enum StorageComparision_t{
-	STORAGE_LESS,
-	STORAGE_LESSOREQUAL,
-	STORAGE_EQUAL,
-	STORAGE_GREATEROREQUAL,
-	STORAGE_GREATER
-};
-
-enum NpcEvent_t{
-	EVENT_NONE,
-	EVENT_BUSY,
-	EVENT_THINK,
-	EVENT_IDLE,
-	EVENT_PLAYER_ENTER,
-	EVENT_PLAYER_MOVE,
-	EVENT_PLAYER_LEAVE
-
-	/*
-	EVENT_CREATURE_ENTER,
-	EVENT_CREATURE_MOVE,
-	EVENT_CREATURE_LEAVE,
-	*/
-};
-
-struct ResponseAction{
-public:
-	ResponseAction()
-	{
-		actionType = ACTION_NONE;
-		key = 0;
-		intValue = 0;
-		strValue = "";
-		pos.x = 0;
-		pos.y = 0;
-		pos.z = 0;
-	}
-
-	ReponseActionParam_t actionType;
-	int32_t key;
-	int32_t intValue;
-	std::string strValue;
-	Position pos;
-};
-
-struct ScriptVars{
-	ScriptVars()
-	{
-		n1 = -1;
-		n2 = -1;
-		n3 = -1;
-		b1 = false;
-		b2 = false;
-		b3 = false;
-		s1 = "";
-		s2 = "";
-		s3 = "";
-	}
-
-	int32_t n1;
-	int32_t n2;
-	int32_t n3;
-	bool b1;
-	bool b2;
-	bool b3;
-	std::string s1;
-	std::string s2;
-	std::string s3;
-};
-
-struct ListItem{
-	ListItem()
-	{
-		itemId = 0;
-		subType = 0;
-		sellPrice = 0;
-		buyPrice = 0;
-		keywords = "";
-		name = "";
-		pluralName = "";
-	}
-
-	int32_t sellPrice;
-	int32_t buyPrice;
-	int32_t itemId;
-	int32_t subType;
-	std::string keywords;
-	std::string name;
-	std::string pluralName;
-};
-
-
-typedef std::list<ResponseAction> ActionList;
-typedef std::map<std::string, int32_t> ResponseScriptMap;
-typedef std::list<NpcResponse*> ResponseList;
-
-class NpcResponse
-{
-public:
-	struct ResponseProperties{
-		ResponseProperties()
-		{
-			topic = -1;
-			amount = -1;
-			focusStatus = -1;
-			output = "";
-			interactType = INTERACT_TEXT;
-			responseType = RESPONSE_DEFAULT;
-			params = 0;
-			storageId = -1;
-			storageValue = -1;
-			storageComp = STORAGE_EQUAL;
-			knowSpell = "";
-		}
-
-		int32_t topic;
-		int32_t amount;
-		int32_t focusStatus;
-		std::list<std::string> inputList;
-		std::string output;
-		InteractType_t interactType;
-		ResponseType_t responseType;
-		uint32_t params;
-		int32_t storageId;
-		int32_t storageValue;
-		StorageComparision_t storageComp;
-		std::string knowSpell;
-		ActionList actionList;
-		std::list<ListItem> itemList;
-	};
-
-	NpcResponse(const ResponseProperties& _prop,
-		ResponseList _subResponseList,
-		ScriptVars _scriptVars)
-	{
-		prop = _prop;
-		subResponseList = _subResponseList;
-		scriptVars = _scriptVars;
-	};
-
-	NpcResponse(NpcResponse& rhs)
-	{
-		prop = rhs.prop;
-		scriptVars = rhs.scriptVars;
-		for(ResponseList::iterator it = rhs.subResponseList.begin(); it != rhs.subResponseList.end(); ++it){
-			NpcResponse* response = new NpcResponse(*(*it));
-			subResponseList.push_back(response);
-		}
-	}
-
-	~NpcResponse()
-	{
-		for(ResponseList::iterator it = subResponseList.begin(); it != subResponseList.end(); ++it){
-			delete *it;
-		}
-
-		subResponseList.clear();
-	}
-
-	uint32_t getParams() const {return prop.params;}
-	std::string getInputText() const {return (prop.inputList.empty() ? "" : *prop.inputList.begin());}
-	int32_t getTopic() const {return prop.topic;}
-	int32_t getFocusState() const {return prop.focusStatus;}
-	int32_t getStorageId() const {return prop.storageId;}
-	int32_t getStorageValue() const {return prop.storageValue;}
-	ResponseType_t getResponseType() const {return prop.responseType;}
-	InteractType_t getInteractType() const {return prop.interactType;}
-	StorageComparision_t getStorageComp() const {return prop.storageComp;}
-	const std::string& getKnowSpell() const {return prop.knowSpell;}
-	const std::string& getText() const {return prop.output;}
-	int32_t getAmount() const {return prop.amount;}
-	void setAmount(int32_t _amount) { prop.amount = _amount;}
-
-	std::string formatResponseString(Creature* creature) const;
-	void addAction(ResponseAction action) {prop.actionList.push_back(action);}
-	const std::list<std::string>& getInputList() const { return prop.inputList;}
-
-	void setResponseList(ResponseList _list) { subResponseList.insert(subResponseList.end(),_list.begin(),_list.end());}
-	const ResponseList& getResponseList() const { return subResponseList;}
-
-	ActionList::const_iterator getFirstAction() const {return prop.actionList.begin();}
-	ActionList::const_iterator getEndAction() const {return prop.actionList.end();}
-
-	ResponseProperties prop;
-	ResponseList subResponseList;
-	ScriptVars scriptVars;
-};
-
-struct NpcState{
-	int32_t topic;
-	bool isIdle;
-	bool isQueued;
-	int32_t price;
-	int32_t sellPrice;
-	int32_t buyPrice;
-	int32_t amount;
-	int32_t itemId;
-	int32_t subType;
-	std::string spellName;
-	std::string listName;
-	std::string listPluralName;
-	int32_t level;
-	uint64_t prevInteraction;
-	std::string respondToText;
-	uint32_t respondToCreature;
-	std::string prevRespondToText;
-	const NpcResponse* lastResponse;
-
-	//script variables
-	ScriptVars scriptVars;
-
-	//Do not forget to update pushState/popState if you add more variables
 };
 
 class Npc : public Creature
@@ -429,6 +162,10 @@ public:
 
 	void setCreatureFocus(Creature* creature);
 
+	bool isIdle() {return std::time(unsigned(NULL)) - idleTime > idleInterval;}
+	void resetIdle() {idleTime = 0;}
+	void updateIdle() {idleTime = std::time(unsigned(NULL));}
+
 	NpcScriptInterface* getScriptInterface();
 
 protected:
@@ -463,30 +200,13 @@ protected:
 	void reset();
 	bool loadFromXml(const std::string& name);
 
-	const NpcResponse* getResponse(const ResponseList& list, const Player* player,
-		NpcState* npcState, const std::string& text, bool exactMatch = false);
-	const NpcResponse* getResponse(const Player* player, NpcState* npcState, const std::string& text);
-	const NpcResponse* getResponse(const Player* player, NpcEvent_t eventType);
-	const NpcResponse* getResponse(const Player* player, NpcState* npcState, NpcEvent_t eventType);
-	std::string getEventResponseName(NpcEvent_t eventType);
-
-	uint32_t getMatchCount(NpcResponse* response, std::vector<std::string> wordList,
-		bool exactMatch, int32_t& matchAllCount, int32_t& totalKeywordCount);
-
-	void executeResponse(Player* player, NpcState* npcState, const NpcResponse* response);
-
-	std::string formatResponse(Creature* creature, const NpcState* npcState, const NpcResponse* response) const;
-
-	void onPlayerEnter(Player* player, NpcState* state);
-	void onPlayerLeave(Player* player, NpcState* state);
+	void onPlayerEnter(Player* player);
+	void onPlayerLeave(Player* player);
 
 	typedef std::map<std::string, std::string> ParametersMap;
 	ParametersMap m_parameters;
 
 	uint32_t loadParams(xmlNodePtr node);
-	ResponseList loadInteraction(xmlNodePtr node);
-
-	NpcState* getState(const Player* player, bool makeNew = true);
 
 	std::string name;
 	std::string m_datadir;
@@ -495,27 +215,17 @@ protected:
 	uint32_t walkTicks;
 	bool floorChange;
 	bool attackable;
-	bool isIdle;
-	bool hasBusyReply;
 	bool hasScriptedFocus;
-	int32_t talkRadius;
 	int32_t idleTime;
 	int32_t idleInterval;
 	bool defaultPublic;
 	int32_t focusCreature;
 
-	typedef std::map<std::string, std::list<ListItem> > ItemListMap;
-	ItemListMap itemListMap;
-
-	ResponseScriptMap responseScriptMap;
-	ResponseList responseList;
-
-	typedef std::list<NpcState*> StateList;
-	StateList stateList;
 	NpcEventsHandler* m_npcEventHandler;
 
 	typedef std::list<uint32_t> QueueList;
 	QueueList queueList;
+
 	bool loaded;
 
 	static NpcScriptInterface* m_scriptInterface;

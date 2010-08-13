@@ -8,5 +8,6 @@ function onUse(cid, item, frompos, item2, topos)
 		npos.z = npos.z + 1
 		doTeleportThing(cid, npos)
 	end
-	return 1
+	
+	return true
 end
