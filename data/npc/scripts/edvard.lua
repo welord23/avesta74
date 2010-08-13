@@ -1,4 +1,3 @@
-GREETINGS = {'hi', 'welcome', 'greetings', 'hello'}
 
 function hasPlayerLeft(cid)
 	if (getDistanceToCreature(cid) > 4) then
@@ -14,8 +13,8 @@ function getNextPlayer()
 		if (nextPlayer) then
 			if (getDistanceToCreature(nextPlayer) <= 4) then
 				setFocus(nextPlayer)
-				updateIdle()
 				greet(nextPlayer)
+				updateIdle()
 				return
 			else
 				getNextPlayer()
@@ -31,6 +30,11 @@ function greet(cid)
 	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.')
 end
 
+function _selfSay(message)
+	selfSay(message)
+	updateIdle()
+end
+
 function onCreatureAppear(cid)
 end
 
@@ -43,53 +47,38 @@ end
 
 function onCreatureSay(cid, type, msg)
 	if (getFocus() == 0) then
-		if (isGreeting(msg, GREETINGS) and getDistanceToCreature(cid) <= 4) then
+		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			setFocus(cid)
 			updateIdle()
 			greet(cid)
 		end
 	else
-		if (getFocus() ~= cid and isGreeting(msg, GREETINGS) and getDistanceToCreature(cid) <= 4) then
+		if (getFocus() ~= cid and (msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			selfSay('One moment please, ' .. getCreatureName(cid) .. '.')
 			queuePlayer(cid)
-		end
 		
-		if (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
+		elseif (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
 			selfSay('Good bye.')
 			getNextPlayer()
-		end
 		
-		if (msgcontains(msg, 'name')) then
-			selfSay('My name is Edvard. I run this store.')
-			updateIdle()
-		end
+		elseif (msgcontains(msg, 'name')) then
+			_selfSay('My name is Edvard. I run this store.')
 		
-		if (msgcontains(msg, 'job')) then
-			selfSay('Have you moved to a new home? I\'m the specialist for equipping it.')
-			updateIdle()
-		end
+		elseif (msgcontains(msg, 'job')) then
+			_selfSay('Have you moved to a new home? I\'m the specialist for equipping it.')
 		
-		if (msgcontains(msg, 'time')) then
-			selfSay('It is ' .. getWorldTime() .. '. Do you need a clock for your house?')
-			updateIdle()
-		end
+		elseif (msgcontains(msg, 'time')) then
+			_selfSay('It is ' .. getTibiaTime() .. '. Do you need a clock for your house?')
 		
-		if (msgcontains(msg, 'news')) then
-			selfSay('You mean my specials, don\'t you?')
-			updateIdle()
-		end
+		elseif (msgcontains(msg, 'news')) then
+			_selfSay('You mean my specials, don\'t you?')
 		
-		if (msgcontains(msg, 'special')) then
-			selfSay('My offers are permanently extraordinary cheap.')
-			updateIdle()
-		end
+		elseif (msgcontains(msg, 'special')) then
+			_selfSay('My offers are permanently extraordinary cheap.')
 		
-		if (msgcontains(msg, 'offer') or 
-			msgcontains(msg, 'goods') or 
-			msgcontains(msg, 'furniture') or 
-			msgcontains(msg, 'equipment')) then
-			selfSay('I sell statues, tables, chairs, flowers, pillows, pottery, instruments, decoration, tapestries and containers.')
-			updateIdle()
+		elseif (msgcontains(msg, 'offer') or msgcontains(msg, 'goods') or 
+			msgcontains(msg, 'furniture') or msgcontains(msg, 'equipment')) then
+			_selfSay('I sell statues, tables, chairs, flowers, pillows, pottery, instruments, decoration, tapestries and containers.')
 		end
 	end
 end

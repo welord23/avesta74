@@ -139,6 +139,9 @@ function onCreatureSay(cid, type, msg)
 		elseif (msgcontains(msg, 'offer') or msgcontains(msg, 'goods')) then
 			_selfSay('I\'m selling runes, life rings, wands, rods and crystal balls.')
 			
+		elseif (msgcontains(msg, 'rune') and not(msgcontains(msg, 'blank'))) then
+			_selfSay('I sell blank runes and spell runes.')
+			
 		elseif (_state == 1) then
 			if (msgcontains(msg, 'yes')) then
 				if (doPlayerRemoveMoney(cid, items[_index].sell * _count)) then
