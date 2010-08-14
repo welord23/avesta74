@@ -7,7 +7,7 @@ function hasPlayerLeft(cid)
 	return false
 end
 
-function getNextPlayer()
+function getNext()
 	if (not(isQueueEmpty())) then
 		nextPlayer = getQueuedPlayer()
 		if (nextPlayer) then
@@ -39,10 +39,18 @@ function onCreatureAppear(cid)
 end
 
 function onCreatureDisappear(cid)
-	unqueuePlayer(cid)
+	if (getFocus() == cid) then
+		selfSay('Good bye. Recommend us, if you were satisfied with our service.')
+		getNext()
+	else
+		unqueuePlayer(cid)
+	end
 end
 
 function onCreatureMove(cid, oldPos, newPos)
+	if (getFocus() == cid) then
+		faceCreature(cid)
+	end
 end
 
 function onCreatureSay(cid, type, msg)
@@ -59,7 +67,7 @@ function onCreatureSay(cid, type, msg)
 		
 		elseif (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
 			selfSay('Good bye.')
-			getNextPlayer()
+			getNext()
 		
 		elseif (msgcontains(msg, 'name')) then
 			_selfSay('My name is Edvard. I run this store.')
@@ -87,7 +95,7 @@ function onThink()
 	if (getFocus() ~= 0) then
 		if (isIdle() or hasPlayerLeft(getFocus())) then
 			selfSay('Good bye.')
-			getNextPlayer()
+			getNext()
 		end
 	end
 end

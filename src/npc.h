@@ -75,6 +75,7 @@ protected:
 	static int luaGetQueuedPlayer(lua_State *L);
 	static int luaClearQueue(lua_State *L);
 	static int luaIsQueueEmpty(lua_State *L);
+	static int luaFaceCreature(lua_State *L);
 
 	
 private:
@@ -166,6 +167,10 @@ public:
 	void resetIdle() {idleTime = 0;}
 	void updateIdle() {idleTime = std::time(unsigned(NULL));}
 
+	bool hasWalkDelay() {return walkDelay >= std::time(unsigned(NULL));}
+	void setWalkDelay(uint64_t delay) {walkDelay = delay;}
+	Direction getDir(Creature* creature);
+
 	NpcScriptInterface* getScriptInterface();
 
 protected:
@@ -220,6 +225,7 @@ protected:
 	int32_t idleInterval;
 	bool defaultPublic;
 	int32_t focusCreature;
+	uint64_t walkDelay;
 
 	NpcEventsHandler* m_npcEventHandler;
 

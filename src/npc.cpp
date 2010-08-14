@@ -27,6 +27,7 @@
 #include "position.h"
 #include "spells.h"
 #include "player.h"
+#include "luascript.h"
 
 #include <algorithm>
 #include <functional>
@@ -36,8 +37,6 @@
 
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
-
-#include "luascript.h"
 
 extern ConfigManager g_config;
 extern Game g_game;
@@ -128,6 +127,7 @@ void Npc::reset()
 	focusCreature = 0;
 	idleTime = 0;
 	idleInterval = 30000;
+	walkDelay = 0;
 
 	delete m_npcEventHandler;
 	m_npcEventHandler = NULL;
@@ -412,7 +412,8 @@ void Npc::onThink(uint32_t interval)
 
 void Npc::doSay(std::string msg)
 {
-	g_game.internalCreatureSay(this, SPEAK_SAY, msg);
+	Scheduler::getScheduler().addEvent(createSchedulerTask(
+				750, boost::bind(&Game::internalCreatureSay, &g_game, this, SPEAK_SAY, msg)));
 }
 
 void Npc::doMove(Direction dir)
@@ -432,6 +433,10 @@ bool Npc::getNextStep(Direction& dir)
 	}
 
 	if(walkTicks <= 0){
+		return false;
+	}
+
+	if (hasWalkDelay()) {
 		return false;
 	}
 
@@ -481,7 +486,7 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir)
 		return false;
 	}
 
-	if(!floorChange && (tile->floorChange() || tile->getTeleportItem())){
+	if(!floorChange && (tile->floorChange() || tile->getTeleportItem() || tile->hasHeight(1))){
 		return false;
 	}
 
@@ -532,16 +537,27 @@ void Npc::setCreatureFocus(Creature* creature)
 {
 	if(creature){
 		focusCreature = creature->getID();
+		g_game.internalCreatureTurn(this, getDir(creature));
+	}
+	else{
+		focusCreature = 0;
+	}
+}
+
+Direction Npc::getDir(Creature* creature)
+{
+	Direction dir = SOUTH;
+
+	if (creature) {
 		const Position& creaturePos = creature->getPosition();
 		const Position& myPos = getPosition();
 		int32_t dx = myPos.x - creaturePos.x;
 		int32_t dy = myPos.y - creaturePos.y;
 
-		Direction dir = SOUTH;
 		float tan = 0;
 
 		if(dx != 0){
-			tan = dy/dx;
+			tan = dy / dx;
 		}
 		else{
 			tan = 10;
@@ -563,12 +579,9 @@ void Npc::setCreatureFocus(Creature* creature)
 				dir = SOUTH;
 			}
 		}
+	}
 
-		g_game.internalCreatureTurn(this, dir);
-	}
-	else{
-		focusCreature = 0;
-	}
+	return dir;
 }
 
 NpcScriptInterface* Npc::getScriptInterface()
@@ -644,6 +657,7 @@ void NpcScriptInterface::registerFunctions()
 	lua_register(m_luaState, "getQueuedPlayer", NpcScriptInterface::luaGetQueuedPlayer);
 	lua_register(m_luaState, "clearQueue", NpcScriptInterface::luaClearQueue);
 	lua_register(m_luaState, "isQueueEmpty", NpcScriptInterface::luaIsQueueEmpty);
+	lua_register(m_luaState, "faceCreature", NpcScriptInterface::luaFaceCreature);
 }
 
 
@@ -888,6 +902,7 @@ int NpcScriptInterface::luaSetNpcFocus(lua_State* L)
 		}
 		else {
 			npc->focusCreature = 0;
+			npc->setWalkDelay(std::time(unsigned(NULL)) + 5);
 		}
 	}
 
@@ -1011,6 +1026,24 @@ int NpcScriptInterface::luaIsQueueEmpty(lua_State *L)
 	Npc* npc = env->getNpc();
 	if (npc) {
 		lua_pushboolean(L, npc->queueList.empty());
+	}
+
+	return 1;
+}
+
+int NpcScriptInterface::luaFaceCreature(lua_State *L)
+{
+	// facePlayer(cid)
+	uint32_t cid = popNumber(L);
+
+	ScriptEnviroment* env = getScriptEnv();
+
+	Npc* npc = env->getNpc();
+	if (npc) {
+		Creature* creature = env->getCreatureByUID(cid);
+		if (creature) {
+			g_game.internalCreatureTurn(npc, npc->getDir(creature));
+		}
 	}
 
 	return 1;

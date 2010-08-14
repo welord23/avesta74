@@ -3318,7 +3318,7 @@ bool Game::playerYell(Player* player, const std::string& text)
 {
 	int32_t addExhaustion = 0;
 	bool isExhausted = false;
-	if(!player->hasCondition(CONDITION_EXHAUSTED)){
+	if(!player->hasCondition(CONDITION_YELL)){
 		addExhaustion = g_config.getNumber(ConfigManager::EXHAUSTED);
 		internalCreatureSay(player, SPEAK_YELL, asUpperCaseString(text));
 	}
@@ -3329,7 +3329,7 @@ bool Game::playerYell(Player* player, const std::string& text)
 	}
 
 	if(addExhaustion > 0){
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUSTED, addExhaustion, 0);
+		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELL, addExhaustion, 0);
 		player->addCondition(condition);
 	}
 
@@ -3621,7 +3621,7 @@ void Game::checkCreatures()
 		}
 		else if(!creature->isDying){
 			creature->isDying = true;
-			uint16_t dd = random_range(150, 400);
+			uint16_t dd = random_range(200, 500);
 			Scheduler::getScheduler().addEvent(createSchedulerTask(dd, boost::bind(&Game::doDeathDelay, this, creature)));
 		}
 	}

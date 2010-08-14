@@ -272,7 +272,7 @@ public:
 	Condition* getCondition(ConditionType_t type, ConditionId_t id) const;
 	Condition* getCondition(ConditionType_t type) const;
 	void executeConditions(uint32_t interval);
-	bool hasCondition(ConditionType_t type) const;
+	bool hasCondition(ConditionType_t type, bool checkTime = true) const;
 	virtual bool isImmune(ConditionType_t type) const;
 	virtual bool isImmune(CombatType_t type) const;
 	virtual bool isSuppress(ConditionType_t type) const;

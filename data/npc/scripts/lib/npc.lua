@@ -1,6 +1,6 @@
 function getDistanceToCreature(id)
 	if id == 0 or id == nil then
-		selfGotoIdle()
+		return nil
 	end
 
 	local creaturePosition = getCreaturePosition(id)
@@ -21,7 +21,7 @@ end
 
 function moveToCreature(id)
 	if id == 0 or id == nil then
-		selfGotoIdle()
+		return nil
 	end
 
 	tx, ty, tz = getCreaturePosition(id)

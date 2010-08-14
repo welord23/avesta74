@@ -1,10 +1,10 @@
-local exhaust = createConditionObject(CONDITION_EXHAUSTED)
+local exhaust = createConditionObject(CONDITION_EXHAUST_HEAL)
 setConditionParam(exhaust, CONDITION_PARAM_TICKS, 1000)
 
 function onUse(cid, item, frompos, item2, topos)
-      if(hasCondition(cid, CONDITION_EXHAUSTED) == TRUE) then
+	if((hasCondition(cid, CONDITION_EXHAUST_COMBAT) == true) or (hasCondition(cid, CONDITION_EXHAUST_HEAL) == true)) then
 		doPlayerSendDefaultCancel(cid, RETURNVALUE_YOUAREEXHAUSTED)
-		return TRUE
+		return true
 	end
 
 	if item2.itemid == 1 then
@@ -18,7 +18,7 @@ function onUse(cid, item, frompos, item2, topos)
 					doPlayerAddMana(cid, new_mana)
 					doSendMagicEffect(topos, 12)
 					doPlayerSay(cid, "Aaaah...", 1)
-                              doAddCondition(cid, exhaust)
+                    doAddCondition(cid, exhaust)
 				elseif item.type == 10 then
 					new_life = math.random(40, 80)
 					doPlayerAddHealth(cid, new_life)

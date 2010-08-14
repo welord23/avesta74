@@ -6576,7 +6576,7 @@ int LuaScriptInterface::luaAddEvent(lua_State *L)
 	
 	eventDesc.parameters = params;
 	
-	uint32_t delay = std::max((uint32_t)100, popNumber(L));
+	uint32_t delay = std::max((uint32_t)100, popNumber(L)); 
 	eventDesc.function = luaL_ref(L, LUA_REGISTRYINDEX);
 
 	eventDesc.scriptId = env->getScriptId();
