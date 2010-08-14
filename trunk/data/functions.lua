@@ -1,5 +1,5 @@
 function isSorcerer(cid)
-	if(isPlayer(cid) == FALSE) then
+	if(isPlayer(cid) == false) then
 		debugPrint("isSorcerer: Player not found.")
 		return false
 	end
@@ -8,7 +8,7 @@ function isSorcerer(cid)
 end
 
 function isDruid(cid)
-	if(isPlayer(cid) == FALSE) then
+	if(isPlayer(cid) == false) then
 		debugPrint("isDruid: Player not found.")
 		return false
 	end
@@ -17,7 +17,7 @@ function isDruid(cid)
 end
 
 function isPaladin(cid)
-	if(isPlayer(cid) == FALSE) then
+	if(isPlayer(cid) == false) then
 		debugPrint("isPaladin: Player not found.")
 		return false
 	end
@@ -26,12 +26,20 @@ function isPaladin(cid)
 end
 
 function isKnight(cid)
-	if(isPlayer(cid) == FALSE) then
+	if(isPlayer(cid) == false) then
 		debugPrint("isKnight: Player not found.")
 		return false
 	end
 
 	return (isInArray({4,8}, getPlayerVocation(cid)) == TRUE)
+end
+
+function isPromoted(cid)
+	if (getPlayerVocation(cid) >= 5 and getPlayerVocation(cid) <= 8) then
+		return true
+	end
+	
+	return false
 end
 
 function getDirectionTo(pos1, pos2)

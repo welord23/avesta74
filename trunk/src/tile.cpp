@@ -174,6 +174,10 @@ MagicField* Tile::getFieldItem() const
 
 TrashHolder* Tile::getTrashHolder() const
 {
+	if(ground && ground->getTrashHolder()){
+		return ground->getTrashHolder();
+	}
+
 	TrashHolder* trashholder = NULL;
 	Item* iiItem = NULL;
 	for(uint32_t i = 0; i < getThingCount(); ++i){
@@ -540,7 +544,7 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 						//2) Monster is already afflicated by this type of condition
 						if(hasBitSet(FLAG_IGNOREFIELDDAMAGE, flags)){
 							if( !(monster->canPushItems() ||
-								monster->hasCondition(Combat::DamageToConditionType(combatType))) ){
+								monster->hasCondition(Combat::DamageToConditionType(combatType), false)) ){
 								return RET_NOTPOSSIBLE;
 							}
 						}
@@ -1193,8 +1197,6 @@ void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t 
 	//add a reference to this item, it may be deleted after being added (mailbox for example)
 	thing->useThing2();
 
-	bool removal = false;
-
 	if(link == LINK_OWNER){
 		//calling movement scripts
 		Creature* creature = thing->getCreature();
@@ -1213,17 +1215,10 @@ void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t 
 		}
 		else if(TrashHolder* trashHolder = getTrashHolder()){
 			trashHolder->__addThing(thing);
-			removal = thing != trashHolder;
 		}
 		else if(Mailbox* mailbox = getMailbox()){
 			mailbox->__addThing(thing);
 		}
-	}
-
-	//update floor change flags
-	Item* item = thing->getItem();
-	if(item){
-		updateTileFlags(item, removal);
 	}
 
 	//release the reference to this item onces we are finished
@@ -1258,12 +1253,6 @@ void Tile::postRemoveNotification(Thing* thing,  const Cylinder* newParent, int3
 		if(item){
 			g_moveEvents->onItemMove(item, this, false);
 		}
-	}
-
-	//update floor change flags
-	Item* item = thing->getItem();
-	if(item){
-		updateTileFlags(item, true);
 	}
 }
 

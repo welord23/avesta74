@@ -18,7 +18,7 @@ function hasPlayerLeft(cid)
 	return false
 end
 
-function getNextPlayer()
+function getNext()
 	if (not(isQueueEmpty())) then
 		nextPlayer = getQueuedPlayer()
 		if (nextPlayer) then
@@ -28,7 +28,7 @@ function getNextPlayer()
 				updateIdle()
 				return
 			else
-				getNextPlayer()
+				getNext()
 			end
 		end
 	end
@@ -78,18 +78,26 @@ function onCreatureAppear(cid)
 end
 
 function onCreatureDisappear(cid)
-	unqueuePlayer(cid)
+	if (getFocus() == cid) then
+		selfSay('See you.')
+		getNext()
+	else
+		unqueuePlayer(cid)
+	end
 end
 
 function onCreatureMove(cid, oldPos, newPos)
+	if (getFocus() == cid) then
+		faceCreature(cid)
+	end
 end
 
 function onCreatureSay(cid, type, msg)
 	if (getFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
+			updateIdle()
 			setFocus(cid)
 			greet(cid)
-			updateIdle()
 		end
 	else
 		if (getFocus() ~= cid and (msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
@@ -98,7 +106,7 @@ function onCreatureSay(cid, type, msg)
 		
 		elseif (msgcontains(msg, 'bye')) then
 			selfSay('See you.')
-			getNextPlayer()
+			getNext()
 		
 		elseif (msgcontains(msg, 'name')) then
 			_selfSay('I am Alexander.')
@@ -182,8 +190,7 @@ function onCreatureSay(cid, type, msg)
 			resetState()
 			
 		else
-			local n = 0
-			while (n <= table.getn(items)) do
+			for n = 0, table.getn(items) do
 				if (msgcontains(msg, items[n].name) or msgcontains(msg, items[n].name .. "s")) then
 					_count = getCount(msg)
 					_index = n
@@ -199,8 +206,6 @@ function onCreatureSay(cid, type, msg)
 					updateIdle()
 					break
 				end
-				
-				n = n + 1
 			end
 		end
 	end
@@ -210,7 +215,7 @@ function onThink()
 	if (getFocus() ~= 0) then
 		if (isIdle() or hasPlayerLeft(getFocus())) then
 			selfSay('See you.')
-			getNextPlayer()
+			getNext()
 		end
 	end
 end
