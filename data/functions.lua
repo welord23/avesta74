@@ -1,45 +1,54 @@
 function isSorcerer(cid)
-	if(isPlayer(cid) == false) then
-		debugPrint("isSorcerer: Player not found.")
-		return false
+	if (isPlayer(cid) == TRUE) then
+		local voc = getPlayerVocation(cid)
+		if (voc == 1 or voc == 5) then
+			return TRUE
+		end
 	end
-
-	return (isInArray({1,5}, getPlayerVocation(cid)) == TRUE)
+	
+	return FALSE
 end
 
 function isDruid(cid)
-	if(isPlayer(cid) == false) then
-		debugPrint("isDruid: Player not found.")
-		return false
+	if (isPlayer(cid) == TRUE) then
+		local voc = getPlayerVocation(cid)
+		if (voc == 2 or voc == 6) then
+			return TRUE
+		end
 	end
-
-	return (isInArray({2,6}, getPlayerVocation(cid)) == TRUE)
+	
+	return FALSE
 end
 
 function isPaladin(cid)
-	if(isPlayer(cid) == false) then
-		debugPrint("isPaladin: Player not found.")
-		return false
+	if (isPlayer(cid) == TRUE) then
+		local voc = getPlayerVocation(cid)
+		if (voc == 3 or voc == 7) then
+			return TRUE
+		end
 	end
-
-	return (isInArray({3,7}, getPlayerVocation(cid)) == TRUE)
+	
+	return FALSE
 end
 
 function isKnight(cid)
-	if(isPlayer(cid) == false) then
-		debugPrint("isKnight: Player not found.")
-		return false
+	if (isPlayer(cid) == TRUE) then
+		local voc = getPlayerVocation(cid)
+		if (voc == 4 or voc == 8) then
+			return TRUE
+		end
 	end
-
-	return (isInArray({4,8}, getPlayerVocation(cid)) == TRUE)
+	
+	return FALSE
 end
 
 function isPromoted(cid)
-	if (getPlayerVocation(cid) >= 5 and getPlayerVocation(cid) <= 8) then
-		return true
+	local voc = getPlayerVocation(cid)
+	if (voc < 5 or voc > 8) then
+		return TRUE
 	end
 	
-	return false
+	return FALSE
 end
 
 function getDirectionTo(pos1, pos2)

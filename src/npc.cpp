@@ -410,10 +410,10 @@ void Npc::onThink(uint32_t interval)
 	}
 }
 
-void Npc::doSay(std::string msg)
+void Npc::doSay(std::string msg, uint32_t delay)
 {
 	Scheduler::getScheduler().addEvent(createSchedulerTask(
-				750, boost::bind(&Game::internalCreatureSay, &g_game, this, SPEAK_SAY, msg)));
+				delay, boost::bind(&Game::internalCreatureSay, &g_game, this, SPEAK_SAY, msg)));
 }
 
 void Npc::doMove(Direction dir)
@@ -710,14 +710,21 @@ int NpcScriptInterface::luaSelfGetPos(lua_State *L)
 
 int NpcScriptInterface::luaActionSay(lua_State* L)
 {
-    //selfSay(words)
+    //selfSay(words, <optional> delay)
+	int32_t parameters = lua_gettop(L);
+
+	uint32_t delay = SCHEDULER_MINTICKS;
+	if (parameters > 1) {
+		delay = std::max(delay, popNumber(L));
+	}
+
 	std::string msg(popString(L));
 	
 	ScriptEnviroment* env = getScriptEnv();
 
 	Npc* npc = env->getNpc();
 	if(npc){
-		npc->doSay(msg);
+		npc->doSay(msg, delay);
 	}
 
 	return 0;

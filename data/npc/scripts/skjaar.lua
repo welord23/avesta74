@@ -1,20 +1,15 @@
 
 _state = 0
-
-function hasPlayerLeft(cid)
-	if (getDistanceToCreature(cid) > 4) then
-		return true
-	end
-
-	return false
-end
+_delay = 750
 
 function getNext()
+	_state = 0
+	
 	nextPlayer = getQueuedPlayer()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setFocus(nextPlayer)
-			greet(nextPlayer)
+			greet(nextPlayer, _delay * 2)
 			updateIdle()
 			return
 		else
@@ -26,17 +21,13 @@ function getNext()
 	resetIdle()
 end
 
-function resetState()
-	_state = 0
-end
-
 function _selfSay(message)
-	selfSay(message)
+	selfSay(message, _delay)
 	updateIdle()
 end
 
 function selfSay_(message)
-	selfSay(message)
+	selfSay(message, _delay)
 	getNext()
 end
 
@@ -45,7 +36,7 @@ end
 
 function onCreatureDisappear(cid)
 	if (getFocus() == cid) then
-		selfSay('See you.')
+		selfSay('See you.', _delay)
 		getNext()
 	else
 		unqueuePlayer(cid)
@@ -58,18 +49,18 @@ function onCreatureMove(cid, oldPos, newPos)
 	end
 end
 
-function greet(cid)
-	if (isDruid(cid)) then
-		selfSay('Hail, friend of nature! How may I help you?')
+local function greet(cid, delay)
+	if (isDruid(cid) == TRUE) then
+		selfSay('Hail, friend of nature! How may I help you?', delay)
 		
-	elseif (isKnight(cid)) then
-		selfSay('Another creature who believes thinks physical strength is more important than wisdom! Why are you disturbing me?')
+	elseif (isKnight(cid) == TRUE) then
+		selfSay('Another creature who believes thinks physical strength is more important than wisdom! Why are you disturbing me?', delay)
 		
-	elseif (isSorcerer(cid)) then
-		selfSay('It\'s good to see somebody who has chosen the path of wisdom. What do you want?')
+	elseif (isSorcerer(cid) == TRUE) then
+		selfSay('It\'s good to see somebody who has chosen the path of wisdom. What do you want?', delay)
 		
-	elseif (isPaladin(cid)) then
-		selfSay('Neither strong enough to be a knight nor wise enough to be a real mage. You like it easy, don\'t you? Why are you disturbing me?')
+	elseif (isPaladin(cid) == TRUE) then
+		selfSay('Neither strong enough to be a knight nor wise enough to be a real mage. You like it easy, don\'t you? Why are you disturbing me?', delay)
 	end
 end
 
@@ -77,22 +68,25 @@ function onCreatureSay(cid, type, msg)
 	if (getFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			if (getPlayerLevel(cid) < 15) then
-				selfSay('I don\'t talk to little children!!')
+				selfSay('I don\'t talk to little children!!', _delay)
 			else
 				updateIdle()
 				setFocus(cid)
-				greet(cid)
+				greet(cid, _delay)
 			end
 		end
-	else
-		if (getFocus() ~= cid and (msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
-			selfSay('Silence, unworthy creature!')
+		
+	elseif (getFocus() ~= cid) then 
+		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
+			selfSay('Silence, unworthy creature!', _delay)
 			if (getPlayerLevel(cid) >= 15) then
 				queuePlayer(cid)
 			end
+		end
 		
-		elseif (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
-			selfSay('Farewell, ' .. getCreatureName(cid) .. '!')
+	else
+		if (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
+			selfSay('Farewell, ' .. getCreatureName(cid) .. '!', _delay)
 			getNext()
 		
 		elseif (msgcontains(msg, 'name')) then
@@ -186,20 +180,21 @@ function onCreatureSay(cid, type, msg)
 				item = doPlayerAddItem(cid, 2089)
 				doSetItemActionId(item, 3142)
 			else
-				selfSay('It is always a wise decision to leave the dead alone.')
+				selfSay('It is always a wise decision to leave the dead alone.', _delay)
 			end
 		
 		elseif (msgcontains(msg, 'idiot') or msgcontains(msg, 'fuck') or msgcontains(msg, 'asshole')) then
 			selfSay_('Take this for your words!')
 			doPlayerAddHealth(cid, -(getPlayerHealth(cid) - 1))
+			doSendMagicEffect(getCreaturePosition(cid), CONST_ME_FIREAREA)
 		end
 	end
 end
 
 function onThink()
 	if (getFocus() ~= 0) then
-		if (isIdle() or hasPlayerLeft(getFocus())) then
-			selfSay('Run away, unworthy ' .. getCreatureName(cid) .. '!')
+		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
+			selfSay('Run away, unworthy ' .. getCreatureName(getFocus()) .. '!', _delay)
 			getNext()
 		end
 	end

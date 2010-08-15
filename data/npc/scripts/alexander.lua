@@ -2,6 +2,7 @@
 _state = 0
 _count = 0
 _index = 0
+_delay = 1000
 
 items = {}
 items[0] = {name = 'blank rune', id = 2260, subtype = -1, sell = 10, buy = -1}
@@ -10,21 +11,13 @@ items[2] = {name = 'crystal ball', id = 2192, subtype = -1, sell = 530, buy = 19
 items[3] = {name = 'life crystal', id = 2177, subtype = -1, sell = 900, buy = 85}
 items[4] = {name = 'mind stone', id = 2178, subtype = -1, sell = 900, buy = 170}
 
-function hasPlayerLeft(cid)
-	if (getDistanceToCreature(cid) > 4) then
-		return true
-	end
-
-	return false
-end
-
 function getNext()
 	nextPlayer = getQueuedPlayer()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
-			setFocus(nextPlayer)
-			greet(nextPlayer)
 			updateIdle()
+			setFocus(nextPlayer)
+			greet(nextPlayer, _delay * 3)
 			return
 		else
 			getNext()
@@ -35,7 +28,7 @@ function getNext()
 	resetIdle()
 end
 
-function onActionItem(action)
+local function onActionItem(action)
 	if ((action == 'buy' and items[_index].sell == -1) or
 		(action == 'sell' and items[_index].buy == -1)) then
 		return
@@ -59,13 +52,13 @@ function onActionItem(action)
 	selfSay('Do you want to ' .. action .. ' ' .. plural .. amount .. ' ' .. items[_index].name .. suffix .. ' for ' .. cost .. ' gold?')
 end
 
-function resetState()
-	_state = 0
+function _selfSay(message)
+	selfSay(message, _delay)
+	updateIdle()
 end
 
-function _selfSay(message)
-	selfSay(message)
-	updateIdle()
+function greet(cid, delay)
+	selfSay('Hi there ' .. getCreatureName(cid) .. '.', delay)
 end
 
 function onCreatureAppear(cid)
@@ -73,7 +66,7 @@ end
 
 function onCreatureDisappear(cid)
 	if (getFocus() == cid) then
-		selfSay('See you.')
+		selfSay('See you.', _delay)
 		getNext()
 	else
 		unqueuePlayer(cid)
@@ -86,24 +79,23 @@ function onCreatureMove(cid, oldPos, newPos)
 	end
 end
 
-function greet(cid)
-	selfSay('Hi there ' .. getCreatureName(cid) .. '.')
-end
-
 function onCreatureSay(cid, type, msg)
 	if (getFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			updateIdle()
 			setFocus(cid)
-			greet(cid)
+			greet(cid, _delay)
 		end
-	else
-		if (getFocus() ~= cid and (msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
-			selfSay('Just wait, ' .. getCreatureName(cid) .. '.')
-			queuePlayer(cid)
 		
-		elseif (msgcontains(msg, 'bye')) then
-			selfSay('See you.')
+	elseif (getFocus() ~= cid) then
+		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
+			selfSay('Just wait, ' .. getCreatureName(cid) .. '.', _delay)
+			queuePlayer(cid)
+		end
+		
+	else
+		if (msgcontains(msg, 'bye')) then
+			selfSay('See you.', _delay)
 			getNext()
 		
 		elseif (msgcontains(msg, 'name')) then
@@ -155,17 +147,17 @@ function onCreatureSay(cid, type, msg)
 						doPlayerAddItem(cid, items[_index].id, items[_index].subtype)
 					end
 				
-					selfSay('Here you are.')
+					selfSay('Here you are.', _delay)
 				else
-					selfSay('Come back, when you have enough money.')
+					selfSay('Come back, when you have enough money.', _delay)
 				end
 				
 				updateIdle()
 			else
-				selfSay('Hmm, but next time.')
+				selfSay('Hmm, but next time.', _delay)
 			end
 			
-			resetState()
+			_state = 0
 			
 		elseif (_state == 2) then
 			if (msgcontains(msg, 'yes')) then
@@ -174,18 +166,18 @@ function onCreatureSay(cid, type, msg)
 					selfSay('Ok. Here is your money.')
 				else
 					if (count > 1) then
-						selfSay('Sorry, you do not have so many.')
+						selfSay('Sorry, you do not have so many.', _delay)
 					else
-						selfSay('Sorry, you do not have one.')
+						selfSay('Sorry, you do not have one.', _delay)
 					end
 				end
 				
 				updateIdle()
 			else
-				selfSay('Maybe next time.')
+				selfSay('Maybe next time.', _delay)
 			end
 		
-			resetState()
+			_state = 0
 			
 		else
 			for n = 0, table.getn(items) do
@@ -211,8 +203,8 @@ end
 
 function onThink()
 	if (getFocus() ~= 0) then
-		if (isIdle() or hasPlayerLeft(getFocus())) then
-			selfSay('See you.')
+		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
+			selfSay('See you.', _delay)
 			getNext()
 		end
 	end
