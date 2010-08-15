@@ -153,7 +153,7 @@ public:
 	virtual const std::string& getName() const {return name;};
 	virtual const std::string& getNameDescription() const {return name;};
 
-	void doSay(std::string msg);
+	void doSay(std::string msg, uint32_t addDelay);
 	void doMove(Direction dir);
 	void doTurn(Direction dir);
 	void doMoveTo(Position pos);

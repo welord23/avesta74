@@ -1,18 +1,12 @@
 
-function hasPlayerLeft(cid)
-	if (getDistanceToCreature(cid) > 4) then
-		return true
-	end
-
-	return false
-end
+_delay = 750
 
 function getNext()
 	nextPlayer = getQueuedPlayer()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setFocus(nextPlayer)
-			greet(nextPlayer)
+			greet(nextPlayer, _delay * 2)
 			updateIdle()
 			return
 		else
@@ -25,8 +19,12 @@ function getNext()
 end
 
 function _selfSay(message)
-	selfSay(message)
+	selfSay(message, _delay)
 	updateIdle()
+end
+
+function greet(cid, delay)
+	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.', delay)
 end
 
 function onCreatureAppear(cid)
@@ -47,24 +45,23 @@ function onCreatureMove(cid, oldPos, newPos)
 	end
 end
 
-function greet(cid)
-	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.')
-end
-
 function onCreatureSay(cid, type, msg)
 	if (getFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			setFocus(cid)
 			updateIdle()
-			greet(cid)
+			greet(cid, _delay)
 		end
-	else
-		if (getFocus() ~= cid and (msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
-			selfSay('One moment please, ' .. getCreatureName(cid) .. '.')
-			queuePlayer(cid)
 		
-		elseif (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
-			selfSay('Good bye.')
+	elseif (getFocus() ~= cid) then 
+		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
+			selfSay('One moment please, ' .. getCreatureName(cid) .. '.', _delay)
+			queuePlayer(cid)
+		end
+		
+	else
+		if (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
+			selfSay('Good bye.', _delay)
 			getNext()
 		
 		elseif (msgcontains(msg, 'name')) then
@@ -91,8 +88,8 @@ end
 
 function onThink()
 	if (getFocus() ~= 0) then
-		if (isIdle() or hasPlayerLeft(getFocus())) then
-			selfSay('Good bye.')
+		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
+			selfSay('Good bye.', _delay)
 			getNext()
 		end
 	end

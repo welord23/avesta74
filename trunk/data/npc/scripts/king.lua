@@ -1,20 +1,13 @@
 
 _state = 0
-
-function hasPlayerLeft(cid)
-	if (getDistanceToCreature(cid) > 4) then
-		return true
-	end
-
-	return false
-end
+_delay = 750
 
 function getNext()
 	nextPlayer = getQueuedPlayer()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setFocus(nextPlayer)
-			greet(nextPlayer)
+			greet(nextPlayer, _delay * 2)
 			updateIdle()
 			return
 		else
@@ -26,13 +19,13 @@ function getNext()
 	resetIdle()
 end
 
-function resetState()
-	_state = 0
+function _selfSay(message)
+	selfSay(message, _delay)
+	updateIdle()
 end
 
-function _selfSay(message)
-	selfSay(message)
-	updateIdle()
+function greet(cid, delay)
+	selfSay('I greet thee, my loyal subject.', delay)
 end
 
 function onCreatureAppear(cid)
@@ -40,7 +33,7 @@ end
 
 function onCreatureDisappear(cid)
 	if (getFocus() == cid) then
-		selfSay('What a lack of manners!')
+		selfSay('What a lack of manners!', _delay)
 		getNext()
 	else
 		unqueuePlayer(cid)
@@ -53,26 +46,25 @@ function onCreatureMove(cid, oldPos, newPos)
 	end
 end
 
-function greet(cid)
-	selfSay('I greet thee, my loyal subject.')
-end
-
 function onCreatureSay(cid, type, msg)
 	if (getFocus() == 0) then
 		if (msgcontains(msg, 'king') and getDistanceToCreature(cid) <= 4) then
 			if (msgcontains(msg, 'hello') or msgcontains(msg, 'hail') or msgcontains(msg, 'salutations')) then
 				updateIdle()
 				setFocus(cid)
-				greet(cid)
+				greet(cid, _delay)
 			end
 		end
-	else
-		if (getFocus() ~= cid and (msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
-			--selfSay('Just wait, ' .. getCreatureName(cid) .. '.')
-			--queuePlayer(cid)
 		
-		elseif (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
-			selfSay('Good bye, ' .. getCreatureName(cid) .. '!')
+	elseif (getFocus() ~= cid) then 
+		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
+			--selfSay('Just wait, ' .. getCreatureName(cid) .. '.', _delay)
+			--queuePlayer(cid)
+		end
+		
+	else
+		if (msgcontains(msg, 'bye') or msgcontains(msg, 'farewell')) then
+			selfSay('Good bye, ' .. getCreatureName(cid) .. '!', _delay)
 			getNext()
 		
 		elseif (msgcontains(msg, 'job')) then
@@ -261,15 +253,15 @@ function onCreatureSay(cid, type, msg)
 				_selfSay('Ok, then not.')
 			end
 			
-			resetState()
+			_state = 0
 		end
 	end
 end
 
 function onThink()
 	if (getFocus() ~= 0) then
-		if (isIdle() or hasPlayerLeft(getFocus())) then
-			selfSay('What a lack of manners!')
+		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
+			selfSay('What a lack of manners!', _delay)
 			getNext()
 		end
 	end
