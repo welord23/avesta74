@@ -17,17 +17,15 @@ function hasPlayerLeft(cid)
 end
 
 function getNext()
-	if (not(isQueueEmpty())) then
-		nextPlayer = getQueuedPlayer()
-		if (nextPlayer) then
-			if (getDistanceToCreature(nextPlayer) <= 4) then
-				setFocus(nextPlayer)
-				greet(nextPlayer)
-				updateIdle()
-				return
-			else
-				getNext()
-			end
+	nextPlayer = getQueuedPlayer()
+	if (nextPlayer ~= nil) then
+		if (getDistanceToCreature(nextPlayer) <= 4) then
+			setFocus(nextPlayer)
+			greet(nextPlayer)
+			updateIdle()
+			return
+		else
+			getNext()
 		end
 	end
 	
@@ -37,15 +35,6 @@ end
 
 function resetState()
 	_state = 0
-end
-
-function greet(cid)
-	local title = 'Sir'
-	if (getPlayerSex(cid) == 0) then
-		title = 'Madam'
-	end
-	
-	selfSay('Welcome on board, ' .. title .. ' ' .. getCreatureName(cid) .. '.')
 end
 
 function _selfSay(message)
@@ -69,6 +58,15 @@ function onCreatureMove(cid, oldPos, newPos)
 	if (getFocus() == cid) then
 		faceCreature(cid)
 	end
+end
+
+function greet(cid)
+	local title = 'Sir'
+	if (getPlayerSex(cid) == 0) then
+		title = 'Madam'
+	end
+	
+	selfSay('Welcome on board, ' .. title .. ' ' .. getCreatureName(cid) .. '.')
 end
 
 function onCreatureSay(cid, type, msg)

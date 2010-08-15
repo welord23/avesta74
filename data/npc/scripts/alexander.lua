@@ -19,17 +19,15 @@ function hasPlayerLeft(cid)
 end
 
 function getNext()
-	if (not(isQueueEmpty())) then
-		nextPlayer = getQueuedPlayer()
-		if (nextPlayer) then
-			if (getDistanceToCreature(nextPlayer) <= 4) then
-				setFocus(nextPlayer)
-				greet(nextPlayer)
-				updateIdle()
-				return
-			else
-				getNext()
-			end
+	nextPlayer = getQueuedPlayer()
+	if (nextPlayer ~= nil) then
+		if (getDistanceToCreature(nextPlayer) <= 4) then
+			setFocus(nextPlayer)
+			greet(nextPlayer)
+			updateIdle()
+			return
+		else
+			getNext()
 		end
 	end
 	
@@ -65,10 +63,6 @@ function resetState()
 	_state = 0
 end
 
-function greet(cid)
-	selfSay('Hi there ' .. getCreatureName(cid) .. '.')
-end
-
 function _selfSay(message)
 	selfSay(message)
 	updateIdle()
@@ -90,6 +84,10 @@ function onCreatureMove(cid, oldPos, newPos)
 	if (getFocus() == cid) then
 		faceCreature(cid)
 	end
+end
+
+function greet(cid)
+	selfSay('Hi there ' .. getCreatureName(cid) .. '.')
 end
 
 function onCreatureSay(cid, type, msg)

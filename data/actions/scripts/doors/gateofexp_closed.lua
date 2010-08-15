@@ -19,7 +19,7 @@ function onUse(cid, item, frompos, item2, topos)
 		canEnter = false
 	end
 
-	if(isVocationDoor) then
+	if (isVocationDoor) then
 		local doorVoc = item.actionid-2000
 		if (doorVoc == 1 and not(isSorcerer(cid))) or
 		   (doorVoc == 2 and not(isDruid(cid)))    or
@@ -30,7 +30,7 @@ function onUse(cid, item, frompos, item2, topos)
 		end
 	end
 
-	if(not canEnter and getPlayerAccess(cid) == 0) then
+	if (not canEnter and getPlayerAccess(cid) == 0) then
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Only the worthy may pass.")
 		return TRUE
 	end

@@ -3923,18 +3923,17 @@
 		<attribute key="type" value="bed"/>
 		<attribute key="partnerDirection" value="west" />
 	</item>
-
 	<item id="1770" article="a" name="barrel">
 		<attribute key="containerSize" value="25"/>
 	</item>
 	<item id="1771" article="a" name="water cask">
-                <attribute key="fluidSource" value="water"/>
+		<attribute key="fluidSource" value="water"/>
 	</item>
 	<item id="1772" article="a" name="beer cask">
-                <attribute key="fluidSource" value="beer"/>
+		<attribute key="fluidSource" value="beer"/>
 	</item>
 	<item id="1773" article="a" name="wine cask">
-                <attribute key="fluidSource" value="wine"/>
+		<attribute key="fluidSource" value="wine"/>
 	</item>
 	<item id="1774" article="a" name="barrel">
 		<attribute key="containerSize" value="25"/>
@@ -3942,11 +3941,11 @@
 	<item id="1775" article="a" name="trough">
 	</item>
 	<item id="1776" article="a" name="lemonade cask">
-            <attribute key="fluidSource" value="lemonade"/>
+		<attribute key="fluidSource" value="lemonade"/>
 	</item>
 	<item id="1777" article="a" name="dustbin">
 		<attribute key="type" value="trashholder"/>
-            <attribute key="allowpickupable" value="1"/>
+		<attribute key="allowpickupable" value="1"/>
 	</item>
 	<item id="1778" article="a" name="big wine cask">
 		<attribute key="fluidSource" value="wine"/>
@@ -5134,7 +5133,7 @@
 	<item id="2173" article="an" name="amulet of loss">
 		<attribute key="weight" value="420"/>
 		<attribute key="slotType" value="necklace"/>
-                <attribute key="preventitemloss" value="1"/>
+		<attribute key="preventitemloss" value="1"/>
 	</item>
 	<item id="2174" article="a" name="strange symbol">
 		<attribute key="weight" value="200"/>
@@ -5964,7 +5963,6 @@
 		<attribute key="defense" value="12"/>
 		<attribute key="attack" value="14"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2377" article="a" name="two handed sword">
 		<attribute key="weight" value="7000"/>
@@ -6010,21 +6008,18 @@
 		<attribute key="defense" value="21"/>
 		<attribute key="attack" value="24"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="2"/>
 	</item>
 	<item id="2384" article="a" name="rapier">
 		<attribute key="weight" value="1500"/>
 		<attribute key="defense" value="8"/>
 		<attribute key="attack" value="10"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2385" article="a" name="sabre">
 		<attribute key="weight" value="2500"/>
 		<attribute key="defense" value="10"/>
 		<attribute key="attack" value="12"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2386" article="an" name="axe">
 		<attribute key="weight" value="4000"/>
@@ -6074,7 +6069,6 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="attack" value="35"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2393" article="a" name="giant sword">
 		<attribute key="description" value="This sword has been forged by ancient giants."/>
@@ -6129,7 +6123,6 @@
 		<attribute key="defense" value="35"/>
 		<attribute key="attack" value="48"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="3"/>
 	</item>
 	<item id="2401" article="a" name="staff">
 		<attribute key="weight" value="3800"/>
@@ -6174,7 +6167,6 @@
 		<attribute key="defense" value="30"/>
 		<attribute key="attack" value="36"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2408" article="a" name="warlord sword">
 		<attribute key="description" value="Strong powers flow in this magic sword."/>
@@ -6189,7 +6181,6 @@
 		<attribute key="defense" value="15"/>
 		<attribute key="attack" value="26"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2410" article="a" name="throwing knife" plural="throwing knives">
 		<attribute key="weight" value="500"/>
@@ -6209,7 +6200,6 @@
 		<attribute key="defense" value="12"/>
 		<attribute key="attack" value="16"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2413" article="a" name="broad sword">
 		<attribute key="weight" value="5250"/>
@@ -6257,7 +6247,6 @@
 		<attribute key="defense" value="13"/>
 		<attribute key="attack" value="19"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2420" article="a" name="machete">
 		<attribute key="weight" value="1650"/>
@@ -6271,7 +6260,6 @@
 		<attribute key="defense" value="35"/>
 		<attribute key="attack" value="49"/>
 		<attribute key="weaponType" value="club"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2422" article="an" name="iron hammer">
 		<attribute key="weight" value="6600"/>
@@ -6323,14 +6311,12 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="attack" value="28"/>
 		<attribute key="weaponType" value="axe"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2430" article="a" name="knight axe">
 		<attribute key="weight" value="5900"/>
 		<attribute key="defense" value="21"/>
 		<attribute key="attack" value="33"/>
 		<attribute key="weaponType" value="axe"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2431" article="a" name="stonecutter axe">
 		<attribute key="description" value="You feel the power of this mighty axe."/>
@@ -6338,7 +6324,6 @@
 		<attribute key="defense" value="30"/>
 		<attribute key="attack" value="50"/>
 		<attribute key="weaponType" value="axe"/>
-		<attribute key="extradef" value="3"/>
 	</item>
 	<item id="2432" article="a" name="fire axe">
 		<attribute key="description" value="The blade is a magic flame."/>
@@ -6346,7 +6331,6 @@
 		<attribute key="defense" value="16"/>
 		<attribute key="attack" value="38"/>
 		<attribute key="weaponType" value="axe"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2433" article="an" name="enchanted staff">
 		<attribute key="description" value="Temporary magic powers enchant this staff."/>
@@ -6369,7 +6353,6 @@
 		<attribute key="defense" value="19"/>
 		<attribute key="attack" value="31"/>
 		<attribute key="weaponType" value="axe"/>
-		<attribute key="extradef" value="2"/>
 	</item>
 	<item id="2436" article="a" name="skull staff">
 		<attribute key="description" value="The staff longs for death."/>
@@ -6377,7 +6360,6 @@
 		<attribute key="defense" value="12"/>
 		<attribute key="attack" value="36"/>
 		<attribute key="weaponType" value="club"/>
-		<attribute key="extradef" value="1"/>
 	</item>
 	<item id="2437" article="a" name="golden mace">
 		<attribute key="weight" value="5000"/>
@@ -6440,7 +6422,6 @@
 		<attribute key="defense" value="23"/>
 		<attribute key="attack" value="41"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="2"/>
 	</item>
 	<item id="2447" article="a" name="twin axe">
 		<attribute key="weight" value="6400"/>
@@ -6472,7 +6453,6 @@
 		<attribute key="defense" value="22"/>
 		<attribute key="attack" value="38"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="extradef" value="2"/>
 	</item>
 	<item id="2452" article="a" name="heavy mace">
 		<attribute key="weight" value="11000"/>
@@ -9698,16 +9678,16 @@
 		<attribute key="corpseType" value="blood"/>
 	</item>
 	<item id="3135" article="a" name="ladder">
-                <attribute key="floorchange" value="down"/>
+		<attribute key="floorchange" value="down"/>
 	</item>
 	<item id="3136" article="a" name="ladder">
-                <attribute key="floorchange" value="down"/>
+		<attribute key="floorchange" value="down"/>
 	</item>
 	<item id="3137" article="a" name="trapdoor">
-                <attribute key="floorchange" value="down"/>
+		<attribute key="floorchange" value="down"/>
 	</item>
 	<item id="3138" article="a" name="stairway">
-                <attribute key="floorchange" value="down"/>
+		<attribute key="floorchange" value="down"/>
 	</item>
 	<item id="3139" name="wooden flooring">
 	</item>

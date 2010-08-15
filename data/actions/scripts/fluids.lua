@@ -2,9 +2,9 @@ local exhaust = createConditionObject(CONDITION_EXHAUST_HEAL)
 setConditionParam(exhaust, CONDITION_PARAM_TICKS, 1000)
 
 function onUse(cid, item, frompos, item2, topos)
-	if((hasCondition(cid, CONDITION_EXHAUST_COMBAT) == true) or (hasCondition(cid, CONDITION_EXHAUST_HEAL) == true)) then
+	if((hasCondition(cid, CONDITION_EXHAUST_COMBAT) == TRUE) or (hasCondition(cid, CONDITION_EXHAUST_HEAL) == TRUE)) then
 		doPlayerSendDefaultCancel(cid, RETURNVALUE_YOUAREEXHAUSTED)
-		return true
+		return TRUE
 	end
 
 	if item2.itemid == 1 then
@@ -70,5 +70,6 @@ function onUse(cid, item, frompos, item2, topos)
 			doDecayItem(splash)
 		end
 	end
-	return 1
+	
+	return TRUE
 end
