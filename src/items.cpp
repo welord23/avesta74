@@ -608,13 +608,13 @@ bool Items::loadFromXml(const std::string& datadir)
 									}
 								}
 							}
-							/*
+							
 							else if(asLowerCaseString(strValue) == "readable"){
 								if(readXMLInteger(itemAttributesNode, "value", intValue)){
-									it.canReadText = true;
+									it.canReadText = (intValue != 0);
 								}
 							}
-							*/
+							
 							else if(asLowerCaseString(strValue) == "writeable"){
 								if(readXMLInteger(itemAttributesNode, "value", intValue)){
 									it.canWriteText = (intValue != 0);
