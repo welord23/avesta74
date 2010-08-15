@@ -4,7 +4,7 @@ function onUse(cid, item, frompos, item2, topos)
 	-- 490 fish
 	-- 491 no fish 
 	-- 492 fish regeneration
-	if item2.itemid == 490 then
+	if (item2.itemid == 490) then
 		fishingskill = getPlayerSkill(cid,6)
 		formula = fishingskill / 200 + 0.85 * math.random()
 		if formula > 0.70 then
@@ -18,9 +18,9 @@ function onUse(cid, item, frompos, item2, topos)
 		
 		doSendMagicEffect(topos, 1)
 
-	elseif item2.itemid == 491 or item2.itemid == 492 then
+	elseif (item2.itemid == 491 or item2.itemid == 492) then
 		doSendMagicEffect(topos, 1)
 	end
 	
-	return true
+	return TRUE
 end

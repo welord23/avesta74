@@ -655,8 +655,6 @@ void NpcScriptInterface::registerFunctions()
 	lua_register(m_luaState, "queuePlayer", NpcScriptInterface::luaQueuePlayer);
 	lua_register(m_luaState, "unqueuePlayer", NpcScriptInterface::luaUnqueuePlayer);
 	lua_register(m_luaState, "getQueuedPlayer", NpcScriptInterface::luaGetQueuedPlayer);
-	lua_register(m_luaState, "clearQueue", NpcScriptInterface::luaClearQueue);
-	lua_register(m_luaState, "isQueueEmpty", NpcScriptInterface::luaIsQueueEmpty);
 	lua_register(m_luaState, "faceCreature", NpcScriptInterface::luaFaceCreature);
 }
 
@@ -993,6 +991,7 @@ int NpcScriptInterface::luaGetQueuedPlayer(lua_State *L)
 	if (npc) {
 		if (npc->queueList.empty()) {
 			lua_pushnil(L);
+			return 0;
 		}
 
 		Creature* creature = env->getCreatureByUID(npc->queueList.front());
@@ -1000,32 +999,6 @@ int NpcScriptInterface::luaGetQueuedPlayer(lua_State *L)
 			lua_pushnumber(L, creature->getID());
 			npc->queueList.pop_front();
 		}
-	}
-
-	return 1;
-}
-
-int NpcScriptInterface::luaClearQueue(lua_State *L)
-{
-	// clearQueue()
-	ScriptEnviroment* env = getScriptEnv();
-
-	Npc* npc = env->getNpc();
-	if (npc) {
-		npc->queueList.clear();
-	}
-
-	return 1;
-}
-
-int NpcScriptInterface::luaIsQueueEmpty(lua_State *L)
-{
-	// isQueueEmpty()
-	ScriptEnviroment* env = getScriptEnv();
-
-	Npc* npc = env->getNpc();
-	if (npc) {
-		lua_pushboolean(L, npc->queueList.empty());
 	}
 
 	return 1;

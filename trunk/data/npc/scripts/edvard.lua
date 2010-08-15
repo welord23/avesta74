@@ -8,26 +8,20 @@ function hasPlayerLeft(cid)
 end
 
 function getNext()
-	if (not(isQueueEmpty())) then
-		nextPlayer = getQueuedPlayer()
-		if (nextPlayer) then
-			if (getDistanceToCreature(nextPlayer) <= 4) then
-				setFocus(nextPlayer)
-				greet(nextPlayer)
-				updateIdle()
-				return
-			else
-				getNextPlayer()
-			end
+	nextPlayer = getQueuedPlayer()
+	if (nextPlayer ~= nil) then
+		if (getDistanceToCreature(nextPlayer) <= 4) then
+			setFocus(nextPlayer)
+			greet(nextPlayer)
+			updateIdle()
+			return
+		else
+			getNext()
 		end
 	end
 	
 	setFocus(0)
 	resetIdle()
-end
-
-function greet(cid)
-	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.')
 end
 
 function _selfSay(message)
@@ -51,6 +45,10 @@ function onCreatureMove(cid, oldPos, newPos)
 	if (getFocus() == cid) then
 		faceCreature(cid)
 	end
+end
+
+function greet(cid)
+	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.')
 end
 
 function onCreatureSay(cid, type, msg)

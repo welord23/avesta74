@@ -73,8 +73,6 @@ protected:
 	static int luaQueuePlayer(lua_State *L);
 	static int luaUnqueuePlayer(lua_State *L);
 	static int luaGetQueuedPlayer(lua_State *L);
-	static int luaClearQueue(lua_State *L);
-	static int luaIsQueueEmpty(lua_State *L);
 	static int luaFaceCreature(lua_State *L);
 
 	
