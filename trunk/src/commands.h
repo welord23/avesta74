@@ -78,9 +78,6 @@ protected:
 	bool goDown(Creature* creature, const std::string &cmd, const std::string &param);
 	bool playerKills(Creature* creature, const std::string &cmd, const std::string &param);
 	bool refreshMap(Creature* creature, const std::string& cmd, const std::string& param);
-#ifdef __PB_GMINVISIBLE__
-	bool setGmInvisible(Creature* creature, const std::string& cmd, const std::string& param);
-#endif
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 	bool serverDiag(Creature* creature, const std::string& cmd, const std::string& param);

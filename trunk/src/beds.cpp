@@ -256,6 +256,12 @@ void BedItem::regeneratePlayer(Player* player) const
 		player->changeHealth(regen);
 		player->changeMana(regen);
 	}
+
+#ifdef __76__
+	// regenerate 1 soul every 15 minutes
+	int32_t soulRegen = (int32_t)std::max((float)0, ((float)sleptTime/(60*15)));
+	player->changeSoul(soulRegen);
+#endif
 }
 
 void BedItem::updateAppearance(const Player* player)

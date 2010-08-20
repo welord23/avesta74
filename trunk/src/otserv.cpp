@@ -495,20 +495,6 @@ void mainLoader(const CommandLineOptions& command_opts)
 	}
 	std::cout << "[done]" << std::endl;
 
-	#ifdef __XID_EXPERIENCE_STAGES__
-	//load experience stages
-	filename.str("");
-	filename << g_config.getString(ConfigManager::DATA_DIRECTORY) << "stages.xml";
-	std::cout << ":: Loading stages.xml... ";
-	if(!g_game.loadExperienceStages()){
-		std::stringstream errormsg;
-		errormsg << "Unable to load " << filename.str() << "!";
-		ErrorMessage(errormsg.str().c_str());
-		exit(-1);
-	}
-	std::cout << "[done]" << std::endl;
-#endif
-
 	std::string worldType = g_config.getString(ConfigManager::WORLD_TYPE);
 
 	if(asLowerCaseString(worldType) == "pvp")

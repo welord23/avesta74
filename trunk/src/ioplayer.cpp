@@ -44,6 +44,17 @@ bool IOPlayer::loadPlayer(Player* player, const std::string& name, bool preload 
 	DBQuery query;
 	DBResult* result;
 
+#ifdef __76__
+	query << "SELECT `players`.`id` AS `id`, `players`.`name` AS `name`, `account_id`, \
+			 `players`.`group_id` as `group_id`, `sex`, `vocation`, `experience`, `level`, `maglevel`, `health`, \
+			 `healthmax`, `mana`, `manamax`, `manaspent`, `soul`, `direction`, `lookbody`, \
+			 `lookfeet`, `lookhead`, `looklegs`, `looktype`, `posx`, `posy`, \
+			 `posz`, `cap`, `lastlogin`, `lastlogout`, `lastip`, `conditions`, `redskulltime`, \
+			 `redskull`, `guildnick`, `loss_experience`, `loss_mana`, `loss_skills`, \
+			 `loss_items`, `rank_id`, `town_id`, `balance` \
+			 FROM `players` LEFT JOIN `accounts` ON `account_id` = `accounts`.`id` \
+			 WHERE `players`.`name` = " + db->escapeString(name);
+#else
 	query << "SELECT `players`.`id` AS `id`, `players`.`name` AS `name`, `account_id`, \
 			 `players`.`group_id` as `group_id`, `sex`, `vocation`, `experience`, `level`, `maglevel`, `health`, \
 			 `healthmax`, `mana`, `manamax`, `manaspent`, `direction`, `lookbody`, \
@@ -53,6 +64,7 @@ bool IOPlayer::loadPlayer(Player* player, const std::string& name, bool preload 
 			 `loss_items`, `rank_id`, `town_id`, `balance` \
 			 FROM `players` LEFT JOIN `accounts` ON `account_id` = `accounts`.`id` \
 			 WHERE `players`.`name` = " + db->escapeString(name);
+#endif
 
 	if(!(result = db->storeQuery(query.str()))){
 	  	return false;
@@ -89,6 +101,9 @@ bool IOPlayer::loadPlayer(Player* player, const std::string& name, bool preload 
 	}
 	player->experience = experience;
 	player->levelPercent = Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount);
+#ifdef __76__
+	player->soul = result->getDataInt("soul");
+#endif
 	player->capacity = result->getDataInt("cap");
 	player->lastLoginSaved = result->getDataInt("lastlogin");
 	player->lastLogout = result->getDataInt("lastlogout");
@@ -473,6 +488,9 @@ bool IOPlayer::savePlayer(Player* player)
 	<< ", `mana` = " << player->mana
 	<< ", `manamax` = " << player->manaMax
 	<< ", `manaspent` = " << player->manaSpent
+#ifdef __76__
+	<< ", `soul` = " << player->soul
+#endif
 	<< ", `town_id` = " << player->town
 	<< ", `posx` = " << player->getLoginPosition().x
 	<< ", `posy` = " << player->getLoginPosition().y

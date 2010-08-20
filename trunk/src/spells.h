@@ -119,8 +119,15 @@ public:
 	const std::string& getName() const {return name;}
 
 	void postCastSpell(Player* player, bool finishedSpell = true, bool payCost = true) const;
+#ifdef __76__
+	void postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost) const;
+#else
 	void postCastSpell(Player* player, uint32_t manaCost) const;
+#endif
 
+#ifdef __76__
+	int32_t getSoulCost(const Player* player) const;
+#endif
 	int32_t getManaCost(const Player* player) const;
 	uint32_t getLevel() const { return level;}
 	uint32_t getMagicLevel() const { return magLevel;}
@@ -150,6 +157,9 @@ protected:
 	int32_t mana;
 	int32_t manaPercent;
 	int32_t lvPercent;
+#ifdef __76__
+	int32_t soul;
+#endif
 	int32_t range;
 	uint32_t customExhaust;
 	bool exhaustion;

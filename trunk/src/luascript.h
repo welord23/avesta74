@@ -209,7 +209,9 @@ enum PlayerInfo_t{
 	PlayerInfoPosition,
 	PlayerInfoVocation,
 	PlayerInfoMasterPos,
-	//PlayerInfoSoul,
+#ifdef __76__
+	PlayerInfoSoul,
+#endif
 	PlayerInfoFreeCap,
 	PlayerInfoGuildId,
 	PlayerInfoGuildName,
@@ -370,6 +372,9 @@ protected:
 	static int luaDoPlayerSetTown(lua_State *L);
 	static int luaDoPlayerSetVocation(lua_State *L);
 	static int luaDoPlayerRemoveItem(lua_State *L);
+#ifdef __76__
+	static int luaDoPlayerAddSoul(lua_State *L);
+#endif
 	static int luaDoPlayerAddExp(lua_State *L);
 	//static int luaDoPlayerSetGuildId(lua_State *L);
 	static int luaDoPlayerSetGuildRank(lua_State *L);
@@ -437,6 +442,9 @@ protected:
 	static int luaGetPlayerMasterPos(lua_State *L);
 	static int luaGetPlayerTown(lua_State *L);
 	static int luaGetPlayerItemCount(lua_State *L);
+#ifdef __76__
+	static int luaGetPlayerSoul(lua_State *L);
+#endif
 	static int luaGetPlayerFreeCap(lua_State *L);
 	static int luaGetPlayerLight(lua_State *L);
 	static int luaGetPlayerSlotItem(lua_State *L);

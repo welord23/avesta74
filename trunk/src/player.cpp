@@ -76,6 +76,10 @@ Creature()
 	mana       = 0;
 	manaMax    = 0;
 	manaSpent  = 0;
+#ifdef __76__
+	soul       = 0;
+	soulMax    = 100;
+#endif
 	guildId    = 0;
 	guildLevel = 0;
 
@@ -170,9 +174,6 @@ Creature()
 	redSkullTicks = 0;
 	skull = SKULL_NONE;
 #endif
-#ifdef __PB_GMINVISIBLE__
-	gmInvisible = false;
-#endif
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 	playerCount++;
@@ -218,6 +219,11 @@ void Player::setVocation(uint32_t vocId)
 		condition->setParam(CONDITIONPARAM_MANAGAIN, vocation->getManaGainAmount());
 		condition->setParam(CONDITIONPARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
 	}
+
+#ifdef __76__
+	//Set the player's max soul according to their vocation
+	soulMax = vocation->getSoulMax();
+#endif
 }
 
 uint32_t Player::getVocationId() const
@@ -611,6 +617,9 @@ int32_t Player::getPlayerInfo(playerinfo_t playerinfo) const
 		case PLAYERINFO_MAXHEALTH: return std::max((int32_t)1, ((int32_t)healthMax + varStats[STAT_MAXHITPOINTS])); break;
 		case PLAYERINFO_MANA: return mana; break;
 		case PLAYERINFO_MAXMANA: return std::max((int32_t)0, ((int32_t)manaMax + varStats[STAT_MAXMANAPOINTS])); break;
+#ifdef __76__
+		case PLAYERINFO_SOUL: return std::max((int32_t)0, ((int32_t)soul + varStats[STAT_SOULPOINTS])); break;
+#endif
 		default:
 			return 0; break;
 	}
@@ -746,6 +755,11 @@ int32_t Player::getDefaultStats(stats_t stat)
 			return getMaxMana() - getVarStats(STAT_MAXMANAPOINTS);
 			break;
 
+#ifdef __76__
+		case STAT_SOULPOINTS:
+			return getPlayerInfo(PLAYERINFO_SOUL) - getVarStats(STAT_SOULPOINTS);
+			break;
+#endif
 		case STAT_MAGICPOINTS:
 			return getMagicLevel() - getVarStats(STAT_MAGICPOINTS);
 			break;
@@ -1066,6 +1080,12 @@ void Player::sendCancelMessage(ReturnValue message) const
 	case RET_NOTENOUGHMANA:
 		sendCancel("You do not have enough mana.");
 		break;
+
+#ifdef __76__
+	case RET_NOTENOUGHSOUL:
+		sendCancel("You do not have enough soul");
+		break;
+#endif
 
 	case RET_YOUAREEXHAUSTED:
 		sendCancel("You are exhausted.");
@@ -1984,6 +2004,10 @@ void Player::sendToRook()
     manaMax = 0;
     manaSpent = 0;
     magLevel= 0;
+#ifdef __76__
+	soul = 100;
+	soulMax = 100;
+#endif
     capacity = 400;
     experience = 0;
 
@@ -3511,6 +3535,18 @@ void Player::gainExperience(uint64_t gainExp)
 {
 	if(!hasFlag(PlayerFlag_NotGainExperience)){
 		if(gainExp > 0){
+
+#ifdef __76__
+			//soul regeneration
+			if((uint32_t)gainExp >= getLevel()){
+				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SOUL, 4 * 60 * 1000, 0);
+				//Soul regeneration rate is defined by the vocation
+				uint32_t vocSoulTicks = vocation->getSoulGainTicks();
+				condition->setParam(CONDITIONPARAM_SOULGAIN, 1);
+				condition->setParam(CONDITIONPARAM_SOULTICKS, vocSoulTicks * 1000);
+				addCondition(condition);
+			}
+#endif
 			addExperience(gainExp);
 		}
 	}
@@ -3566,6 +3602,20 @@ void Player::changeMana(int32_t manaChange)
 	Creature::changeMana(manaChange);
 	sendStats();
 }
+
+#ifdef __76__
+void Player::changeSoul(int32_t soulChange)
+{
+	if(soulChange > 0){
+		soul += std::min(soulChange, soulMax - soul);
+	}
+	else{
+		soul = std::max((int32_t)0, soul + soulChange);
+	}
+
+	sendStats();
+}
+#endif
 
 PartyShields_t Player::getPartyShield(const Player* player) const
 {

@@ -57,6 +57,10 @@ enum playerinfo_t {
 	PLAYERINFO_MAXMANA,
 	PLAYERINFO_MAGICLEVEL,
 	PLAYERINFO_MAGICLEVELPERCENT
+#ifdef __76__
+	,
+	PLAYERINFO_SOUL
+#endif
 };
 
 enum freeslot_t {
@@ -291,6 +295,10 @@ public:
 	virtual void changeHealth(int32_t healthChange);
 	virtual void changeMana(int32_t manaChange);
 
+#ifdef __76__
+	void changeSoul(int32_t soulChange);
+#endif
+
 	bool isPzLocked() const { return pzLocked; }
 	virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
 		bool checkDefense = false, bool checkArmor = false);
@@ -343,13 +351,6 @@ public:
 	virtual void onPlacedCreature();
 	virtual void onRemovedCreature();
 	virtual void getCreatureLight(LightInfo& light) const;
-
-#ifdef __PB_GMINVISIBLE__
-	virtual bool isGmInvis() const {return gmInvisible;}
-	void setGmInvis() {gmInvisible = !gmInvisible;}
-	bool canSeeGmInvis(const Creature* creature) const
-		{return (creature->getPlayer() && creature->getPlayer()->getAccessLevel() <= getAccessLevel());}
-#endif
 
 	void setParty(Party* _party) {party = _party;}
 	Party* getParty() const {return party;}
@@ -632,6 +633,9 @@ protected:
 	Vocation_t vocation_id;
 	Vocation* vocation;
 	playersex_t sex;
+#ifdef __76__
+	int32_t soul, soulMax;
+#endif
 	uint64_t groupFlags;
 	uint16_t premiumDays;
 	uint32_t MessageBufferTicks;
@@ -641,10 +645,6 @@ protected:
 	uint32_t walkTaskEvent;
 	SchedulerTask* walkTask;
 	uint32_t idleTime;
-
-#ifdef __PB_GMINVISIBLE__
-	bool gmInvisible;
-#endif
 
 	double inventoryWeight;
 	double capacity;

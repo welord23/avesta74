@@ -308,17 +308,6 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
-		case ATTR_WRITTENDATE:
-		{
-			uint32_t _writtenDate;
-			if(!propStream.GET_ULONG(_writtenDate)){
-				return false;
-			}
-
-			setWrittenDate(_writtenDate);
-			break;
-		}
-
 		case ATTR_WRITTENBY:
 		{
 			std::string _writer;
@@ -468,12 +457,6 @@ bool Item::serializeAttr(PropWriteStream& propWriteStream) const
 	if(_text.length() > 0){
 		propWriteStream.ADD_UCHAR(ATTR_TEXT);
 		propWriteStream.ADD_STRING(_text);
-	}
-
-	const time_t _writtenDate = getWrittenDate();
-	if(_writtenDate > 0){
-		propWriteStream.ADD_UCHAR(ATTR_WRITTENDATE);
-		propWriteStream.ADD_ULONG(_writtenDate);
 	}
 
 	const std::string& _writer = getWriter();
@@ -1012,7 +995,7 @@ bool ItemAttributes::validateIntAttrType(itemAttrTypes type)
 	case ATTR_ITEM_OWNER:
 	case ATTR_ITEM_DURATION:
 	case ATTR_ITEM_DECAYING:
-	case ATTR_ITEM_WRITTENDATE:
+	//case ATTR_ITEM_WRITTENDATE:
     case ATTR_ITEM_CHARGES:
     case ATTR_ITEM_FLUIDTYPE:
     case ATTR_ITEM_DOORID:

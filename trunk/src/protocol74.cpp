@@ -801,10 +801,6 @@ void Protocol74::GetTileDescription(const Tile* tile, NetworkMessage_ptr msg)
 
 		CreatureVector::const_iterator itc;
 		for(itc = tile->creatures.begin(); ((itc != tile->creatures.end()) && (count < 10)); ++itc){
-#ifdef __PB_GMINVISIBLE__
-			if((*itc)->isGmInvis() && !player->canSeeGmInvis((*itc)))
-				continue;
-#endif
 			bool known;
 			uint32_t removedKnown;
 			checkCreatureAsKnown((*itc)->getID(), known, removedKnown);
@@ -933,11 +929,6 @@ bool Protocol74::canSee(const Creature* c) const
 {
 	if(c->isRemoved())
 		return false;
-
-#ifdef __PB_GMINVISIBLE__
-	if(c->isGmInvis() && !player->canSeeGmInvis(c))
-		return false;
-#endif
 
 	return canSee(c->getPosition());
 }
@@ -1509,12 +1500,6 @@ void Protocol74::sendCreatureOutfit(const Creature* creature, const Outfit_t& ou
 			TRACK_MESSAGE(msg);
             msg->AddByte(0x8E);
             msg->AddU32(creature->getID());
-
-#ifdef __PB_GMINVISIBLE__
-			if(creature->isGmInvis())
-				AddCreatureInvisible(msg, creature);
-			else
-#endif
 		    AddCreatureOutfit(msg, creature, outfit);
         }
 	}
@@ -1830,7 +1815,7 @@ void Protocol74::sendCreatureTurn(const Creature* creature, uint32_t stackpos)
 	    		msg->AddByte(0x6B);
 	    		msg->AddPosition(creature->getPosition());
 	    		msg->AddByte(stackpos);
-	    		msg->AddU16(0x63); /*99*/
+	    		msg->AddU16(0x63);
 	    		msg->AddU32(creature->getID());
 	    		msg->AddByte(creature->getDirection());
             }
@@ -2013,11 +1998,7 @@ void Protocol74::sendUpdateTile(const Tile* tile, const Position& pos)
 
 void Protocol74::sendAddCreature(const Creature* creature, bool isLogin)
 {
-#ifdef __PB_GMINVISIBLE__
-	if(canSee(creature)){
-#else
 	if(canSee(creature->getPosition())){
-#endif
 		NetworkMessage_ptr msg = getOutputBuffer();
 		if(msg){
 			TRACK_MESSAGE(msg);
@@ -2095,12 +2076,7 @@ void Protocol74::sendAddCreature(const Creature* creature, bool isLogin)
 					bool online;
 					std::string vip_name;
 					if(IOPlayer::instance()->getNameByGuid((*it), vip_name)){
-#ifdef __PB_GMINVISIBLE__
-						Player* p = g_game.getPlayerByName(vip_name);
-						online = (p  && (!p->isGmInvis() || player->canSeeGmInvis(p)));
-#else
 						online = (g_game.getPlayerByName(vip_name) != NULL);
-#endif
 						sendVIP((*it), vip_name, online);
 					}
 				}
@@ -2118,12 +2094,7 @@ void Protocol74::sendAddCreature(const Creature* creature, bool isLogin)
 
 void Protocol74::sendRemoveCreature(const Creature* creature, const Position& pos, uint32_t stackpos, bool isLogout)
 {
-#ifdef __PB_GMINVISIBLE__
-	if(!(creature->isGmInvis() && !player->canSeeGmInvis(creature)) && 
-		canSee(pos)){
-#else
 	if(canSee(pos)){
-#endif
 		NetworkMessage_ptr msg = getOutputBuffer();
 		if(msg){
 			TRACK_MESSAGE(msg);
@@ -2281,6 +2252,16 @@ void Protocol74::sendTextWindow(uint32_t windowTextId, Item* item, uint16_t maxl
 			msg->AddU16(item->getText().size());
 			msg->AddString(item->getText());
 		}
+
+#ifdef __76__
+		const std::string& writer = item->getWriter();
+		if(writer.size()){
+			msg->AddString(writer);
+		}
+		else{
+			msg->AddString("");
+		}
+#endif
 	}
 }
 
@@ -2295,6 +2276,10 @@ void Protocol74::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const st
 
 		msg->AddU16(text.size());
 		msg->AddString(text);
+
+#ifdef __76__
+		msg->AddString("");
+#endif
 	}
 }
 
@@ -2310,7 +2295,6 @@ void Protocol74::sendHouseWindow(uint32_t windowTextId, House* _house,
 		msg->AddString(text);
 	}
 }
-
 
 void Protocol74::sendOutfitWindow(const Player* player)
 {
@@ -2414,7 +2398,11 @@ void Protocol74::AddMagicEffect(NetworkMessage_ptr msg,const Position& pos, uint
 {
 	msg->AddByte(0x83);
 	msg->AddPosition(pos);
+#ifdef __76__
+	msg->AddByte(type + 1);
+#else
 	msg->AddByte(type);
+#endif
 }
 
 
@@ -2424,7 +2412,11 @@ void Protocol74::AddDistanceShoot(NetworkMessage_ptr msg, const Position& from, 
 	msg->AddByte(0x85);
 	msg->AddPosition(from);
 	msg->AddPosition(to);
+#ifdef __76__
+	msg->AddByte(type + 1);
+#else
 	msg->AddByte(type);
+#endif
 }
 
 void Protocol74::AddCreature(NetworkMessage_ptr msg, const Creature* creature, bool known, uint32_t remove)
@@ -2443,11 +2435,7 @@ void Protocol74::AddCreature(NetworkMessage_ptr msg, const Creature* creature, b
 	msg->AddByte((int32_t)std::ceil(((float)creature->getHealth()) * 100 / std::max(creature->getMaxHealth(), (int32_t)1)));
 	msg->AddByte((uint8_t)creature->getDirection());
 
-#ifdef __PB_GMINVISIBLE__
-	if(!creature->isInvisible() && !creature->isGmInvis()){
-#else
 	if(!creature->isInvisible()){
-#endif
 		AddCreatureOutfit(msg, creature, creature->getCurrentOutfit());
 	}
 	else{
@@ -2481,12 +2469,22 @@ void Protocol74::AddPlayerStats(NetworkMessage_ptr msg)
 	else{
 		msg->AddU32(0x00); //Client debugs after 2,147,483,647 exp
 	}
+
+#ifdef __76__
+	msg->AddU16(player->getPlayerInfo(PLAYERINFO_LEVEL));
+#else
 	msg->AddByte(player->getPlayerInfo(PLAYERINFO_LEVEL));
+#endif
+
 	msg->AddByte(player->getPlayerInfo(PLAYERINFO_LEVELPERCENT));
 	msg->AddU16(player->getMana());
 	msg->AddU16(player->getPlayerInfo(PLAYERINFO_MAXMANA));
 	msg->AddByte(player->getMagicLevel());
 	msg->AddByte(player->getPlayerInfo(PLAYERINFO_MAGICLEVELPERCENT));
+
+#ifdef __76__
+	msg->AddByte(player->getPlayerInfo(PLAYERINFO_SOUL));
+#endif
 }
 
 void Protocol74::AddPlayerSkills(NetworkMessage_ptr msg)
