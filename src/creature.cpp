@@ -1066,14 +1066,7 @@ uint64_t Creature::getGainedExperience(Creature* attacker, bool useMultiplier /*
 		}
 	}
 
-#ifdef __XID_EXPERIENCE_STAGES__
-	if(Player* player = attacker->getPlayer()){
-		retValue = (uint64_t)std::floor(retValue * (float)g_game.getExperienceStage(player->getLevel()));
-	}
-#else
 	retValue = (uint64_t)std::floor(retValue * (float)g_config.getNumber(ConfigManager::RATE_EXPERIENCE));
-#endif
-
 	return retValue;
 }
 

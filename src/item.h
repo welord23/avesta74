@@ -94,7 +94,7 @@ enum AttrTypes_t{
 	ATTR_COUNT = 15,
 	ATTR_DURATION = 16,
 	ATTR_DECAYING_STATE = 17,
-	ATTR_WRITTENDATE = 18,
+	//ATTR_WRITTENDATE = 18,
 	ATTR_WRITTENBY = 19,
 	ATTR_SLEEPERGUID = 20,
 	ATTR_SLEEPSTART = 21,
@@ -129,10 +129,6 @@ public:
 	void resetText() {removeAttribute(ATTR_ITEM_TEXT);}
 	const std::string& getText() const {return getStrAttr(ATTR_ITEM_TEXT);}
 
-	void setWrittenDate(time_t n) {setIntAttr(ATTR_ITEM_WRITTENDATE, (uint32_t)n);}
-	void resetWrittenDate() {removeAttribute(ATTR_ITEM_WRITTENDATE);}
-	time_t getWrittenDate() const {return (time_t)getIntAttr(ATTR_ITEM_WRITTENDATE);}
-
 	void setWriter(std::string _writer) {setStrAttr(ATTR_ITEM_WRITTENBY, _writer);}
 	void resetWriter() {removeAttribute(ATTR_ITEM_WRITTENBY);}	
 	const std::string& getWriter() const {return getStrAttr(ATTR_ITEM_WRITTENBY);}
@@ -165,7 +161,7 @@ protected:
 		ATTR_ITEM_UNIQUEID = 1 << 1,
 		ATTR_ITEM_DESC = 1 << 2,
 		ATTR_ITEM_TEXT = 1 << 3,
-		ATTR_ITEM_WRITTENDATE = 1 << 4,
+		//ATTR_ITEM_WRITTENDATE = 1 << 4,
 		ATTR_ITEM_WRITTENBY = 1 << 5,
 		ATTR_ITEM_OWNER = 1 << 6,
 		ATTR_ITEM_DURATION = 1 << 7,

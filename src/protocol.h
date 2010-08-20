@@ -30,10 +30,15 @@ class OutputMessage;
 class Connection;
 typedef boost::shared_ptr<OutputMessage> OutputMessage_ptr;
 
+#ifdef __76__
+#define CLIENT_VERSION_MIN 760
+#define CLIENT_VERSION_MAX 760
+#define STRING_CLIENT_VERSION "This server requires client version 7.6."
+#else
 #define CLIENT_VERSION_MIN 740
 #define CLIENT_VERSION_MAX 740
-
 #define STRING_CLIENT_VERSION "This server requires client version 7.4."
+#endif
 
 class Protocol : boost::noncopyable
 {

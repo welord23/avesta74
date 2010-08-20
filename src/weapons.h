@@ -115,6 +115,9 @@ protected:
 	int32_t magLevel;
 	int32_t mana;
 	int32_t manaPercent;
+#ifdef __76__
+	int32_t soul;
+#endif
 	int32_t range;
 	AmmoAction_t ammoAction;
 	CombatParams params;

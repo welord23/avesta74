@@ -105,9 +105,6 @@ s_defcommands Commands::defined_commands[] = {
 	{"!online",&Commands::whoIsOnline},
 	{"!frags",&Commands::playerKills},
 	{"/refreshmap",&Commands::refreshMap},
-#ifdef __PB_GMINVISIBLE__
-	{"/invisible",&Commands::setGmInvisible},
-#endif
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 	{"/serverdiag",&Commands::serverDiag}
 #endif
@@ -596,9 +593,6 @@ bool Commands::teleportTo(Creature* creature, const std::string& cmd, const std:
 	}
 
 	if(g_game.internalTeleport(creature, destPos) == RET_NOERROR){
-#ifdef __PB_GMINVISIBLE__
-		if(!creature->isGmInvis())
-#endif
 		g_game.addMagicEffect(destPos, NM_ME_ENERGY_AREA);
 		return true;
 	}
@@ -760,11 +754,7 @@ bool Commands::teleportNTiles(Creature* creature, const std::string& cmd, const 
 			break;
 		}
 
-#ifdef __PB_GMINVISIBLE__
-		if(g_game.internalTeleport(creature, newPos) == RET_NOERROR && !creature->isGmInvis()){
-#else
 		if(g_game.internalTeleport(creature, newPos) == RET_NOERROR){
-#endif
 			g_game.addMagicEffect(newPos, NM_ME_ENERGY_AREA);
 		}
 	}
@@ -1122,68 +1112,6 @@ bool Commands::whoIsOnline(Creature* creature, const std::string &cmd, const std
 
 	return true;
 }
-
-#ifdef __PB_GMINVISIBLE__
-bool Commands::setGmInvisible(Creature* creature, const std::string& cmd, const std::string& param)
-{
-	Player* player = creature->getPlayer();
-	if(!player){
-		return false;
-	}
- 
-	player->setGmInvis();
- 
-	SpectatorVec list;
-	SpectatorVec::iterator it;
-	Player* tmpPlayer;
-	g_game.getSpectators(list, player->getPosition(), true);
- 
-	Cylinder* cylinder = player->getTopParent();
-	int32_t index = cylinder->__getIndexOfThing(creature);
- 
-	for(it = list.begin(); it != list.end(); ++it){
-		if( (tmpPlayer = (*it)->getPlayer()) ){
-			//Players with access level higher or equal to the invisible player can see him
-			tmpPlayer->sendCreatureChangeVisible(player, !player->isGmInvis());
-			if(tmpPlayer != player && !tmpPlayer->canSeeGmInvis(player)){
-				if(player->isGmInvis()){
-					tmpPlayer->sendCreatureDisappear(player, index, true);
-				}
-				else{
-					tmpPlayer->sendCreatureAppear(player, true);
-				}
-				tmpPlayer->sendUpdateTile(player->getTile(), player->getPosition());
-			}
-		}
-	}
- 
-	for(it = list.begin(); it != list.end(); ++it){
-		(*it)->onUpdateTile(player->getTile(), player->getPosition());
-	}
- 
-	if(player->isGmInvis()){
-		player->sendTextMessage(MSG_INFO_DESCR, "You are invisible.");
-		//Nate Edit
-		for(AutoList<Player>::listiterator it = Player::listPlayer.list.begin(); it != Player::listPlayer.list.end(); ++it){
-			if(!it->second->canSeeGmInvis(player)){
-				it->second->notifyLogOut(player);
-			}
-		}
-		//Nate Edit
-	}
-	else{
-		player->sendTextMessage(MSG_INFO_DESCR, "You are visible.");
-		//Nate Edit
-		for(AutoList<Player>::listiterator it = Player::listPlayer.list.begin(); it != Player::listPlayer.list.end(); ++it){
-			if(!it->second->canSeeGmInvis(player)){
-				it->second->notifyLogIn(player);
-			}
-		}
-		//Nate Edit
-	}
-	return true;
-}
-#endif
 
 bool Commands::playerKills(Creature* creature, const std::string& cmd, const std::string& param)
 {

@@ -449,11 +449,6 @@ public:
 	void updateCreatureSkull(Player* player);
 #endif
 
-#ifdef __XID_EXPERIENCE_STAGES__
-	bool loadExperienceStages();
-	uint32_t getExperienceStage(uint16_t level);
-#endif
-
 	GameState_t getGameState();
 	void setGameState(GameState_t newState);
 	bool saveServer(bool globalSave);
@@ -571,11 +566,6 @@ protected:
 	Map* map;
 
 	std::vector<std::string> commandTags;
-
-#ifdef __XID_EXPERIENCE_STAGES__
-	typedef std::list<Stage_t> StageList;
-	StageList stageList;
-#endif
 };
 
 #endif

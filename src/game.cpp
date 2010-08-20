@@ -315,35 +315,6 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 		if(tile){
 			/*look at*/
 			if(type == STACKPOS_LOOK){
-#ifdef __PB_GMINVISIBLE__
-				Creature* c;
-				if(tile->getTopThing() && (c = tile->getTopThing()->getCreature())){
-					if(c && c->isGmInvis() && !player->canSeeGmInvis(c))
-					{
-						CreatureVector v;
-						CreatureVector::iterator it;
-						Creature* notInvisCreature = NULL;
-						for(it = tile->creatures.begin(); it != tile->creatures.end(); ++it){
-							if(!(*it)->isGmInvis() || player->canSeeGmInvis((*it))){
-								notInvisCreature = (*it);
-								break;
-							}
-						}
- 
-						if(notInvisCreature){
-							return notInvisCreature;
-						}
-						if(tile->getTopDownItem()){
-							return tile->getTopDownItem();
-						}
-						if(tile->getTopTopItem()){
-							return tile->getTopTopItem();
-						}
-						return tile->ground;
-					}
-					return c;
-				}
-#endif //__PB_GMINVISIBLE__
 				return tile->getTopThing();
 			}
 
@@ -817,12 +788,7 @@ bool Game::playerMoveCreature(uint32_t playerId, uint32_t movingCreatureId,
 		return false;
 	}
 
-#ifdef __PB_GMINVISIBLE__
-	if( (!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)) ||
-		(movingCreature->isGmInvis() && !player->canSeeGmInvis(movingCreature))){
-#else
 	if(!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)){
-#endif
 		player->sendCancelMessage(RET_NOTMOVEABLE);
 		return false;
 	}
@@ -940,11 +906,13 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 	ReturnValue ret = RET_NOTPOSSIBLE;
 
 	if(toTile != NULL){
+#ifndef __76__
 		if (currentPos.z > destPos.z && toPos->getHeight() > 1);
 			// not possible
 		else if ((((toPos->getHeight() - fromPos->getHeight()) < 2)) || 
 			(fromPos->hasHeight(3) && (currentPos.z == destPos.z)) ||
 			((currentPos.z < destPos.z) && (toPos->hasHeight(3) && (fromPos->getHeight() < 2))))
+#endif
 			ret = internalMoveCreature(creature, fromTile, toTile, flags);
 	}
 
@@ -2528,13 +2496,11 @@ bool Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 		if(writeItem->getText() != text){
 			writeItem->setText(text);
 			writeItem->setWriter(player->getName());
-			writeItem->setWrittenDate(std::time(NULL));
 		}
 	}
 	else{
 		writeItem->resetText();
 		writeItem->resetWriter();
-		writeItem->resetWrittenDate();
 	}
 
 	uint16_t newId = Item::items[writeItem->getID()].writeOnceItemId;
@@ -3453,24 +3419,7 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir)
 		Player* tmpPlayer = NULL;
 		for(it = list.begin(); it != list.end(); ++it) {
 			if((tmpPlayer = (*it)->getPlayer())){
-#ifdef __PB_GMINVISIBLE__
-				if(!creature->isGmInvis() || tmpPlayer->canSeeGmInvis(creature)){
-					int32_t i = 0;
-					Tile* t = creature->getTile();
-					for(CreatureVector::iterator it = t->creatures.begin(); it != t->creatures.end(); ++it){
-						int32_t itIndex = t->__getIndexOfThing((*it));
-						if(itIndex < stackpos){
-							if((*it)->isGmInvis() && !tmpPlayer->canSeeGmInvis((*it))){
-								i++; //There is one invisible gm under the creature
-							}
-						}
-					}
- 
-					tmpPlayer->sendCreatureTurn(creature, stackpos-i);
-				}
-#else
 				tmpPlayer->sendCreatureTurn(creature, stackpos);
-#endif
 			}
 		}
 
@@ -4631,64 +4580,4 @@ bool Game::violationWindow(uint32_t playerId, std::string name, uint8_t reason, 
 	return true;
 }
 
-#ifdef __XID_EXPERIENCE_STAGES__
-uint32_t Game::getExperienceStage(uint16_t level)
-{
-	std::list<Stage_t>::iterator it;
-	uint32_t multiplier = g_config.getNumber(ConfigManager::RATE_EXPERIENCE);
-	
-	for (it = stageList.begin(); it != stageList.end(); it++) {
-		if (level >= (*it).minLv && level <= (*it).maxLv) {
-			multiplier = (*it).expMul;
-		}
-	}
-	
-	return multiplier;
-}
-
-bool Game::loadExperienceStages()
-{
-	std::string filename = g_config.getString(ConfigManager::DATA_DIRECTORY) + "stages.xml";
-	xmlDocPtr doc = xmlParseFile(filename.c_str());
-	
-	if(doc){
-		xmlNodePtr root, p;
-		root = xmlDocGetRootElement(doc);
-		
-		if(xmlStrcmp(root->name,(const xmlChar*)"stages") != 0){
-			xmlFreeDoc(doc);
-			return false;
-		}
-		
-		p = root->children;
-		
-		while(p){
-			if(xmlStrcmp(p->name, (const xmlChar*)"stage") == 0){
-				Stage_t stage;
-				int intVal;
-				
-				if(readXMLInteger(p, "minlevel", intVal)){
-					stage.minLv = intVal;
-				}
-				
-				if(readXMLInteger(p, "maxlevel", intVal)){
-					stage.maxLv = intVal;
-				}
-				
-				if(readXMLInteger(p, "multiplier", intVal)){
-					stage.expMul = intVal;
-				}
-				
-				stageList.push_back(stage);
-			}
-			
-			p = p->next;
-		}
-		
-		xmlFreeDoc(doc);
-	}
-	
-	return true;
-}
-#endif
 

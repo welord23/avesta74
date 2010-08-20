@@ -194,6 +194,14 @@ Condition* Condition::createCondition(ConditionId_t _id, ConditionType_t _type, 
 			break;
 		}
 
+#ifdef __76__
+		case CONDITION_SOUL:
+		{
+			return new ConditionSoul(_id, _type, _ticks);
+			break;
+		}
+#endif
+
 		case CONDITION_MANASHIELD:
 		{
 			return new ConditionManaShield(_id, _type,_ticks);
@@ -488,6 +496,12 @@ void ConditionAttributes::updatePercentStats(Player* player)
 				stats[i] = (int32_t)(player->getMaxMana() * ((statsPercent[i] - 100) / 100.f));
 				break;
 
+#ifdef __76__
+			case STAT_SOULPOINTS:
+				stats[i] = (int32_t)(player->getPlayerInfo(PLAYERINFO_SOUL) * ((statsPercent[i] - 100) / 100.f));
+				break;
+#endif
+
 			case STAT_MAGICPOINTS:
 				stats[i] = (int32_t)(player->getMagicLevel() * ((statsPercent[i] - 100) / 100.f));
 				break;
@@ -693,6 +707,14 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 			return true;
 		}
 
+#ifdef __76__
+		case CONDITIONPARAM_STAT_SOULPOINTS:
+		{
+			stats[STAT_SOULPOINTS] = value;
+			return true;
+		}
+#endif
+
 		case CONDITIONPARAM_STAT_MAGICPOINTS:
 		{
 			stats[STAT_MAGICPOINTS] = value;
@@ -718,6 +740,18 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 			statsPercent[STAT_MAXMANAPOINTS] = value;
 			return true;
 		}
+
+#ifdef __76__
+		case CONDITIONPARAM_STAT_SOULPOINTSPERCENT:
+		{
+			if(value < 0){
+				value = 0;
+			}
+
+			statsPercent[STAT_SOULPOINTS] = value;
+			return true;
+		}
+#endif
 
 		case CONDITIONPARAM_STAT_MAGICPOINTSPERCENT:
 		{
@@ -889,6 +923,111 @@ bool ConditionRegeneration::setParam(ConditionParam_t param, int32_t value)
 
 	return ret;
 }
+
+#ifdef __76__
+ConditionSoul::ConditionSoul(ConditionId_t _id, ConditionType_t _type, int32_t _ticks) :
+	ConditionGeneric(_id, _type, _ticks)
+{
+	internalSoulTicks = 0;
+	soulTicks = 0;
+	soulGain = 0;
+}
+
+void ConditionSoul::addCondition(Creature* creature, const Condition* addCondition)
+{
+	if(updateCondition(addCondition)){
+		setTicks( addCondition->getTicks() );
+
+		const ConditionSoul& conditionSoul = static_cast<const ConditionSoul&>(*addCondition);
+
+		soulTicks = conditionSoul.soulTicks;
+		soulGain = conditionSoul.soulGain;
+	}
+}
+
+bool ConditionSoul::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
+{
+	if(attr == CONDITIONATTR_SOULGAIN){
+		uint32_t value = 0;
+		if(!propStream.GET_VALUE(value)){
+			return false;
+		}
+
+		soulGain = value;
+		return true;
+	}
+	else if(attr == CONDITIONATTR_SOULTICKS){
+		uint32_t value = 0;
+		if(!propStream.GET_VALUE(value)){
+			return false;
+		}
+
+		soulTicks = value;
+		return true;
+	}
+
+	return Condition::unserializeProp(attr, propStream);
+}
+
+bool ConditionSoul::serialize(PropWriteStream& propWriteStream)
+{
+	if(!Condition::serialize(propWriteStream)){
+		return false;
+	}
+
+	propWriteStream.ADD_UCHAR(CONDITIONATTR_SOULGAIN);
+	propWriteStream.ADD_VALUE(soulGain);
+
+	propWriteStream.ADD_UCHAR(CONDITIONATTR_SOULTICKS);
+	propWriteStream.ADD_VALUE(soulTicks);
+
+	return true;
+}
+
+bool ConditionSoul::executeCondition(Creature* creature, int32_t interval)
+{
+	internalSoulTicks += interval;
+
+	if(Player* player = creature->getPlayer()){
+		if(player->getZone() != ZONE_PROTECTION){
+			if(internalSoulTicks >= soulTicks){
+				internalSoulTicks = 0;
+				player->changeSoul(soulGain);
+			}
+		}
+	}
+
+	return ConditionGeneric::executeCondition(creature, interval);
+}
+
+bool ConditionSoul::setParam(ConditionParam_t param, int32_t value)
+{
+	bool ret = ConditionGeneric::setParam(param, value);
+
+	switch(param){
+		case CONDITIONPARAM_SOULGAIN:
+		{
+			soulGain = value;
+			return true;
+			break;
+		}
+
+		case CONDITIONPARAM_SOULTICKS:
+		{
+			soulTicks = value;
+			return true;
+			break;
+		}
+
+		default:
+		{
+			return false;
+		}
+	}
+
+	return ret;
+}
+#endif
 
 ConditionDamage::ConditionDamage(ConditionId_t _id, ConditionType_t _type) :
 Condition(_id, _type, 0)

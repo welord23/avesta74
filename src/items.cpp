@@ -200,8 +200,11 @@ int Items::loadFromOtb(std::string file)
 			Items::dwBuildNumber = vi->dwBuildNumber;	//revision
 		}
 	}
-
+#ifdef __76__
+	if (Items::dwMajorVersion != 2) {
+#else
 	if(Items::dwMajorVersion != 1){
+#endif
 		std::cout << "Not supported items.otb version." << std::endl;
 		return ERROR_INVALID_FORMAT;
 	}
@@ -921,6 +924,18 @@ bool Items::loadFromXml(const std::string& datadir)
 									it.abilities.statsPercent[STAT_MAXMANAPOINTS] = intValue;
 								}
 							}
+#ifdef __76__
+							else if(asLowerCaseString(strValue) == "soulpoints"){
+								if(readXMLInteger(itemAttributesNode, "value", intValue)){
+									it.abilities.stats[STAT_SOULPOINTS] = intValue;
+								}
+							}
+							else if(asLowerCaseString(strValue) == "soulpointspercent"){
+								if(readXMLInteger(itemAttributesNode, "value", intValue)){
+									it.abilities.statsPercent[STAT_SOULPOINTS] = intValue;
+								}
+							}
+#endif
 							else if(asLowerCaseString(strValue) == "magicpoints"){
 								if(readXMLInteger(itemAttributesNode, "value", intValue)){
 									it.abilities.stats[STAT_MAGICPOINTS] = intValue;

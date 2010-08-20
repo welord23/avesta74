@@ -190,6 +190,9 @@ Weapon::Weapon(LuaScriptInterface* _interface) :
 	magLevel = 0;
 	mana = 0;
 	manaPercent = 0;
+#ifdef __76__
+	soul = 0;
+#endif
 	exhaustion = false;
 	premium = false;
 	enabled = true;
@@ -238,6 +241,12 @@ bool Weapon::configureEvent(xmlNodePtr p)
 	if(readXMLInteger(p, "manapercent", intValue)){
 	 	manaPercent = intValue;
 	}
+
+#ifdef __76__
+	if(readXMLInteger(p, "soul", intValue)){
+	 	soul = intValue;
+	}
+#endif
 
 	if(readXMLInteger(p, "exhaustion", intValue)){
 		exhaustion = (intValue == 1);
@@ -391,6 +400,12 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target) const
 			return 0;
 		}
 
+#ifdef __76__
+		if(player->getPlayerInfo(PLAYERINFO_SOUL) < soul){
+			return 0;
+		}
+#endif
+
 		if(!vocWeaponMap.empty()){
 			if(vocWeaponMap.find(player->getVocationId()) == vocWeaponMap.end()){
 				return 0;
@@ -518,6 +533,16 @@ void Weapon::onUsedWeapon(Player* player, Item* item, Tile* destTile) const
 			player->changeMana(-manaCost);
 		}
 	}
+
+#ifdef __76__
+	if(!player->hasFlag(PlayerFlag_HasInfiniteSoul)){
+		int32_t soulCost = soul;
+
+		if(soulCost > 0){
+			player->changeSoul(-soulCost);
+		}
+	}
+#endif
 }
 
 void Weapon::onUsedAmmo(Player* player, Item* item, Tile* destTile) const

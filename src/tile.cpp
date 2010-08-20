@@ -337,35 +337,11 @@ void Tile::onRemoveTileItem(uint32_t index, Item* item)
 	const SpectatorVec& list = g_game.getSpectators(cylinderMapPos);
 	SpectatorVec::const_iterator it;
 
-#ifdef __PB_GMINVISIBLE__
-	CreatureVector::iterator vit;
-	CreatureVector v;
-	for(vit = creatures.begin(); vit != creatures.end(); ++vit){
-		if((*vit)->isGmInvis()){
-			v.push_back((*vit));
-		}
-	}
-#endif
-
 	//send to client
 	Player* tmpPlayer = NULL;
-#ifdef __PB_GMINVISIBLE__
-	int32_t i;
-#endif
 	for(it = list.begin(); it != list.end(); ++it){
 		if((tmpPlayer = (*it)->getPlayer())){
-#ifdef __PB_GMINVISIBLE__
-			//Get the correct index
-			i = index;
-			for(vit = v.begin(); vit != v.end(); ++vit){
-				if((*vit)->isGmInvis() && !tmpPlayer->canSeeGmInvis((*vit))){
-					i--;
-				}
-			}
-			tmpPlayer->sendRemoveTileItem(this, cylinderMapPos, i, item);
-#else
 			tmpPlayer->sendRemoveTileItem(this, cylinderMapPos, index, item);
-#endif
 		}
 	}
 
@@ -437,24 +413,7 @@ void Tile::moveCreature(Creature* creature, Cylinder* toCylinder, bool teleport 
 	Player* tmpPlayer = NULL;
 	for(it = list.begin(); it != list.end(); ++it) {
 		if((tmpPlayer = (*it)->getPlayer())){
-#ifdef __PB_GMINVISIBLE__
-			//Use the correct stackpos.
-			if(!creature->isGmInvis() || tmpPlayer->canSeeGmInvis(creature)){
-				int32_t i = 0;
-				for(CreatureVector::iterator it = creatures.begin(); it != creatures.end(); ++it){
-					int32_t itIndex = __getIndexOfThing((*it));
-					if(itIndex < oldStackPos){
-						if((*it)->isGmInvis() && !tmpPlayer->canSeeGmInvis((*it))){
-							i++; //There was one invisible gm under the creature
-						}
-					}
-				}
- 
-				tmpPlayer->sendCreatureMove(creature, toTile, toPos, this, fromPos, oldStackPos-i, teleport);
-			}
-#else
 			tmpPlayer->sendCreatureMove(creature, toTile, toPos, this, fromPos, oldStackPos, teleport);
-#endif
 		}
 	}
 
@@ -507,15 +466,6 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 				}
 			}
 			else if(!creatures.empty()){
-#ifdef __PB_GMINVISIBLE__
-				int i = creatures.size();
-				for(CreatureVector::const_iterator it = creatures.begin(); it != creatures.end(); ++it){
-					if((*it)->isGmInvis()){
-						i--;
-					}
-				}
-				if(i > 0)
-#endif
 				return RET_NOTENOUGHROOM; //RET_NOTPOSSIBLE
 			}
 
@@ -558,15 +508,6 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 			return RET_NOERROR;
 		}
 		else if(const Player* player = creature->getPlayer()){
-#ifdef __PB_GMINVISIBLE__
-				int i = creatures.size();
-				for(CreatureVector::const_iterator it = creatures.begin(); it != creatures.end(); ++it){
-					if((*it) && (*it)->isGmInvis() && !player->canSeeGmInvis((*it))){
-						i--;
-					}
-				}
-				if(i > 0)
-#endif
 			if(!creatures.empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, flags)){
 				return RET_NOTENOUGHROOM;
 			}
@@ -596,15 +537,6 @@ ReturnValue Tile::__queryAdd(int32_t index, const Thing* thing, uint32_t count,
 		}
 		else{
 			if(!creatures.empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, flags)){
-#ifdef __PB_GMINVISIBLE__
-				int i = creatures.size();
-				for(CreatureVector::const_iterator it = creatures.begin(); it != creatures.end(); ++it){
-					if((*it)->isGmInvis()){
-						i--;
-					}
-				}
-				if(i > 0)
-#endif
 				return RET_NOTENOUGHROOM; //RET_NOTPOSSIBLE
 			}
 		}

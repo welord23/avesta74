@@ -140,10 +140,6 @@ public:
 	virtual Monster* getMonster() {return NULL;};
 	virtual const Monster* getMonster() const {return NULL;};
 
-#ifdef __PB_GMINVISIBLE__
-	virtual bool isGmInvis() const {return false;}
-#endif
-
 	bool isDying;
 	
 	void getPathToFollowCreature();
@@ -162,6 +158,8 @@ public:
 
 	virtual bool canSee(const Position& pos) const;
 	virtual bool canSeeCreature(const Creature* creature) const;
+	//virtual bool canBeSeen(const Creature* viewer, bool checkVisibility = true) const;
+	//virtual bool canWalkthrough(const Creature* creature) const;
 
 	virtual RaceType_t getRace() const {return RACE_NONE;}
 	Direction getDirection() const { return direction;}

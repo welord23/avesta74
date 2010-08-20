@@ -457,6 +457,9 @@ Spell::Spell()
 	mana = 0;
 	manaPercent = 0;
 	lvPercent = 0;
+#ifdef __76__
+	soul = 0;
+#endif
 	range = -1;
 	customExhaust = 0;
 	exhaustion = true;
@@ -532,6 +535,12 @@ bool Spell::configureSpell(xmlNodePtr p)
 	if(readXMLInteger(p, "lvpercent", intValue)){
 	 	lvPercent = intValue;
 	}
+
+#ifdef __76__
+	if(readXMLInteger(p, "soul", intValue)){
+	 	soul = intValue;
+	}
+#endif
 
 	if(readXMLInteger(p, "customexhaust", intValue)){
 		customExhaust = intValue;
@@ -659,6 +668,14 @@ bool Spell::playerSpellCheck(Player* player) const
 			g_game.addMagicEffect(player->getPosition(), NM_ME_PUFF);
 			return false;
 		}
+
+#ifdef __76__
+		if(player->getPlayerInfo(PLAYERINFO_SOUL) < soul && !player->hasFlag(PlayerFlag_HasInfiniteSoul)){
+			player->sendCancelMessage(RET_NOTENOUGHSOUL);
+			g_game.addMagicEffect(player->getPosition(), NM_ME_PUFF);
+			return false;
+		}
+#endif
 
 		if(isInstant() && isLearnable()){
 			if(!player->hasLearnedInstantSpell(getName())){
@@ -859,10 +876,34 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 
 	if(payCost){
 		int32_t manaCost = getManaCost(player);
+
+#ifdef __76__
+		int32_t soulCost = getSoulCost(player);
+		postCastSpell(player, (uint32_t)manaCost, (uint32_t)soulCost);
+#else
 		postCastSpell(player, (uint32_t)manaCost);
+#endif
 	}
 }
 
+#ifdef __76__
+void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost) const
+{
+
+	if(manaCost > 0){
+		player->addManaSpent(manaCost);
+		if(!player->hasFlag(PlayerFlag_HasInfiniteMana)){
+			player->changeMana(-(int32_t)manaCost);
+		}
+	}
+
+	if(!player->hasFlag(PlayerFlag_HasInfiniteSoul)){
+		if(soulCost > 0){
+			player->changeSoul(-(int32_t)soulCost);
+		}
+	}
+}
+#else
 void Spell::postCastSpell(Player* player, uint32_t manaCost) const
 {
 	if(manaCost > 0){
@@ -872,6 +913,7 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost) const
 		}
 	}
 }
+#endif
 
 int32_t Spell::getManaCost(const Player* player) const
 {
@@ -893,6 +935,17 @@ int32_t Spell::getManaCost(const Player* player) const
 
 	return 0;
 }
+
+#ifdef __76__
+int32_t Spell::getSoulCost(const Player* player) const
+{
+	if(soul != 0){
+		return soul;
+	}
+
+	return 0;
+}
+#endif
 
 ReturnValue Spell::CreateIllusion(Creature* creature, const Outfit_t outfit, int32_t time)
 {
@@ -1595,7 +1648,11 @@ bool InstantSpell::SummonMonster(const InstantSpell* spell, Creature* creature, 
 	}
 
 	if(ret == RET_NOERROR){
+#ifdef __76__
+		spell->postCastSpell(player, (uint32_t)manaCost, (uint32_t)spell->getSoulCost(player));
+#else
 		spell->postCastSpell(player, (uint32_t)manaCost);
+#endif
 		g_game.addMagicEffect(player->getPosition(), NM_ME_MAGIC_POISON);
 	}
 	else{
@@ -2105,7 +2162,11 @@ bool RuneSpell::Convince(const RuneSpell* spell, Creature* creature, Item* item,
 		return false;
 	}
 
+#ifdef __76__
+	spell->postCastSpell(player, (uint32_t)manaCost, (uint32_t)spell->getSoulCost(player));
+#else
 	spell->postCastSpell(player, (uint32_t)manaCost);
+#endif
 	g_game.addMagicEffect(player->getPosition(), NM_ME_MAGIC_BLOOD);
 	return true;
 }
