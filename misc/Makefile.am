@@ -36,11 +36,11 @@ otserv_SOURCES = $(MAYBE_MYSQL) $(MAYBE_SQLITE) $(MAYBE_ODBC) $(MAYBE_PGSQL) \
 	iomapotbm.h iomapotbm.cpp monsters.h monsters.cpp teleport.cpp teleport.h \
 	trashholder.cpp trashholder.h mailbox.cpp mailbox.h waitlist.cpp waitlist.h \
 	house.cpp house.h housetile.cpp housetile.h iomapserialize.cpp iomapserialize.h \
-	cylinder.cpp cylinder.h ban.cpp ban.h \
-	rsa.cpp rsa.h configmanager.cpp configmanager.h outfit.cpp outfit.h otpch.h \
-	admin.cpp admin.h baseevents.cpp baseevents.h \
-	raids.cpp raids.h movement.cpp movement.h combat.cpp combat.h \
-	condition.cpp condition.h weapons.cpp weapons.h talkaction.cpp talkaction.h \
-	vocation.cpp vocation.h scriptmanager.cpp scriptmanager.h server.cpp connection.cpp \
-	outputmessage.cpp tasks.cpp scheduler.cpp protocollogin.cpp protocol.cpp creatureevent.cpp \
-	creatureevent.h sha1.cpp sha1.h beds.cpp beds.h party.cpp party.h quests.cpp quests.h
+	cylinder.cpp cylinder.h ban.cpp ban.h configmanager.cpp configmanager.h otpch.h \
+	baseevents.cpp baseevents.h raids.cpp raids.h movement.cpp movement.h \
+	combat.cpp combat.h condition.cpp condition.h weapons.cpp weapons.h \
+	talkaction.cpp talkaction.h vocation.cpp vocation.h scriptmanager.cpp scriptmanager.h \
+	server.cpp connection.cpp outputmessage.cpp tasks.cpp scheduler.cpp protocollogin.cpp \
+	protocol.cpp creatureevent.cpp creatureevent.h sha1.cpp sha1.h beds.cpp beds.h party.cpp party.h
+	
+	

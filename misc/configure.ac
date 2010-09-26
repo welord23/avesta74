@@ -26,6 +26,9 @@ AC_ARG_ENABLE(skulls, [  --enable-skulls      enable skull system], [OPTIONAL_FL
 # check if we want otserv allocator
 AC_ARG_ENABLE(otallocator, [  --enable-otallocator   enable otserv custom allocator], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__OTSERV_ALLOCATOR__"])
 
+# check if we want 76 protocol
+AC_ARG_ENABLE(protocol76, [  --enable-protocol76      enable protocol 76], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__76__"])
+
 AC_SUBST(OPTIONAL_FLAGS)
 
 AM_CONDITIONAL(USE_MYSQL, false)

@@ -166,7 +166,7 @@ public:
 	void updateIdle() {idleTime = std::time(unsigned(NULL));}
 
 	bool hasWalkDelay() {return walkDelay >= std::time(unsigned(NULL));}
-	void setWalkDelay(uint64_t delay) {walkDelay = delay;}
+	void setWalkDelay(int32_t delay) {walkDelay = delay;}
 	Direction getDir(Creature* creature);
 
 	NpcScriptInterface* getScriptInterface();
@@ -223,7 +223,7 @@ protected:
 	int32_t idleInterval;
 	bool defaultPublic;
 	int32_t focusCreature;
-	uint64_t walkDelay;
+	int32_t walkDelay;
 
 	NpcEventsHandler* m_npcEventHandler;
 

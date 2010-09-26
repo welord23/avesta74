@@ -4571,8 +4571,6 @@ bool Game::violationWindow(uint32_t playerId, std::string name, uint8_t reason, 
 
 	if(targetPlayer && !notation){
 		addMagicEffect(targetPlayer->getPosition(), NM_ME_MAGIC_POISON);
-
-		uint32_t playerId = targetPlayer->getID();
 		Scheduler::getScheduler().addEvent(createSchedulerTask(1000, boost::bind(&Player::kickPlayer, targetPlayer)));
 	}
 
