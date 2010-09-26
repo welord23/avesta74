@@ -23,6 +23,7 @@
 
 #include <boost/thread.hpp>
 #include <list>
+#include <vector>
 
 struct LoginBlock{
 	uint32_t lastLoginTime;
