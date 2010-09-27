@@ -3341,7 +3341,7 @@ bool Game::playerReportRuleViolation(Player* player, const std::string& text)
 {
 	//Do not allow reports on multiclones worlds
 	//Since reports are name-based
-	if(g_config.getNumber(ConfigManager::ALLOW_CLONES)){
+	if(g_config.getBoolean(ConfigManager::ALLOW_CLONES)){
 		player->sendTextMessage(MSG_INFO_DESCR, "Rule violations reports are disabled.");
 		return false;
 	}

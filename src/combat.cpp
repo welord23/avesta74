@@ -94,7 +94,7 @@ bool Combat::getMinMaxValues(Creature* creature, Creature* target, int32_t& min,
 
 					if(weapon){
 						max = (int32_t)(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb);
-						if(params.useCharges && tool->hasCharges() && g_config.getNumber(ConfigManager::REMOVE_WEAPON_CHARGES)){
+						if(params.useCharges && tool->hasCharges() && g_config.getBoolean(ConfigManager::REMOVE_WEAPON_CHARGES)){
 							int32_t newCharge = std::max((int32_t)0, ((int32_t)tool->getCharges()) - 1);
 							g_game.transformItem(tool, tool->getID(), newCharge);
 						}
@@ -731,7 +731,7 @@ void Combat::CombatFunc(Creature* caster, const Position& pos,
 			for(CreatureVector::iterator cit = (*it)->creatures.begin(); bContinue && cit != (*it)->creatures.end(); ++cit){
 				if(params.targetCasterOrTopMost){
 
-					if(g_config.getNumber(ConfigManager::UH_TRAP) == false && 
+					if(g_config.getBoolean(ConfigManager::UH_TRAP) == false && 
 						(caster && caster->getTile() == (*it))){
 							if(*cit == caster){
 								bContinue = false;

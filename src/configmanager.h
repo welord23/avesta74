@@ -126,6 +126,7 @@ public:
 	void getConfigValue(const std::string& key, lua_State* _L);
 	const std::string& getString(uint32_t _what) const;
 	int getNumber(uint32_t _what) const;
+	bool getBoolean(uint32_t _what) const { return getNumber(_what) != 0; }
 	bool setNumber(uint32_t _what, int _value);
 	bool setString(uint32_t _what, const std::string& _value);
 

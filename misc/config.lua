@@ -215,7 +215,7 @@
     RookTempleId = 1
 
     -- if your website is not showing player deaths, then keep this as 0
-    StorePlayerDeathsInDB = false
+    StorePlayerDeaths = false
 
     -- ID of temple to which player will get teleported when his prem end out
     -- 0 to disable

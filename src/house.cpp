@@ -949,7 +949,7 @@ bool Houses::payHouses()
 			bool savePlayerHere = true;
 			if(depot){
 				//get money from depot
-				bool useAccBalance = g_config.getNumber(ConfigManager::USE_ACCBALANCE) != 0;
+				bool useAccBalance = g_config.getBoolean(ConfigManager::USE_ACCBALANCE) != false;
 				bool hasEnoughMoney = false;
 
 				if(useAccBalance){
