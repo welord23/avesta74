@@ -743,7 +743,7 @@ void Creature::onDie()
 		}
 	}
 
-	if (g_config.getNumber(ConfigManager::STORE_DEATHS) != 0) {
+	if (g_config.getBoolean(ConfigManager::STORE_DEATHS)) {
 		Player* player = getPlayer();
 		if (player && lastHitCreature && mostDamageCreature) {
 			IOPlayer::instance()->saveDeath(player->getName(), std::time(NULL),

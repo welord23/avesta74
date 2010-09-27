@@ -262,7 +262,7 @@ bool Protocol74::login(const std::string& name, bool isSetGM)
 {
 	//dispatcher thread
 	Player* _player = g_game.getPlayerByName(name);
-	if(!_player || g_config.getNumber(ConfigManager::ALLOW_CLONES)){
+	if(!_player || g_config.getBoolean(ConfigManager::ALLOW_CLONES)){
 		player = new Player(name, this);
 		player->useThing2();
 		player->setID();
@@ -300,7 +300,7 @@ bool Protocol74::login(const std::string& name, bool isSetGM)
 			return false;
 		}
 
-		if(g_config.getNumber(ConfigManager::CHECK_ACCOUNTS) && !player->hasFlag(PlayerFlag_CanAlwaysLogin)
+		if(g_config.getBoolean(ConfigManager::CHECK_ACCOUNTS) && !player->hasFlag(PlayerFlag_CanAlwaysLogin)
 		        && g_game.getPlayerByAccount(player->getAccount())){
             disconnectClient(0x14, "You may only login with one character per account.");
             return false;
@@ -1454,7 +1454,7 @@ void Protocol74::parseViolationWindow(NetworkMessage &msg)
 
 void Protocol74::parseDebugAssert(NetworkMessage& msg)
 {
-    if(!g_config.getNumber(ConfigManager::SAVE_CLIENT_DEBUG_ASSERTIONS)){
+    if(!g_config.getBoolean(ConfigManager::SAVE_CLIENT_DEBUG_ASSERTIONS)){
         return;
     }
     
