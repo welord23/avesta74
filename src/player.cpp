@@ -3787,6 +3787,10 @@ void Player::addUnjustifiedDead(const Player* attacked)
 	Msg << "Warning! The murder of " << attacked->getName() << " was not justified.";
 	sendTextMessage(MSG_STATUS_WARNING, Msg.str());
 	redSkullTicks += g_config.getNumber(ConfigManager::FRAG_TIME);
+	
+	if (g_bans.isBanished(getAccount())) {
+		return;
+	}
 
 	if(g_config.getNumber(ConfigManager::KILLS_TO_RED) != 0 && getSkull() != SKULL_RED &&
 		redSkullTicks >= ((g_config.getNumber(ConfigManager::KILLS_TO_RED) - 1) * g_config.getNumber(ConfigManager::FRAG_TIME)))
