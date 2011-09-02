@@ -35,13 +35,12 @@ CREATE TABLE `players` (
     `mana` INT UNSIGNED NOT NULL DEFAULT 100,
     `manamax` INT UNSIGNED NOT NULL DEFAULT 100,
     `manaspent` INT UNSIGNED NOT NULL DEFAULT 0,
-    `soul` INT UNSIGNED NOT NULL DEFAULT 0,
     `direction` INT UNSIGNED NOT NULL DEFAULT 0,
+	`looktype` INT UNSIGNED NOT NULL DEFAULT 136,
+	`lookhead` INT UNSIGNED NOT NULL DEFAULT 10,
     `lookbody` INT UNSIGNED NOT NULL DEFAULT 10,
+	`looklegs` INT UNSIGNED NOT NULL DEFAULT 10,
     `lookfeet` INT UNSIGNED NOT NULL DEFAULT 10,
-    `lookhead` INT UNSIGNED NOT NULL DEFAULT 10,
-    `looklegs` INT UNSIGNED NOT NULL DEFAULT 10,
-    `looktype` INT UNSIGNED NOT NULL DEFAULT 136,
     `posx` INT NOT NULL DEFAULT 0,
     `posy` INT NOT NULL DEFAULT 0,
     `posz` INT NOT NULL DEFAULT 0,
@@ -100,7 +99,7 @@ CREATE TABLE `player_spells` (
 
 CREATE TABLE `server_record` (
 	`record` INT UNSIGNED NOT NULL,
-      PRIMARY KEY(`record`)
+    PRIMARY KEY(`record`)
 ) ENGINE = InnoDB;
 
 INSERT INTO `server_record` VALUES (0);
@@ -185,7 +184,7 @@ CREATE TABLE `tile_items` (
 CREATE TABLE `map_store` (
     `house_id` INT UNSIGNED NOT NULL,
     `data` BLOB NOT NULL,
-    KEY(`house_id`)
+    UNIQUE("house_id")
 ) ENGINE = InnoDB;
 
 CREATE TABLE `player_depotitems` (
@@ -216,14 +215,6 @@ CREATE TABLE `global_storage` (
     `value` INT NOT NULL,
     PRIMARY KEY(`key`)
 ) ENGINE = InnoDB;
-
-CREATE TABLE `schema_info` (
-    `name` VARCHAR(255) NOT NULL,
-    `value` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`name`)
-);
-
-INSERT INTO `schema_info` (`name`, `value`) VALUES ('version', 3);
 
 DELIMITER |
 
