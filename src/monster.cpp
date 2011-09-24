@@ -1465,3 +1465,13 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 		}
 	}
 }
+
+bool Monster::canSee(const Position& pos) const
+{
+	if(pos.z != getPosition().z){
+		return false;
+	}
+
+	return Creature::canSee(getPosition(), pos, Map::maxClientViewportX, Map::maxClientViewportY);
+}
+

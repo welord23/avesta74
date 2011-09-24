@@ -62,6 +62,8 @@ public:
 	static AutoList<Monster> listMonster;
 	void removeList() {listMonster.removeList(getID());}
 	void addList() {listMonster.addList(this);}
+
+	virtual bool canSee(const Position& pos) const;
 	
 	virtual const std::string& getName() const {return mType->name;}
 	virtual const std::string& getNameDescription() const {return mType->nameDescription;}
