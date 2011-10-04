@@ -1472,6 +1472,6 @@ bool Monster::canSee(const Position& pos) const
 		return false;
 	}
 
-	return Creature::canSee(getPosition(), pos, Map::maxClientViewportX, Map::maxClientViewportY);
+	return Creature::canSee(pos);
 }
 
