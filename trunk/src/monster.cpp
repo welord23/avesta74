@@ -552,7 +552,7 @@ bool Monster::deactivate(bool forced /*= false*/)
 		}
 	}
 
-	if( (!isActivated && conditions.empty()) || forced){
+	if( (!isActivated && conditions.empty() && getHealth() > 0) || forced){
 		onIdleStatus();
 		g_game.removeCreatureCheck(this);
 	}
