@@ -974,13 +974,8 @@ bool Monster::getNextStep(Direction& dir)
 
 	bool result = false;
 	if((!followCreature || !hasFollowPath) && !isSummon()){
-		if(followCreature){
+		if(getTimeSinceLastMove() > 1000){
 			result = getRandomStep(getPosition(), dir);
-		}else{
-			if(getTimeSinceLastMove() > 1000){
-				//choose a random direction
-				result = getRandomStep(getPosition(), dir);
-			}
 		}
 	}
 	else if(isSummon() || followCreature){
@@ -991,6 +986,12 @@ bool Monster::getNextStep(Direction& dir)
 			if(attackedCreature && attackedCreature == followCreature){
 				if(isFleeing()){
 					result = getDanceStep(getPosition(), dir, false, false);
+				}
+				else if (getMaster() && !getMaster()->getHasFollowPath()) {
+					if(getTimeSinceLastMove() > 1000){
+						//choose a random direction
+						result = getRandomStep(getPosition(), dir);
+					}
 				}
 				else if(mType->staticAttackChance < (uint32_t)random_range(1, 100)){
 					result = getDanceStep(getPosition(), dir);
