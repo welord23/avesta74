@@ -722,6 +722,10 @@ bool Monster::canUseSpell(const Position& pos, const Position& targetPos,
 		return false;
 	}
 
+	if (isFleeing() && sb.isMelee) {
+		return false;
+	}
+
 	return true;
 }
 
