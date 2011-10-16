@@ -227,15 +227,16 @@ function onCreatureSay(cid, type, msg)
 			_selfSay('This organisation is important in holding our enemies in check. Its headquarter is located in the bastion in the northwall.')
 			
 		elseif (msgcontains(msg, 'promote') or msgcontains(msg, 'promotion')) then
-			_selfSay('Do you want to be promoted in your vocation for 20000 gold?"')
+			_selfSay('Do you want to be promoted in your vocation for 20000 gold?')
 			_state = 1
 		
 		elseif (_state == 1) then
 			if (msgcontains(msg, 'yes')) then
-				if (isPremium(cid)) then
-					if (not(isPromoted(cid))) then
+				if (isPremium(cid) == 1) then
+					if (isPromoted(cid) == 0) then
 						if (getPlayerLevel(cid) >= 20) then
-							if (doPlayerRemoveMoney(cid, 20000)) then
+							if (doPlayerRemoveMoney(cid, 20000) == 1) then
+								doPlayerSetVocation(cid, getPlayerVocation(cid) + 4)
 								_selfSay('Congratulations! You are now promoted. Visit the sage Eremo for new spells.')
 							else
 								_selfSay('You do not have enough money.')
