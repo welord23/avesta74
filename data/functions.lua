@@ -43,9 +43,11 @@ function isKnight(cid)
 end
 
 function isPromoted(cid)
-	local voc = getPlayerVocation(cid)
-	if (voc < 5 or voc > 8) then
-		return TRUE
+	if (isPlayer(cid) == TRUE) then
+		local voc = getPlayerVocation(cid)
+		if (voc >= 5 and voc <= 8) then
+			return TRUE
+		end
 	end
 	
 	return FALSE
