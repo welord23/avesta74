@@ -24,7 +24,7 @@ function _selfSay(message)
 	updateIdle()
 end
 
-function greet(cid, delay)
+local function greet(cid, delay)
 	selfSay('I greet thee, my loyal subject.', delay)
 end
 

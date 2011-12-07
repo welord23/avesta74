@@ -57,7 +57,7 @@ function _selfSay(message)
 	updateIdle()
 end
 
-function greet(cid, delay)
+local function greet(cid, delay)
 	selfSay('Hi there ' .. getCreatureName(cid) .. '.', delay)
 end
 
@@ -142,7 +142,7 @@ function onCreatureSay(cid, type, msg)
 			
 		elseif (_state == 1) then
 			if (msgcontains(msg, 'yes')) then
-				if (doPlayerRemoveMoney(cid, items[_index].sell * _count)) then
+				if (doPlayerRemoveMoney(cid, items[_index].sell * _count) == 1) then
 					for i = 1, _count do
 						doPlayerAddItem(cid, items[_index].id, items[_index].subtype)
 					end
@@ -161,7 +161,7 @@ function onCreatureSay(cid, type, msg)
 			
 		elseif (_state == 2) then
 			if (msgcontains(msg, 'yes')) then
-				if (doPlayerRemoveItem(cid, items[_index].id, _count, items[_index].subtype)) then
+				if (doPlayerRemoveItem(cid, items[_index].id, _count, items[_index].subtype) == 1) then
 					doPlayerAddMoney(cid, items[_index].buy * _count)
 					selfSay('Ok. Here is your money.')
 				else

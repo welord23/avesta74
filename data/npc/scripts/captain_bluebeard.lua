@@ -31,7 +31,7 @@ function _selfSay(message)
 	updateIdle()
 end
 
-function greet(cid, delay)
+local function greet(cid, delay)
 	local title = 'Sir'
 	if (getPlayerSex(cid) == 0) then
 		title = 'Madam'
@@ -115,7 +115,7 @@ function onCreatureSay(cid, type, msg)
 		elseif (_state == 1) then
 			if (msgcontains(msg, 'yes')) then
 				if (not(hasCondition(cid, CONDITION_INFIGHT) == true)) then
-					if (isPremium(cid)) then
+					if (isPremium(cid) == 1) then
 						if (doPlayerRemoveMoney(cid, destinations[_index].price)) then
 							_selfSay('Set the sails!')
 							doSendMagicEffect(getCreaturePosition(cid), CONST_ME_ENERGYAREA)

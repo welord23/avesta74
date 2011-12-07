@@ -23,7 +23,7 @@ function _selfSay(message)
 	updateIdle()
 end
 
-function greet(cid, delay)
+local function greet(cid, delay)
 	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.', delay)
 end
 
