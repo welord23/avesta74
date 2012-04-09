@@ -31,6 +31,7 @@
 #include "sha1.h"
 #include <sstream>
 #include <iomanip>
+#include <boost/algorithm/string/predicate.hpp>
 
 extern ConfigManager g_config;
 
@@ -95,33 +96,19 @@ bool readXMLInteger(xmlNodePtr node, const char* tag, int& value)
 	char* nodeValue = (char*)xmlGetProp(node, (xmlChar*)tag);
 	if(nodeValue){
 		value = atoi(nodeValue);
-		xmlFreeOTSERV(nodeValue);
+		xmlFree(nodeValue);
 		return true;
 	}
 
 	return false;
 }
-
-#if (defined __WINDOWS__ || defined WIN32) && !defined __GNUC__
-bool readXMLInteger(xmlNodePtr node, const char* tag, int32_t& value)
-{
-	char* nodeValue = (char*)xmlGetProp(node, (xmlChar*)tag);
-	if(nodeValue){
-		value = atoi(nodeValue);
-		xmlFreeOTSERV(nodeValue);
-		return true;
-	}
-
-	return false;
-}
-#endif
 
 bool readXMLInteger64(xmlNodePtr node, const char* tag, uint64_t& value)
 {
 	char* nodeValue = (char*)xmlGetProp(node, (xmlChar*)tag);
 	if(nodeValue){
 		value = ATOI64(nodeValue);
-		xmlFreeOTSERV(nodeValue);
+		xmlFree(nodeValue);
 		return true;
 	}
 
@@ -133,7 +120,7 @@ bool readXMLFloat(xmlNodePtr node, const char* tag, float& value)
 	char* nodeValue = (char*)xmlGetProp(node, (xmlChar*)tag);
 	if(nodeValue){
 		value = atof(nodeValue);
-		xmlFreeOTSERV(nodeValue);
+		xmlFree(nodeValue);
 		return true;
 	}
 
@@ -175,7 +162,7 @@ bool readXMLString(xmlNodePtr node, const char* tag, std::string& value)
 			value = nodeValue;
 		}
 
-		xmlFreeOTSERV(nodeValue);
+		xmlFree(nodeValue);
 		return true;
 	}
 
@@ -190,7 +177,7 @@ bool readXMLContentString(xmlNodePtr node, std::string& value)
 			value = nodeValue;
 		}
 
-		xmlFreeOTSERV(nodeValue);
+		xmlFree(nodeValue);
 		return true;
 	}
 
@@ -572,7 +559,7 @@ AmmoActionNames ammoActionNames[] = {
 MagicEffectClasses getMagicEffect(const std::string& strValue)
 {
 	for(uint32_t i = 0; i < sizeof(magicEffectNames)/sizeof(MagicEffectNames); ++i){
-		if(strcasecmp(strValue.c_str(), magicEffectNames[i].name) == 0){
+		if(boost::algorithm::iequals(strValue.c_str(), magicEffectNames[i].name)){
 			return magicEffectNames[i].effect;
 		}
 	}
@@ -582,7 +569,7 @@ MagicEffectClasses getMagicEffect(const std::string& strValue)
 ShootType_t getShootType(const std::string& strValue)
 {
 	for(uint32_t i = 0; i < sizeof(shootTypeNames)/sizeof(ShootTypeNames); ++i){
-		if(strcasecmp(strValue.c_str(), shootTypeNames[i].name) == 0){
+		if(boost::algorithm::iequals(strValue.c_str(), shootTypeNames[i].name)){
 			return shootTypeNames[i].shoot;
 		}
 	}
@@ -592,7 +579,7 @@ ShootType_t getShootType(const std::string& strValue)
 Ammo_t getAmmoType(const std::string& strValue)
 {
     for(uint32_t i = 0; i < sizeof(ammoTypeNames)/sizeof(AmmoTypeNames); ++i){
-        if(strcasecmp(strValue.c_str(), ammoTypeNames[i].name) == 0){
+        if(boost::algorithm::iequals(strValue.c_str(), ammoTypeNames[i].name)){
             return ammoTypeNames[i].ammoType;
         }
     }
@@ -603,7 +590,7 @@ Ammo_t getAmmoType(const std::string& strValue)
 AmmoAction_t getAmmoAction(const std::string& strValue)
 {
     for(uint32_t i = 0; i < sizeof(ammoActionNames)/sizeof(AmmoActionNames); ++i){
-        if(strcasecmp(strValue.c_str(), ammoActionNames[i].name) == 0){
+        if(boost::algorithm::iequals(strValue.c_str(), ammoActionNames[i].name)){
             return ammoActionNames[i].ammoAction;
         }
     }

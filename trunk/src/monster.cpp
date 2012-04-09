@@ -82,7 +82,7 @@ Creature()
 	targetTicks = 0;
 	targetChangeTicks = 0;
 	targetChangeCooldown = 0;
-	attackTicks = 0;
+	attackTicks = 1000;
 	defenseTicks = 0;
 	yellTicks = 0;
 	extraMeleeAttack = false;
@@ -120,8 +120,8 @@ void Monster::onAttackedCreatureDissapear(bool isLogout)
 	std::cout << "Attacked creature dissapeared." << std::endl;
 #endif
 
-	attackTicks = 0;
-	extraMeleeAttack = true;
+	attackTicks = 1000;
+	extraMeleeAttack = false;
 }
 
 void Monster::onFollowCreatureDissapear(bool isLogout)
@@ -582,14 +582,14 @@ void Monster::onEndCondition(ConditionType_t type)
 
 void Monster::onThink(uint32_t interval)
 {
-	Creature::onThink(interval);
+	//Creature::onThink(interval);
 
 	if(despawn()){
 		g_game.removeCreature(this, true);
 		deactivate(true);
 	}
 	else if(!deactivate()){
-		addEventWalk();
+        addEventWalk(); 
 
 		if(isSummon()){
 			if(!attackedCreature){
@@ -625,6 +625,8 @@ void Monster::onThink(uint32_t interval)
 		onThinkYell(interval);
 		onThinkDefense(interval);
 	}
+
+    Creature::onThink(interval);
 }
 
 void Monster::doAttacking(uint32_t interval)
@@ -976,7 +978,7 @@ bool Monster::getNextStep(Direction& dir)
 		return false;
 	}
 
-	bool result = false;
+    bool result = false;
 	if((!followCreature || !hasFollowPath) && !isSummon()){
 		if(getTimeSinceLastMove() > 1000){
 			result = getRandomStep(getPosition(), dir);
@@ -984,19 +986,16 @@ bool Monster::getNextStep(Direction& dir)
 	}
 	else if(isSummon() || followCreature){
 		result = Creature::getNextStep(dir);
-
 		if(!result){
-			//target dancing
 			if(attackedCreature && attackedCreature == followCreature){
 				if(isFleeing()){
 					result = getDanceStep(getPosition(), dir, false, false);
 				}
-				else if (getMaster() && !getMaster()->getHasFollowPath()) {
-					if(getTimeSinceLastMove() > 1000){
-						//choose a random direction
-						result = getRandomStep(getPosition(), dir);
-					}
-				}
+                else if (getMaster() && getMaster()->getMonster() != NULL && !hasFollowPath) {
+                    if(getTimeSinceLastMove() > 1000){
+                        result = getRandomStep(getPosition(), dir);
+                    }
+                }
 				else if(mType->staticAttackChance < (uint32_t)random_range(1, 100)){
 					result = getDanceStep(getPosition(), dir);
 				}

@@ -26,6 +26,7 @@
 
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h> 
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "talkaction.h"
 
@@ -133,7 +134,7 @@ TalkActionResult_t TalkActions::onPlayerSpeak(Player* player, SpeakClasses type,
 		} else {
 			continue;
 		}
-		if(cmdstring == it->first || !it->second->isCaseSensitive() && strcasecmp(it->first.c_str(), cmdstring.c_str()) == 0){
+		if(cmdstring == it->first || !it->second->isCaseSensitive() && boost::algorithm::iequals(it->first, cmdstring)){
 			TalkAction* talkAction = it->second;
 			uint32_t ret =  talkAction->executeSay(player, cmdstring, paramstring);
 			if(ret == 1){

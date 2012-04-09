@@ -33,8 +33,6 @@
 #include "enums.h"
 #include "creatureevent.h"
 
-#define EVENT_CREATURE_INTERVAL 500
-
 #include <list>
 
 typedef std::list<Condition*> ConditionList;
@@ -368,7 +366,7 @@ public:
 	int32_t getWalkCache(const Position& pos) const;
 
 	static bool canSee(const Position& myPos, const Position& pos, uint32_t viewRangeX, uint32_t viewRangeY);
-	bool getHasFollowPath() {return hasFollowPath;}
+    bool getHasFollowPath() {return hasFollowPath;}
 
 protected:
 	static const int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;

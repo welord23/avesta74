@@ -44,6 +44,8 @@
 #include "ban.h"
 #include "town.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 extern ConfigManager g_config;
 extern Game g_game;
 extern Chat g_chat;
@@ -566,7 +568,7 @@ float Player::getDefenseFactor() const
 				//Attacking will cause us to get into normal defense
 				return 1.2f;
 			}
-*/
+            */
 			return 2.0f;
 			break;
 		}
@@ -3877,7 +3879,7 @@ bool Player::hasLearnedInstantSpell(const std::string& name) const
 
 	for(LearnedInstantSpellList::const_iterator it = learnedInstantSpellList.begin();
 			it != learnedInstantSpellList.end(); ++it){
-		if(strcasecmp((*it).c_str(), name.c_str()) == 0){
+		if(boost::algorithm::iequals((*it), name)){
 			return true;
 		}
 	}

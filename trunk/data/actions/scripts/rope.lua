@@ -4,7 +4,7 @@ function onUse(cid, item, frompos, item2, topos)
 		return FALSE
 	end 
 	
-	topos.stackpos = 1
+	topos.stackpos = 255
 	local tmp = getThingfromPos(topos)
 	if (tmp.itemid ~= 0) then
 		return FALSE

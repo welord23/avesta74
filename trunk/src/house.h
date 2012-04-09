@@ -53,8 +53,8 @@ public:
 	void getList(std::string& _list) const;
 
 private:
-	typedef OTSERV_HASH_SET<uint32_t> PlayerList;
-	typedef OTSERV_HASH_SET<uint32_t> GuildList; //TODO: include ranks
+	typedef std::unordered_set<uint32_t> PlayerList;
+	typedef std::list< std::pair<uint32_t, std::string> > GuildList;
 
 	typedef std::list<std::string> ExpressionList;
 	typedef std::list<std::pair<boost::regex, bool> > RegExList;

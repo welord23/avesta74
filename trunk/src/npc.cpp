@@ -265,6 +265,7 @@ bool Npc::loadFromXml(const std::string& filename)
 
 uint32_t Npc::loadParams(xmlNodePtr node)
 {
+    return 0;
 }
 
 bool Npc::canSee(const Position& pos) const

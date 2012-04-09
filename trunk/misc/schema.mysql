@@ -184,7 +184,7 @@ CREATE TABLE `tile_items` (
 CREATE TABLE `map_store` (
     `house_id` INT UNSIGNED NOT NULL,
     `data` BLOB NOT NULL,
-    UNIQUE("house_id")
+    UNIQUE(`house_id`)
 ) ENGINE = InnoDB;
 
 CREATE TABLE `player_depotitems` (

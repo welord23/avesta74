@@ -4346,7 +4346,7 @@ bool Game::violationWindow(uint32_t playerId, std::string name, uint8_t reason, 
 		ip = IOPlayer::instance()->getLastIP(name);
 	}
 
-	if (IOPlayer::instance()->getAccessByName(name) >= player->getAccessLevel()) {
+	if (IOPlayer::instance()->getAccessByName(name) >= (uint32_t)player->getAccessLevel()) {
 		player->sendCancel("You do not have authorization for this action.");
 		return false;
 	}

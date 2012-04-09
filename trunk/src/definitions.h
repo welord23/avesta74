@@ -21,58 +21,15 @@
 #ifndef __OTSERV_DEFINITIONS_H__
 #define __OTSERV_DEFINITIONS_H__
 
-#define OTSERV_VERSION "0.6.3"
+#define OTSERV_VERSION "0.6.4"
 #define OTSERV_NAME "Avesta"
 #define OTSERV_CLIENT_VERSION "7.40"
-
-#if defined(WIN32) && !defined(__WINDOWS__)
-#define __WINDOWS__
-#endif
-
-#ifdef XML_GCC_FREE
-	#define xmlFreeOTSERV(s)	free(s)
-#else
-	#define xmlFreeOTSERV(s)	xmlFree(s)
-#endif
-
-#ifdef __USE_MINIDUMP__
-    #ifndef __EXCEPTION_TRACER__
-        #define __EXCEPTION_TRACER__
-    #endif
-#endif
-
-#ifdef __DEBUG_EXCEPTION_REPORT__
-	#define DEBUG_REPORT int *a = NULL; *a = 1;
-#else
-	#ifdef __EXCEPTION_TRACER__
-        #include "exception.h"
-		#define DEBUG_REPORT ExceptionHandler::dumpStack();
-	#else
-		#define DEBUG_REPORT
-	#endif
-#endif
 
 #ifdef __USE_SQLITE__
 	#define SINGLE_SQL_DRIVER
 #endif
 
 #ifdef __USE_MYSQL__
-	#ifdef SINGLE_SQL_DRIVER
-		#define MULTI_SQL_DRIVERS
-	#else
-		#define SINGLE_SQL_DRIVER
-	#endif
-#endif
-
-#ifdef __USE_ODBC__
-	#ifdef SINGLE_SQL_DRIVER
-		#define MULTI_SQL_DRIVERS
-	#else
-		#define SINGLE_SQL_DRIVER
-	#endif
-#endif
-
-#ifdef __USE_PGSQL__
 	#ifdef SINGLE_SQL_DRIVER
 		#define MULTI_SQL_DRIVERS
 	#else
@@ -92,137 +49,62 @@ enum passwordType_t{
 	PASSWORD_TYPE_SHA1
 };
 
-#ifdef _WIN32
-#  ifndef WIN32
-#    define WIN32
-#  endif
-#endif
-
-#if defined __WINDOWS__ || defined WIN32
-
-#if defined _MSC_VER && defined NDEBUG
-#define _SECURE_SCL 0
-#define HAS_ITERATOR_DEBUGGING 0
-#endif
-
 #ifndef __FUNCTION__
 	#define	__FUNCTION__ __func__
 #endif
 
-#ifndef EWOULDBLOCK
-#define EWOULDBLOCK WSAEWOULDBLOCK
+/*
+	Compiler setup
+*/
+#if defined __GNUC__
+	#include "compiler/gcc.h"
+#elif defined(_MSC_VER)
+	#include "compiler/msvc.h"
+#endif
+
+/*
+	If the compiler supports the upcoming standard,
+	call some of the useful headers.
+*/
+#ifdef __OTSERV_CXX0X__
+	#include <cstdint>
+	#include <unordered_map>
+	#include <unordered_set>
+#else
+	#include "compiler/workarounds.h"
 #endif
 
 #ifdef _WIN32_WINNT
-#undef _WIN32_WINNT
+	#undef _WIN32_WINNT
 #endif
 //Windows 2000	0x0500
 //Windows Xp	0x0501
 //Windows 2003	0x0502
 //Windows Vista	0x0600
+//Windows Seven 0x0601
 #define _WIN32_WINNT 0x0501
 
-#ifdef __GNUC__
-	#if __GNUC__ < 4
-		#include <ext/hash_map>
-		#include <ext/hash_set>
-		#define OTSERV_HASH_MAP __gnu_cxx::hash_map
-		#define OTSERV_HASH_SET __gnu_cxx::hash_set
-	#else
-		#ifndef __GXX_EXPERIMENTAL_CXX0X__
-			#include <tr1/unordered_map>
-			#include <tr1/unordered_set>
-		#else
-			// these only work, for some reason, with c++0x standard enabled
-			#include <unordered_map>
-			#include <unordered_set>
-		#endif
-
-		#define OTSERV_HASH_MAP std::tr1::unordered_map
-		#define OTSERV_HASH_SET std::tr1::unordered_set
-	#endif
-	#include <assert.h>
-	#define ATOI64 atoll
-
-#else
-
-	#ifndef NOMINMAX
-		#define NOMINMAX
-	#endif
-
-	#include <hash_map>
-	#include <hash_set>
-	#include <limits>
-	#include <assert.h>
-	#include <time.h>
-
-	#define OTSERV_HASH_MAP stdext::hash_map
-	#define OTSERV_HASH_SET stdext::hash_set
-
-	#include <cstring>
-	inline int strcasecmp(const char *s1, const char *s2)
-	{
-		return ::_stricmp(s1, s2);
-	}
-
-	inline int strncasecmp(const char *s1, const char *s2, size_t n)
-	{
-		return ::_strnicmp(s1, s2, n);
-	}
-
-	typedef unsigned long long uint64_t;
-	typedef signed long long int64_t;
-	typedef unsigned long uint32_t;
-	typedef signed long int32_t;
-	typedef unsigned short uint16_t;
-	typedef signed short int16_t;
-	typedef unsigned char uint8_t;
-	typedef signed char int8_t;
-
-	#define ATOI64 _atoi64
-
-	#pragma warning(disable:4786) // msvc too long debug names in stl
-	#pragma warning(disable:4250) // 'class1' : inherits 'class2::member' via dominance
-	#pragma warning(disable:4244)
-	#pragma warning(disable:4267)
-	#pragma warning(disable:4018)
-
-#endif
-
-//*nix systems
-#else
-	#include <stdint.h>
-	#include <string.h>
-	#include <assert.h>
-
-	#if __GNUC__ < 4
-		#include <ext/hash_map>
-		#include <ext/hash_set>
-		#define OTSERV_HASH_MAP __gnu_cxx::hash_map
-		#define OTSERV_HASH_SET __gnu_cxx::hash_set
-	#else
-		#ifndef __GXX_EXPERIMENTAL_CXX0X__
-			#include <tr1/unordered_map>
-			#include <tr1/unordered_set>
-		#else
-			// these only work, for some reason, with c++0x standard enabled
-			#include <unordered_map>
-			#include <unordered_set>
-		#endif
-
-		#define OTSERV_HASH_MAP std::tr1::unordered_map
-		#define OTSERV_HASH_SET std::tr1::unordered_set
-	#endif
-	#define ATOI64 atoll
-
-#endif
-
-
 // OpenTibia configuration
-#ifndef __SKULLSYSTEM__
-#   ifndef __NO_SKULLSYSTEM__
-#       define __SKULLSYSTEM__
-#   endif
+#if !defined(__NO_SKULLSYSTEM__) && !defined(__SKULLSYSTEM__)
+	#define __SKULLSYSTEM__
+#endif
+
+// Boost exception handling must be enabled
+#ifdef BOOST_NO_EXCEPTIONS
+	#error "Boost exception handling must be enabled."
+#endif
+
+//Enable multi-byte character set under MSVC
+#ifdef _MSC_VER
+	#ifndef _MBCS
+		#define _MBCS
+	#endif
+	#ifdef _UNICODE
+		#undef _UNICODE 
+	#endif
+	#ifdef UNICODE
+		#undef UNICODE
+	#endif
 #endif
 
 #endif
