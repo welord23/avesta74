@@ -24,10 +24,6 @@
 		<attribute key="areaEffect" value="poison"/>
 	</attack>
 
-	<attack name="effect" interval="1000" chance="6" radius="5" target="0">
-		<attribute key="areaEffect" value="blackspark"/>
-	</attack>
-
 	<attack name="fire" interval="1000" chance="34" range="7" radius="7" target="1" min="-310" max="-600">
 		<attribute key="shootEffect" value="fire"/>
 		<attribute key="areaEffect" value="firearea"/>
@@ -43,15 +39,12 @@
 </attacks>
 
 <defenses armor="90" defense="111">
-
 	<defense name="healing" interval="1000" chance="9" min="1500" max="2500">
 	<attribute key="areaEffect" value="blueshimmer"/>
 	</defense>
-
 	<defense name="healing" interval="1000" chance="17" min="600" max="1000">
 		<attribute key="areaEffect" value="blueshimmer"/>
 	</defense>
-
 	<defense name="speed" interval="1000" chance="5" speedchange="1901" duration="7000">
 		<attribute key="areaEffect" value="redshimmer"/>
 	</defense>
