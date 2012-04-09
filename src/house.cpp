@@ -587,8 +587,14 @@ bool AccessList::addGuild(const std::string& guildName, const std::string& rank)
 {
 	uint32_t guildId;
 	if(IOPlayer::instance()->getGuildIdByName(guildId, guildName)){
-		if(guildId != 0 && guildList.find(guildId) == guildList.end()){
-			guildList.insert(guildId);
+		if(guildId != 0){
+			for(GuildList::iterator it = guildList.begin(); it != guildList.end(); ++it){
+				if(it->first == guildId && boost::algorithm::iequals(rank, it->second)){
+					return false;
+				}
+			}
+
+			guildList.push_back(std::pair<uint32_t, std::string>(guildId, rank));
 			return true;
 		}
 	}
@@ -662,9 +668,11 @@ bool AccessList::isInList(const Player* player)
 	if(playerIt != playerList.end())
 		return true;
 
-	GuildList::iterator guildIt = guildList.find(player->getGuildId());
-	if(guildIt != guildList.end())
-		return true;
+    for(GuildList::iterator it = guildList.begin(); it != guildList.end(); ++it){
+        if((player->getGuildId() && it->first == player->getGuildId()) && boost::algorithm::iequals(player->getGuildRank(), it->second)){
+			return true;
+		}
+	}
 
 	return false;
 }

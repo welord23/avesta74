@@ -115,7 +115,7 @@ bool BanManager::isBanished(uint32_t account) const
 
 	uint64_t expires = result->getDataInt("expires");
 	db->freeResult(result);
-	if(expires == 0 || time(NULL) <= expires)
+	if(expires == 0 || (uint64_t)time(NULL) <= expires)
 		return true;
 
 	return false;
