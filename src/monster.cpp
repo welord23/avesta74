@@ -582,8 +582,6 @@ void Monster::onEndCondition(ConditionType_t type)
 
 void Monster::onThink(uint32_t interval)
 {
-	//Creature::onThink(interval);
-
 	if(despawn()){
 		g_game.removeCreature(this, true);
 		deactivate(true);
