@@ -788,6 +788,11 @@ bool Game::playerMoveCreature(uint32_t playerId, uint32_t movingCreatureId,
 		return false;
 	}
 
+    if (toTile->getHeight() > 1) {
+        player->sendCancelMessage(RET_NOTPOSSIBLE);
+        return false;
+    }
+
 	if(!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)){
 		player->sendCancelMessage(RET_NOTMOVEABLE);
 		return false;
