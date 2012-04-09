@@ -3213,12 +3213,7 @@ void Player::doAttacking(uint32_t interval)
 				setNextActionTask(task);
 			}
 			else {
-				// If the player is not exhausted OR if the player's weapon
-				// does not have hasExhaust, use the weapon.
-				if(!(hasCondition(CONDITION_EXHAUST_COMBAT) ||
-					 hasCondition(CONDITION_EXHAUST_HEAL)) ||
-					 weapon->hasExhaustion())
-				{
+                if (!weapon->hasExhaustion()) {
 					result = weapon->useWeapon(this, tool, attackedCreature);
 				}
 			}
