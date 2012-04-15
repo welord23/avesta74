@@ -4,11 +4,18 @@ function onUse(cid, item, frompos, item2, topos)
 		return FALSE
 	end 
 	
-	topos.stackpos = 1
+	topos.stackpos = 255
 	local tmp = getThingfromPos(topos)
 	if (tmp.itemid ~= 0) then
 		return FALSE
 	end
+	
+	topos.stackpos = 254
+	local field = getThingfromPos(topos)
+	if (field.itemid ~= 0) then
+		return FALSE
+	end
+	
 	
 	newPos = {x = topos.x, y = topos.y, z = topos.z, stackpos = 0}
 	groundItem = getThingfromPos(newPos)
