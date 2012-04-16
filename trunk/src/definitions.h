@@ -23,7 +23,11 @@
 
 #define OTSERV_VERSION "0.6.4"
 #define OTSERV_NAME "Avesta"
+#ifdef __76__
+#define OTSERV_CLIENT_VERSION "7.60"
+#else
 #define OTSERV_CLIENT_VERSION "7.40"
+#endif
 
 #ifdef __USE_SQLITE__
 	#define SINGLE_SQL_DRIVER
