@@ -162,18 +162,18 @@
         <movevent event="DeEquip" itemid="6301" slot="ring" function="onDeEquipItem" />
 
     <!-- Doors -->
-        <movevent event="StepOut" itemid="1224" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1226" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1242" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1244" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1228" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1230" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1246" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1248" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1256" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1258" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1260" script="closingdoor.lua"/>
-        <movevent event="StepOut" itemid="1262" script="closingdoor.lua"/>
+        <movevent event="StepOut" itemid="1224" script="closingdoor_horizontal.lua"/>
+		<movevent event="StepOut" itemid="1226" script="closingdoor_vertical.lua"/>
+		<movevent event="StepOut" itemid="1242" script="closingdoor_horizontal.lua"/>
+		<movevent event="StepOut" itemid="1244" script="closingdoor_vertical.lua"/>
+		<movevent event="StepOut" itemid="1228" script="closingdoor_horizontal.lua"/>
+		<movevent event="StepOut" itemid="1230" script="closingdoor_vertical.lua"/>
+		<movevent event="StepOut" itemid="1246" script="closingdoor_horizontal.lua"/>
+		<movevent event="StepOut" itemid="1248" script="closingdoor_vertical.lua"/>
+		<movevent event="StepOut" itemid="1256" script="closingdoor_horizontal.lua"/>
+		<movevent event="StepOut" itemid="1258" script="closingdoor_vertical.lua"/>
+		<movevent event="StepOut" itemid="1260" script="closingdoor_horizontal.lua"/>
+		<movevent event="StepOut" itemid="1262" script="closingdoor_vertical.lua"/>
 
     <!-- Adding Doors to the map -->
         <movevent event="AddItem" itemid="1227" script="onadd_gateofexp.lua"/>
