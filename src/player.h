@@ -501,6 +501,8 @@ public:
 	void sendStats();
 	void sendSkills() const
 		{if(client) client->sendSkills();}
+    void sendFYIBox(const std::string& message) const
+        {if(client) client->sendFYIBox(message);}
 	void sendTextMessage(MessageClasses mclass, const std::string& message) const
 		{if(client) client->sendTextMessage(mclass, message);}
 	void sendTextWindow(Item* item, uint16_t maxlen, bool canWrite) const
