@@ -3,17 +3,16 @@ function onStepOut(cid, item, pos)
 		-- This is not a special door
 		return TRUE
 	end
-
-	local topos = getPlayerPosition(cid)
-	doRelocate(pos, topos)
-
+ 
+	doRelocate(pos, {x=pos.x+1, y=pos.y, z=pos.z})
+ 
 	-- Remove any item that was not moved
 	-- Happens when there is an unmoveable item on the door, ie. a fire field
 	local tmpPos = {x=pos.x, y=pos.y, z=pos.z, stackpos=-1}
 	local tileCount = getTileThingByPos(tmpPos)
 	local i = 1
 	local tmpItem = {uid = 1}
-
+ 
 	while(tmpItem.uid ~= 0 and i < tileCount) do
 		tmpPos.stackpos = i
 		tmpItem = getTileThingByPos(tmpPos)
@@ -23,7 +22,7 @@ function onStepOut(cid, item, pos)
 			i = i + 1
 		end
 	end
-
+ 
 	doTransformItem(item.uid, item.itemid-1)
 	return TRUE
 end
