@@ -5134,6 +5134,7 @@
 		<attribute key="weight" value="420"/>
 		<attribute key="slotType" value="necklace"/>
 		<attribute key="preventitemloss" value="1"/>
+		<attribute key="charges" value="1"/>
 	</item>
 	<item id="2174" article="a" name="strange symbol">
 		<attribute key="weight" value="200"/>
@@ -6390,6 +6391,7 @@
 		<attribute key="defense" value="10"/>
 		<attribute key="attack" value="15"/>
 		<attribute key="weaponType" value="axe"/>
+		<attribute key="slotType" value="two-handed"/>
 	</item>
 	<item id="2442" article="a" name="heavy machete">
 		<attribute key="weight" value="1839"/>
