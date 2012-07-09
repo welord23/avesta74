@@ -194,13 +194,13 @@ Condition* Condition::createCondition(ConditionId_t _id, ConditionType_t _type, 
 			break;
 		}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		case CONDITION_SOUL:
 		{
 			return new ConditionSoul(_id, _type, _ticks);
 			break;
 		}
-#endif
+#endif // __PROTOCOL_76__
 
 		case CONDITION_MANASHIELD:
 		{
@@ -496,11 +496,12 @@ void ConditionAttributes::updatePercentStats(Player* player)
 				stats[i] = (int32_t)(player->getMaxMana() * ((statsPercent[i] - 100) / 100.f));
 				break;
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 			case STAT_SOULPOINTS:
-				stats[i] = (int32_t)(player->getPlayerInfo(PLAYERINFO_SOUL) * ((statsPercent[i] - 100) / 100.f));
+				stats[i] = (int32_t)(player->getPlayerInfo(PLAYERINFO_SOUL) * 
+					((statsPercent[i] - 100) / 100.f));
 				break;
-#endif
+#endif // __PROTOCOL_76__
 
 			case STAT_MAGICPOINTS:
 				stats[i] = (int32_t)(player->getMagicLevel() * ((statsPercent[i] - 100) / 100.f));
@@ -707,13 +708,13 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 			return true;
 		}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		case CONDITIONPARAM_STAT_SOULPOINTS:
 		{
 			stats[STAT_SOULPOINTS] = value;
 			return true;
 		}
-#endif
+#endif // __PROTOCOL_76__
 
 		case CONDITIONPARAM_STAT_MAGICPOINTS:
 		{
@@ -741,7 +742,7 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 			return true;
 		}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		case CONDITIONPARAM_STAT_SOULPOINTSPERCENT:
 		{
 			if(value < 0){
@@ -751,7 +752,7 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 			statsPercent[STAT_SOULPOINTS] = value;
 			return true;
 		}
-#endif
+#endif // __PROTOCOL_76__
 
 		case CONDITIONPARAM_STAT_MAGICPOINTSPERCENT:
 		{
@@ -924,7 +925,7 @@ bool ConditionRegeneration::setParam(ConditionParam_t param, int32_t value)
 	return ret;
 }
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 ConditionSoul::ConditionSoul(ConditionId_t _id, ConditionType_t _type, int32_t _ticks) :
 	ConditionGeneric(_id, _type, _ticks)
 {
@@ -1027,7 +1028,7 @@ bool ConditionSoul::setParam(ConditionParam_t param, int32_t value)
 
 	return ret;
 }
-#endif
+#endif // __PROTOCOL_76__
 
 ConditionDamage::ConditionDamage(ConditionId_t _id, ConditionType_t _type) :
 Condition(_id, _type, 0)
@@ -1928,4 +1929,3 @@ bool ConditionLight::serialize(PropWriteStream& propWriteStream)
 
 	return true;
 }
-

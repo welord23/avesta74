@@ -1476,4 +1476,3 @@ bool Monster::canSee(const Position& pos) const
 
 	return Creature::canSee(pos);
 }
-

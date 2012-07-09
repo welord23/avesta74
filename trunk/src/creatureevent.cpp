@@ -427,4 +427,3 @@ uint32_t CreatureEvent::executeOnAdvance(Player* player, uint32_t oldLevel, uint
 		return 0;
 	}
 }
-

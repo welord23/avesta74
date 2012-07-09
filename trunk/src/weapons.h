@@ -29,7 +29,7 @@
 #include "talkaction.h"
 #include "baseevents.h"
 #include "combat.h"
-#include "const74.h"
+#include "const.h"
 
 class Weapon;
 class WeaponMelee;
@@ -115,9 +115,9 @@ protected:
 	int32_t magLevel;
 	int32_t mana;
 	int32_t manaPercent;
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	int32_t soul;
-#endif
+#endif // __PROTOCOL_76__
 	int32_t range;
 	AmmoAction_t ammoAction;
 	CombatParams params;

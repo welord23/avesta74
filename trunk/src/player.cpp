@@ -63,7 +63,7 @@ int32_t Player::maxMessageBuffer;
 uint32_t Player::playerCount = 0;
 #endif
 
-Player::Player(const std::string& _name, Protocol74 *p) :
+Player::Player(const std::string& _name, ProtocolGame *p) :
 Creature()
 {
 	client = p;
@@ -78,10 +78,10 @@ Creature()
 	mana       = 0;
 	manaMax    = 0;
 	manaSpent  = 0;
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	soul       = 0;
 	soulMax    = 100;
-#endif
+#endif // __PROTOCOL_76__
 	guildId    = 0;
 	guildLevel = 0;
 
@@ -222,10 +222,10 @@ void Player::setVocation(uint32_t vocId)
 		condition->setParam(CONDITIONPARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
 	}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	//Set the player's max soul according to their vocation
 	soulMax = vocation->getSoulMax();
-#endif
+#endif // __PROTOCOL_76__
 }
 
 uint32_t Player::getVocationId() const
@@ -611,22 +611,29 @@ void Player::updateInventoryWeigth()
 int32_t Player::getPlayerInfo(playerinfo_t playerinfo) const
 {
 	switch(playerinfo) {
-		case PLAYERINFO_LEVEL: return level; break;
-		case PLAYERINFO_LEVELPERCENT: return levelPercent; break;
-		case PLAYERINFO_MAGICLEVEL: return std::max((int32_t)0, ((int32_t)magLevel + varStats[STAT_MAGICPOINTS])); break;
-		case PLAYERINFO_MAGICLEVELPERCENT: return magLevelPercent; break;
-		case PLAYERINFO_HEALTH: return health; break;
-		case PLAYERINFO_MAXHEALTH: return std::max((int32_t)1, ((int32_t)healthMax + varStats[STAT_MAXHITPOINTS])); break;
-		case PLAYERINFO_MANA: return mana; break;
-		case PLAYERINFO_MAXMANA: return std::max((int32_t)0, ((int32_t)manaMax + varStats[STAT_MAXMANAPOINTS])); break;
-#ifdef __76__
-		case PLAYERINFO_SOUL: return std::max((int32_t)0, ((int32_t)soul + varStats[STAT_SOULPOINTS])); break;
-#endif
+		case PLAYERINFO_LEVEL: 
+			return level; 
+		case PLAYERINFO_LEVELPERCENT: 
+			return levelPercent; 
+		case PLAYERINFO_MAGICLEVEL: 
+			return std::max((int32_t)0, ((int32_t)magLevel + varStats[STAT_MAGICPOINTS])); 
+		case PLAYERINFO_MAGICLEVELPERCENT: 
+			return magLevelPercent; 
+		case PLAYERINFO_HEALTH: 
+			return health; 
+		case PLAYERINFO_MAXHEALTH: 
+			return std::max((int32_t)1, ((int32_t)healthMax + varStats[STAT_MAXHITPOINTS])); 
+		case PLAYERINFO_MANA: 
+			return mana; 
+		case PLAYERINFO_MAXMANA: 
+			return std::max((int32_t)0, ((int32_t)manaMax + varStats[STAT_MAXMANAPOINTS])); 
+#ifdef __PROTOCOL_76__
+		case PLAYERINFO_SOUL: 
+			return std::max((int32_t)0, ((int32_t)soul + varStats[STAT_SOULPOINTS])); 
+#endif // __PROTOCOL_76__
 		default:
-			return 0; break;
+			return 0;
 	}
-
-	return 0;
 }
 
 int32_t Player::getSkill(skills_t skilltype, skillsid_t skillinfo) const
@@ -748,27 +755,17 @@ int32_t Player::getDefaultStats(stats_t stat)
 {
 	switch(stat){
 		case STAT_MAXHITPOINTS:
-		{
 			return getMaxHealth() - getVarStats(STAT_MAXHITPOINTS);
-			break;
-		}
-
 		case STAT_MAXMANAPOINTS:
 			return getMaxMana() - getVarStats(STAT_MAXMANAPOINTS);
-			break;
-
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		case STAT_SOULPOINTS:
 			return getPlayerInfo(PLAYERINFO_SOUL) - getVarStats(STAT_SOULPOINTS);
-			break;
-#endif
+#endif // __PROTOCOL_76__
 		case STAT_MAGICPOINTS:
 			return getMagicLevel() - getVarStats(STAT_MAGICPOINTS);
-			break;
-
 		default:
 			return 0;
-			break;
 	}
 }
 
@@ -1083,11 +1080,11 @@ void Player::sendCancelMessage(ReturnValue message) const
 		sendCancel("You do not have enough mana.");
 		break;
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	case RET_NOTENOUGHSOUL:
 		sendCancel("You do not have enough soul");
 		break;
-#endif
+#endif // __PROTOCOL_76__
 
 	case RET_YOUAREEXHAUSTED:
 		sendCancel("You are exhausted.");
@@ -1681,7 +1678,9 @@ void Player::onThink(uint32_t interval)
 	}
 
 	idleTime += interval;
-	if(idleTime >= (g_config.getNumber(ConfigManager::MAX_IDLE_TIME) * 60000) + 60000 && getAccessLevel() < 2) {
+	if((int)idleTime >= (g_config.getNumber(ConfigManager::MAX_IDLE_TIME) * 60000) + 60000 &&
+		getAccessLevel() < 2) 
+	{
 		g_game.removeCreature(this);
 	}
 	else if(client && idleTime == 60000 * (g_config.getNumber(ConfigManager::MAX_IDLE_TIME)) && getAccessLevel() < 2){
@@ -2006,10 +2005,10 @@ void Player::sendToRook()
     manaMax = 0;
     manaSpent = 0;
     magLevel= 0;
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	soul = 100;
 	soulMax = 100;
-#endif
+#endif // __PROTOCOL_76__
     capacity = 400;
     experience = 0;
 
@@ -2985,24 +2984,10 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 		g_moveEvents->onPlayerEquip(this, thing->getItem(), (slots_t)index);
 	}
 
-	bool requireListUpdate = true;
 	if(link == LINK_OWNER || link == LINK_TOPPARENT){
-		const Item* i = (oldParent? oldParent->getItem() : NULL);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i? i->getContainer() != NULL : true);
-
-		if(i)
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != this;
-		else
-			requireListUpdate = oldParent != this;
-
-		if(requireListUpdate){
-			updateItemsLight();
-			updateInventoryWeigth();
-			sendStats();
-		}
+		updateItemsLight();
+		updateInventoryWeigth();
+		sendStats();
 	}
 
 	if(const Item* item = thing->getItem()){
@@ -3034,24 +3019,10 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 		g_moveEvents->onPlayerDeEquip(this, thing->getItem(), (slots_t)index, isCompleteRemoval);
 	}
 
-	bool requireListUpdate = true;
 	if(link == LINK_OWNER || link == LINK_TOPPARENT){
-		const Item* i = (newParent? newParent->getItem() : NULL);
-
-		// Check if we owned the old container too, so we don't need to do anything,
-		// as the list was updated in postRemoveNotification
-		assert(i? i->getContainer() != NULL : true);
-
-		if(i)
-			requireListUpdate = i->getContainer()->getHoldingPlayer() != this;
-		else
-			requireListUpdate = newParent != this;
-
-		if(requireListUpdate){
-			updateItemsLight();
-			updateInventoryWeigth();
-			sendStats();
-		}
+		updateItemsLight();
+		updateInventoryWeigth();
+		sendStats();
 	}
 
 	if(const Item* item = thing->getItem()){
@@ -3511,17 +3482,20 @@ void Player::onKilledCreature(Creature* target)
 		}
 		else if(!hasFlag(PlayerFlag_NotGainInFight)){
 #ifdef __SKULLSYSTEM__
-			if( !isPartner(targetPlayer) &&
+			if(!isPartner(targetPlayer) &&
 					!Combat::isInPvpZone(this, targetPlayer) &&
 					!targetPlayer->hasAttacked(this) &&
-					targetPlayer->getSkull() == SKULL_NONE){
+					targetPlayer->getSkull() == SKULL_NONE)
+			{
 				addUnjustifiedDead(targetPlayer);
 			}
 #endif
 
 			if(!Combat::isInPvpZone(this, targetPlayer) && hasCondition(CONDITION_INFIGHT)){
 				pzLocked = true;
-				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, 60 * 1000 * g_config.getNumber(ConfigManager::WHITE_SKULL_TIME), 0);
+				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, 
+					CONDITION_INFIGHT, 60 * 1000 *
+					g_config.getNumber(ConfigManager::WHITE_SKULL_TIME), 0);
 				addCondition(condition);
 			}
 		}
@@ -3530,20 +3504,20 @@ void Player::onKilledCreature(Creature* target)
 
 void Player::gainExperience(uint64_t gainExp)
 {
-	if(!hasFlag(PlayerFlag_NotGainExperience)){
+	if(!hasFlag(PlayerFlag_NotGainExperience) && getHealth() > 0){
 		if(gainExp > 0){
-
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 			//soul regeneration
 			if((uint32_t)gainExp >= getLevel()){
-				Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SOUL, 4 * 60 * 1000, 0);
+				Condition* condition = Condition::createCondition(
+					CONDITIONID_DEFAULT, CONDITION_SOUL, 4 * 60 * 1000, 0);
 				//Soul regeneration rate is defined by the vocation
 				uint32_t vocSoulTicks = vocation->getSoulGainTicks();
 				condition->setParam(CONDITIONPARAM_SOULGAIN, 1);
 				condition->setParam(CONDITIONPARAM_SOULTICKS, vocSoulTicks * 1000);
 				addCondition(condition);
 			}
-#endif
+#endif // __PROTOCOL_76__
 			addExperience(gainExp);
 		}
 	}
@@ -3554,8 +3528,6 @@ void Player::onGainExperience(uint64_t gainExp)
 	if(hasFlag(PlayerFlag_NotGainExperience)){
 		gainExp = 0;
 	}
-
-	Party* party = getParty();
 
 	Creature::onGainExperience(gainExp);
 	gainExperience(gainExp);
@@ -3600,7 +3572,7 @@ void Player::changeMana(int32_t manaChange)
 	sendStats();
 }
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 void Player::changeSoul(int32_t soulChange)
 {
 	if(soulChange > 0){
@@ -3612,7 +3584,7 @@ void Player::changeSoul(int32_t soulChange)
 
 	sendStats();
 }
-#endif
+#endif // __PROTOCOL_76__
 
 PartyShields_t Player::getPartyShield(const Player* player) const
 {
@@ -3945,5 +3917,3 @@ bool Player::transferMoneyTo(const std::string& name, uint32_t amount)
 
 	return true;
 }
-
-

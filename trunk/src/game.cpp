@@ -650,18 +650,18 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 	std::cout << "removing creature "<< std::endl;
 #endif
 
-	//std::cout << "remove: " << creature << " " << creature->getID() << std::endl;
-
-	Cylinder* cylinder = creature->getTile();
+	Tile* tile = creature->getTile();
 
 	SpectatorVec list;
 	SpectatorVec::iterator it;
-	getSpectators(list, cylinder->getPosition(), false, true);
+	getSpectators(list, tile->getPosition(), false, true);
 
-	int32_t index = cylinder->__getIndexOfThing(creature);
-	if(!map->removeCreature(creature)){
-		return false;
+	//event method
+	for(it = list.begin(); it != list.end(); ++it){
+		(*it)->onCreatureDisappear(creature, isLogout);
 	}
+
+	int32_t index = tile->__getIndexOfThing(creature);
 
 	//send to client
 	Player* player = NULL;
@@ -671,9 +671,8 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 		}
 	}
 
-	//event method
-	for(it = list.begin(); it != list.end(); ++it){
-		(*it)->onCreatureDisappear(creature, index, isLogout);
+	if(!map->removeCreature(creature)){
+		return false;
 	}
 
 	creature->getParent()->postRemoveNotification(creature, NULL, index, true);
@@ -685,7 +684,8 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 
 	removeCreatureCheck(creature);
 
-	for(std::list<Creature*>::iterator cit = creature->summons.begin(); cit != creature->summons.end(); ++cit){
+	std::list<Creature*>::iterator cit = creature->summons.begin();
+	for( ; cit != creature->summons.end(); ++cit){
 		(*cit)->setLossSkill(false);
 		removeCreature(*cit);
 	}
@@ -911,13 +911,14 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 	ReturnValue ret = RET_NOTPOSSIBLE;
 
 	if(toTile != NULL){
-#ifndef __76__
+#ifndef __PROTOCOL_76__
+		// Can't walk over items with height >= 2
 		if (currentPos.z > destPos.z && toPos->getHeight() > 1);
 			// not possible
 		else if ((((toPos->getHeight() - fromPos->getHeight()) < 2)) || 
 			(fromPos->hasHeight(3) && (currentPos.z == destPos.z)) ||
 			((currentPos.z < destPos.z) && (toPos->hasHeight(3) && (fromPos->getHeight() < 2))))
-#endif
+#endif // __PROTOCOL_76__
 			ret = internalMoveCreature(creature, fromTile, toTile, flags);
 	}
 
@@ -1920,7 +1921,6 @@ bool Game::playerMove(uint32_t playerId, Direction dir)
 	}
 
 	player->resetIdleTime();
-	player->setFollowCreature(NULL);
 	player->onWalk(dir);
 	return (internalMoveCreature(player, dir) == RET_NOERROR);
 }
@@ -3135,7 +3135,7 @@ bool Game::playerTurn(uint32_t playerId, Direction dir)
 bool Game::playerRequestOutfit(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
-	if(!player || player->isRemoved())
+	if(!player || player->isRemoved() || player->hasFlag(PlayerFlag_CantChangeOutfit))
 		return false;
 
 	player->sendOutfitWindow(player);
@@ -3145,7 +3145,7 @@ bool Game::playerRequestOutfit(uint32_t playerId)
 bool Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 {
 	Player* player = getPlayerByID(playerId);
-	if(!player || player->isRemoved())
+	if(!player || player->isRemoved() || player->hasFlag(PlayerFlag_CantChangeOutfit))
 		return false;
 
 	player->defaultOutfit = outfit;
@@ -3575,10 +3575,12 @@ void Game::checkCreatures()
 		}
 		else if(!creature->isDying){
 			creature->isDying = true;
-			uint16_t dd = random_range(200, 500);
-			Scheduler::getScheduler().addEvent(createSchedulerTask(dd, boost::bind(&Game::doDeathDelay, this, creature)));
+			int random = random_range(100, 300);
+			Scheduler::getScheduler().addEvent(createSchedulerTask(
+				random, boost::bind(&Game::doDeathDelay, this, creature)));
 		}
 	}
+
 	cleanup();
 }
 
@@ -4582,5 +4584,3 @@ bool Game::violationWindow(uint32_t playerId, std::string name, uint8_t reason, 
 	IOAccount::instance()->saveAccount(account);
 	return true;
 }
-
-

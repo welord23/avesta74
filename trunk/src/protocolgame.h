@@ -19,8 +19,8 @@
 //////////////////////////////////////////////////////////////////////
 
 
-#ifndef __OTSERV_PROTOCOL74_H__
-#define __OTSERV_PROTOCOL74_H__
+#ifndef __OTSERV_PROTOCOLGAME_H__
+#define __OTSERV_PROTOCOLGAME_H__
 
 #include <string>
 #include "protocol.h"
@@ -43,15 +43,15 @@ class Container;
 class Tile;
 class Connection;
 
-class Protocol74 : public Protocol
+class ProtocolGame : public Protocol
 {
 public:
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
-	static uint32_t Protocol74Count;
+	static uint32_t ProtocolGameCount;
 #endif
 
-	Protocol74(Connection* connection);
-	virtual ~Protocol74();
+	ProtocolGame(Connection* connection);
+	virtual ~ProtocolGame();
 
 	bool login(const std::string& name, bool isSetGM);
 	bool logout(bool forced);

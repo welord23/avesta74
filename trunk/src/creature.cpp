@@ -1033,6 +1033,7 @@ bool Creature::setFollowCreature(Creature* creature, bool fullPathSearch /*= fal
 		followCreature = NULL;
 	}
 
+	g_game.updateCreatureWalk(getID());
 	onFollowCreature(creature);
 	return true;
 }

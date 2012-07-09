@@ -24,7 +24,7 @@
 
 
 #include "definitions.h"
-#include "const74.h"
+#include "const.h"
 #include "enums.h"
 #include "itemloader.h"
 //[ added for beds system

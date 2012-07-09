@@ -58,6 +58,10 @@
 #include "tools.h"
 #include "ban.h"
 
+#ifdef __PROTOCOL_77__
+#include "rsa.h"
+#endif // __PROTOCOL_77__
+
 #ifdef __OTSERV_ALLOCATOR__
 #include "allocator.h"
 #endif
@@ -80,6 +84,9 @@ Monsters g_monsters;
 BanManager g_bans;
 Vocations g_vocations;
 Server* g_server = NULL;
+#ifdef __PROTOCOL_77__
+RSA* g_otservRSA = NULL;
+#endif // __PROTOCOL_77__
 
 boost::mutex g_loaderLock;
 boost::condition_variable g_loaderSignal;
@@ -433,6 +440,19 @@ void mainLoader(const CommandLineOptions& command_opts)
 
 	std::stringstream filename;
 
+
+#ifdef __PROTOCOL_77__
+	//load RSA key
+	std::cout << ":: Loading RSA key..." << std::flush;
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
+	const char* d("46730330223584118622160180015036832148732986808519344675210555262940258739805766860224610646919605860206328024326703361630109888417839241959507572247284807035235569619173792292786907845791904955103601652822519121908367187885509270025388641700821735345222087940578381210879116823013776808975766851829020659073");
+	g_otservRSA = new RSA();
+	g_otservRSA->setKey(p, q, d);
+
+	std::cout << "[done]" << std::endl;
+#endif // __PROTOCOL_77__
+
 	//load vocations
 	filename.str("");
 	filename << g_config.getString(ConfigManager::DATA_DIRECTORY) << "vocations.xml";
@@ -557,7 +577,7 @@ void mainLoader(const CommandLineOptions& command_opts)
 	IpNetMask.second = 0xFFFFFFFF;
 	serverIPs.push_back(IpNetMask);
 	
-		char szHostName[128];
+	char szHostName[128];
 	if(gethostname(szHostName, 128) == 0){
 		std::cout << "::" << std::endl << ":: Running on host " << szHostName << std::endl;
 
@@ -604,7 +624,7 @@ void mainLoader(const CommandLineOptions& command_opts)
 		}
 	}
 
-		char resolvedIpstr[32];
+	char resolvedIpstr[32];
 	formatIP(resolvedIp, resolvedIpstr);
 	std::cout << resolvedIpstr << std::endl << "::" << std::endl;
 

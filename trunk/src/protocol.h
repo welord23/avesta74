@@ -28,16 +28,24 @@
 class NetworkMessage;
 class OutputMessage;
 class Connection;
+#ifdef __PROTOCOL_77__
+class RSA;
+#endif // __PROTOCOL_77__
+
 typedef boost::shared_ptr<OutputMessage> OutputMessage_ptr;
 
-#ifdef __76__
-#define CLIENT_VERSION_MIN 760
-#define CLIENT_VERSION_MAX 760
-#define STRING_CLIENT_VERSION "This server requires client version 7.6."
+#if defined (__PROTOCOL_77__)
+	#define CLIENT_VERSION_MIN 770
+	#define CLIENT_VERSION_MAX 772
+	#define STRING_CLIENT_VERSION "This server requires client version 7.7."
+#elif defined (__PROTOCOL_76__)
+	#define CLIENT_VERSION_MIN 760
+	#define CLIENT_VERSION_MAX 760
+	#define STRING_CLIENT_VERSION "This server requires client version 7.6."
 #else
-#define CLIENT_VERSION_MIN 740
-#define CLIENT_VERSION_MAX 740
-#define STRING_CLIENT_VERSION "This server requires client version 7.4."
+	#define CLIENT_VERSION_MIN 740
+	#define CLIENT_VERSION_MAX 740
+	#define STRING_CLIENT_VERSION "This server requires client version 7.4."
 #endif
 
 class Protocol : boost::noncopyable
@@ -47,6 +55,10 @@ public:
 	{
 		m_connection = connection;
 		m_rawMessages = false;
+#ifdef __PROTOCOL_77__
+		m_encryptionEnabled = false;
+		m_key[0] = 0; m_key[1] = 0; m_key[2] = 0; m_key[3] = 0;
+#endif // __PROTOCOL_77__
 		m_refCount = 0;
 	}
 
@@ -69,6 +81,18 @@ public:
 protected:
 	//Use this function for autosend messages only
 	OutputMessage_ptr getOutputBuffer();
+
+#ifdef __PROTOCOL_77__
+	void enableXTEAEncryption() { m_encryptionEnabled = true; }
+	void disableXTEAEncryption() { m_encryptionEnabled = false; }
+	void setXTEAKey(const uint32_t* key){
+		memcpy(&m_key, key, sizeof(uint32_t)*4);
+	}
+
+	void XTEA_encrypt(OutputMessage& msg);
+	bool XTEA_decrypt(NetworkMessage& msg);
+	bool RSA_decrypt(RSA* rsa, NetworkMessage& msg);
+#endif // __PROTOCOL_77__
 	
 	void setRawMessages(bool value) { m_rawMessages = value; }
 
@@ -81,6 +105,10 @@ private:
 	OutputMessage_ptr m_outputBuffer;
 	Connection* m_connection;
 	bool m_rawMessages;
+#ifdef __PROTOCOL_77__
+	bool m_encryptionEnabled;
+	uint32_t m_key[4];
+#endif // __PROTOCOL_77__
 	uint32_t m_refCount;
 };
 

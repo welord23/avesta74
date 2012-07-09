@@ -1081,10 +1081,10 @@ void LuaScriptInterface::registerFunctions()
 	//getPlayerItemCount(cid, itemid)
 	lua_register(m_luaState, "getPlayerItemCount", LuaScriptInterface::luaGetPlayerItemCount);
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	//getPlayerSoul(cid)
 	lua_register(m_luaState, "getPlayerSoul", LuaScriptInterface::luaGetPlayerSoul);
-#endif
+#endif // __PROTOCOL_76__
 
 	//getPlayerFreeCap(cid)
 	lua_register(m_luaState, "getPlayerFreeCap", LuaScriptInterface::luaGetPlayerFreeCap);
@@ -1269,10 +1269,10 @@ void LuaScriptInterface::registerFunctions()
 	//doPlayerAddMana(cid, mana, <optional: default: 1> filter)
 	lua_register(m_luaState, "doPlayerAddMana", LuaScriptInterface::luaDoPlayerAddMana);
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	//doPlayerAddSoul(cid, soul)
 	lua_register(m_luaState, "doPlayerAddSoul", LuaScriptInterface::luaDoPlayerAddSoul);
-#endif
+#endif // __PROTOCOL_76__
 	
 	//doPlayerAddItem(uid, itemid, <optional> count/subtype)
 	//Returns uid of the created item
@@ -1814,11 +1814,11 @@ int LuaScriptInterface::internalGetPlayerInfo(lua_State *L, PlayerInfo_t info)
 		case PlayerInfoVocation:
 			value = player->getVocationId();
 			break;
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		case PlayerInfoSoul:
 			value = player->getPlayerInfo(PLAYERINFO_SOUL);
 			break;
-#endif
+#endif // __PROTOCOL_76__
 		case PlayerInfoFreeCap:
 			value = (int)player->getFreeCapacity();
 			break;
@@ -1934,10 +1934,10 @@ int LuaScriptInterface::luaGetPlayerVocation(lua_State *L){
 int LuaScriptInterface::luaGetPlayerMasterPos(lua_State *L){
 	return internalGetPlayerInfo(L, PlayerInfoMasterPos);}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 int LuaScriptInterface::luaGetPlayerSoul(lua_State *L){
 	return internalGetPlayerInfo(L, PlayerInfoSoul);}
-#endif
+#endif // __PROTOCOL_76__
 
 int LuaScriptInterface::luaGetPlayerFreeCap(lua_State *L){
 	return internalGetPlayerInfo(L, PlayerInfoFreeCap);}
@@ -3884,7 +3884,7 @@ int LuaScriptInterface::luaDebugPrint(lua_State *L)
 	return 0;
 }
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 int LuaScriptInterface::luaDoPlayerAddSoul(lua_State *L)
 {
 	//doPlayerAddSoul(cid, soul)
@@ -3904,7 +3904,7 @@ int LuaScriptInterface::luaDoPlayerAddSoul(lua_State *L)
 	}
 	return 1;
 }
-#endif
+#endif // __PROTOCOL_76__
 
 int LuaScriptInterface::luaGetPlayerItemCount(lua_State *L)
 {

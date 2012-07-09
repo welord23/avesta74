@@ -28,7 +28,7 @@
 #include "map.h"
 #include "position.h"
 #include "condition.h"
-#include "const74.h"
+#include "const.h"
 #include "tile.h"
 #include "enums.h"
 #include "creatureevent.h"
