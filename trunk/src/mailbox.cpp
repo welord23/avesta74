@@ -120,7 +120,8 @@ bool Mailbox::sendItem(Item* item)
 		return false;
 	}
 
-	if(receiver == "" || dp == 0){ /**No need to continue if its still empty**/
+	// No need to continue if its still empty
+	if(receiver == "" || dp == 0){
 		return false;
 	}
 	
@@ -151,14 +152,14 @@ bool Mailbox::sendItem(Item* item)
 			return false;
 		}
 		
-		#ifdef __DEBUG_MAILBOX__
+#ifdef __DEBUG_MAILBOX__
 		std::string playerName = player->getName();
 		if(g_game.getPlayerByName(playerName)){
 			std::cout << "Failure: [Mailbox::sendItem], receiver is online: " << receiver << "," << playerName << std::endl;
 			delete player;
 			return false;
 		}
-		#endif
+#endif
 
 		Depot* depot = player->getDepot(dp, true);
 		if(depot){

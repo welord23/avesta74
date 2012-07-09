@@ -650,18 +650,16 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 	std::cout << "removing creature "<< std::endl;
 #endif
 
-	Tile* tile = creature->getTile();
+	Cylinder* cylinder = creature->getTile();
 
 	SpectatorVec list;
 	SpectatorVec::iterator it;
-	getSpectators(list, tile->getPosition(), false, true);
+	getSpectators(list, cylinder->getPosition(), false, true);
 
-	//event method
-	for(it = list.begin(); it != list.end(); ++it){
-		(*it)->onCreatureDisappear(creature, isLogout);
+	int32_t index = cylinder->__getIndexOfThing(creature);
+	if(!map->removeCreature(creature)){
+		return false;
 	}
-
-	int32_t index = tile->__getIndexOfThing(creature);
 
 	//send to client
 	Player* player = NULL;
@@ -671,8 +669,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 		}
 	}
 
-	if(!map->removeCreature(creature)){
-		return false;
+	//event method
+	for(it = list.begin(); it != list.end(); ++it){
+		(*it)->onCreatureDisappear(creature, index, isLogout);
 	}
 
 	creature->getParent()->postRemoveNotification(creature, NULL, index, true);
@@ -684,8 +683,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout /*= true*/)
 
 	removeCreatureCheck(creature);
 
-	std::list<Creature*>::iterator cit = creature->summons.begin();
-	for( ; cit != creature->summons.end(); ++cit){
+	for(std::list<Creature*>::iterator cit = creature->summons.begin();
+		cit != creature->summons.end(); ++cit)
+	{
 		(*cit)->setLossSkill(false);
 		removeCreature(*cit);
 	}
@@ -3575,7 +3575,7 @@ void Game::checkCreatures()
 		}
 		else if(!creature->isDying){
 			creature->isDying = true;
-			int random = random_range(100, 300);
+			int random = random_range(100, 200);
 			Scheduler::getScheduler().addEvent(createSchedulerTask(
 				random, boost::bind(&Game::doDeathDelay, this, creature)));
 		}
