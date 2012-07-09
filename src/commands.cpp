@@ -910,7 +910,7 @@ bool Commands::serverDiag(Creature* creature, const std::string& cmd, const std:
 
 	text << "\nProtocols:" << "\n";
 	text << "--------------------\n";
-	text << "Protocol74: " << Protocol74::Protocol74Count << "\n";
+	text << "ProtocolGame: " << ProtocolGame::ProtocolGameCount << "\n";
 	text << "ProtocolLogin: " << ProtocolLogin::protocolLoginCount << "\n";
 	text << "ProtocolStatus: " << ProtocolStatus::protocolStatusCount << "\n\n";
 
@@ -1211,4 +1211,3 @@ bool Commands::refreshMap(Creature* creature, const std::string& cmd, const std:
 	player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Refreshed map.");
 	return true;
 }
-

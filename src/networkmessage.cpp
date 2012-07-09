@@ -28,7 +28,6 @@
 #include "container.h"
 #include "creature.h"
 #include "player.h"
-
 #include "position.h"
 
 int32_t NetworkMessage::decodeHeader()

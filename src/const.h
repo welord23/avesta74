@@ -18,8 +18,8 @@
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
 
-#ifndef __OTSERV_const74_H__
-#define __OTSERV_const74_H__
+#ifndef __OTSERV_CONST_H__
+#define __OTSERV_CONST_H__
 
 #include "definitions.h"
 
@@ -324,6 +324,7 @@ enum PlayerFlags{
 	PlayerFlag_IsAlwaysPremium,             //2^37 = 137438953472
 	PlayerFlag_CanAnswerRuleViolations,     //2^38 = 274877906944
 	PlayerFlag_CanReloadContent,            //2^39 = 549755813888
+	PlayerFlag_CantChangeOutfit,			//2^40 = 1099511627776
 
 	//PlayerFlag_ShowGroupInsteadOfVocation,  //2^40 = 1099511627776
 	//PlayerFlag_HasInfiniteStamina,          //2^41 = 2199023255552

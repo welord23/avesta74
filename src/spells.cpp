@@ -28,7 +28,7 @@
 #include "commands.h"
 #include "monsters.h"
 #include "configmanager.h"
-#include "const74.h"
+#include "const.h"
 
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
@@ -76,11 +76,16 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, SpeakClasses type, con
 		if(!paramText.empty() && paramText[0] == ' '){
 			size_t loc1 = paramText.find('"', 0);
 			size_t loc2 = std::string::npos;
+
+			// if found first apostrophe
 			if(loc1 != std::string::npos){
+				// search for ending apostrophe
 				loc2 = paramText.find('"', loc1 + 1);
 			}
 
+			// if ending apostrophe not found
 			if(loc2 == std::string::npos){
+				// rest of the text is param
 				loc2 = paramText.length();
 			}
 
@@ -458,9 +463,9 @@ Spell::Spell()
 	mana = 0;
 	manaPercent = 0;
 	lvPercent = 0;
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	soul = 0;
-#endif
+#endif // __PROTOCOL_76__
 	range = -1;
 	customExhaust = 0;
 	exhaustion = true;
@@ -537,11 +542,11 @@ bool Spell::configureSpell(xmlNodePtr p)
 	 	lvPercent = intValue;
 	}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	if(readXMLInteger(p, "soul", intValue)){
 	 	soul = intValue;
 	}
-#endif
+#endif // __PROTOCOL_76__
 
 	if(readXMLInteger(p, "customexhaust", intValue)){
 		customExhaust = intValue;
@@ -670,13 +675,15 @@ bool Spell::playerSpellCheck(Player* player) const
 			return false;
 		}
 
-#ifdef __76__
-		if(player->getPlayerInfo(PLAYERINFO_SOUL) < soul && !player->hasFlag(PlayerFlag_HasInfiniteSoul)){
+#ifdef __PROTOCOL_76__
+		if(player->getPlayerInfo(PLAYERINFO_SOUL) < soul &&
+			!player->hasFlag(PlayerFlag_HasInfiniteSoul))
+		{
 			player->sendCancelMessage(RET_NOTENOUGHSOUL);
 			g_game.addMagicEffect(player->getPosition(), NM_ME_PUFF);
 			return false;
 		}
-#endif
+#endif // __PROTOCOL_76__
 
 		if(isInstant() && isLearnable()){
 			if(!player->hasLearnedInstantSpell(getName())){
@@ -878,16 +885,16 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 	if(payCost){
 		int32_t manaCost = getManaCost(player);
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		int32_t soulCost = getSoulCost(player);
 		postCastSpell(player, (uint32_t)manaCost, (uint32_t)soulCost);
 #else
 		postCastSpell(player, (uint32_t)manaCost);
-#endif
+#endif // __PROTOCOL_76__
 	}
 }
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost) const
 {
 
@@ -914,7 +921,7 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost) const
 		}
 	}
 }
-#endif
+#endif // __PROTOCOL_76__
 
 int32_t Spell::getManaCost(const Player* player) const
 {
@@ -937,7 +944,7 @@ int32_t Spell::getManaCost(const Player* player) const
 	return 0;
 }
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 int32_t Spell::getSoulCost(const Player* player) const
 {
 	if(soul != 0){
@@ -946,7 +953,7 @@ int32_t Spell::getSoulCost(const Player* player) const
 
 	return 0;
 }
-#endif
+#endif // __PROTOCOL_76__
 
 ReturnValue Spell::CreateIllusion(Creature* creature, const Outfit_t outfit, int32_t time)
 {
@@ -1649,11 +1656,11 @@ bool InstantSpell::SummonMonster(const InstantSpell* spell, Creature* creature, 
 	}
 
 	if(ret == RET_NOERROR){
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 		spell->postCastSpell(player, (uint32_t)manaCost, (uint32_t)spell->getSoulCost(player));
 #else
 		spell->postCastSpell(player, (uint32_t)manaCost);
-#endif
+#endif // __PROTOCOL_76__
 		g_game.addMagicEffect(player->getPosition(), NM_ME_MAGIC_POISON);
 	}
 	else{
@@ -2163,11 +2170,12 @@ bool RuneSpell::Convince(const RuneSpell* spell, Creature* creature, Item* item,
 		return false;
 	}
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	spell->postCastSpell(player, (uint32_t)manaCost, (uint32_t)spell->getSoulCost(player));
 #else
 	spell->postCastSpell(player, (uint32_t)manaCost);
-#endif
+#endif // __PROTOCOL_76__
+
 	g_game.addMagicEffect(player->getPosition(), NM_ME_MAGIC_BLOOD);
 	return true;
 }

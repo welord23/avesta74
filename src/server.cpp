@@ -127,4 +127,3 @@ void Server::onStopServer()
 	closeListenSocekt();
 	//ConnectionManager::getInstance()->closeAll();
 }
-

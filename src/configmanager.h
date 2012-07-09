@@ -116,6 +116,9 @@ public:
 		USE_ACCBALANCE,
 		TEMPLE_TP_ID,
 		UH_TRAP,
+		KICK_ON_LOGIN,
+		TEAM_MODE,
+		DAMAGE_PERCENT,
 		LAST_INTEGER_CONFIG /* this must be the last one */
 	};
 

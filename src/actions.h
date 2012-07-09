@@ -59,15 +59,16 @@ public:
 	bool hasAction(const Item* item) const;
 
 protected:
-    bool executeUse(Action* action, Player* player, Item* item, const PositionEx& posEx, uint32_t creatureId);
+    bool executeUse(Action* action, Player* player, Item* item,
+		const PositionEx& posEx, uint32_t creatureId);
 	ReturnValue internalUseItem(Player* player, const Position& pos,
 		uint8_t index, Item* item, uint32_t creatureId);
 		
 	bool executeUseEx(Action* action, Player* player, Item* item, const PositionEx& fromPosEx,
 	    const PositionEx& toPosEx, uint32_t creatureId);
 	    
-    ReturnValue internalUseItemEx(Player* player, const PositionEx& fromPosEx, const PositionEx& toPosEx,
-        Item* item, uint32_t creatureId, bool& isSuccess);
+    ReturnValue internalUseItemEx(Player* player, const PositionEx& fromPosEx,
+		const PositionEx& toPosEx, Item* item, uint32_t creatureId, bool& isSuccess);
 
 	virtual void clear();
 	virtual LuaScriptInterface& getScriptInterface();

@@ -45,11 +45,11 @@ enum ConditionType_t {
 	CONDITION_MANASHIELD    = 1 << 9,
 	CONDITION_INFIGHT       = 1 << 10,
 	CONDITION_DRUNK         = 1 << 11,
-	CONDITION_YELL             = 1 << 12,
+	CONDITION_YELL          = 1 << 12,
 	CONDITION_REGENERATION  = 1 << 13,
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	CONDITION_SOUL          = 1 << 14,
-#endif
+#endif // __PROTOCOL_76__
 	CONDITION_MUTED         = 1 << 15,
 	CONDITION_ATTRIBUTES    = 1 << 16,
 	CONDITION_EXHAUST_COMBAT = 1 << 17,
@@ -83,10 +83,10 @@ enum ConditionAttr_t{
 	CONDITIONATTR_LIGHTLEVEL = 17,
 	CONDITIONATTR_LIGHTTICKS = 18,
 	CONDITIONATTR_LIGHTINTERVAL = 19,
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	CONDITIONATTR_SOULTICKS = 20,
 	CONDITIONATTR_SOULGAIN = 21,
-#endif
+#endif // __PROTOCOL_76__
 	CONDITIONATTR_SKILLS = 22,
 	CONDITIONATTR_STATS = 23,
 	CONDITIONATTR_OUTFIT = 24,
@@ -226,7 +226,7 @@ protected:
 	uint32_t manaGain;
 };
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 class ConditionSoul : public ConditionGeneric
 {
 public:
@@ -248,7 +248,7 @@ protected:
 	uint32_t soulTicks;
 	uint32_t soulGain;
 };
-#endif
+#endif // __PROTOCOL_76__
 
 class ConditionInvisible: public ConditionGeneric
 {

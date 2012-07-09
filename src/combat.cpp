@@ -25,7 +25,7 @@
 #include "game.h"
 #include "creature.h"
 #include "player.h"
-#include "const74.h"
+#include "const.h"
 #include "tools.h"
 #include "weapons.h"
 #include "spells.h"
@@ -246,10 +246,21 @@ ReturnValue Combat::canTargetCreature(const Player* player, const Creature* targ
 		}
 	}
 
+	if (g_config.getBoolean(ConfigManager::TEAM_MODE)) {
+		const Player* targetPlayer = target->getPlayer();
+		if (player && targetPlayer &&
+			player->getGuildId() == targetPlayer->getGuildId()) 
+		{
+			return RET_YOUMAYNOTATTACKTHISPLAYER;
+		}
+	}
+
 #ifdef __SKULLSYSTEM__
 	if(player->hasSafeMode() && target->getPlayer()) {
 		if(player->getParty()) {
-		    if(player->getParty()->isPlayerMember(target->getPlayer()) || player->getParty()->getLeader() == target) {
+		    if(player->getParty()->isPlayerMember(target->getPlayer()) ||
+				player->getParty()->getLeader() == target) 
+			{
 		        return Combat::canDoCombat(player, target);
 			}
 		}
@@ -541,8 +552,19 @@ bool Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	}
 
 	if(healthChange < 0){
-		if(caster && caster->getPlayer() && target->getPlayer()){
-			healthChange = healthChange/2;
+		if (caster && target) {
+			Player* casterPlayer = caster->getPlayer();
+			Player* targetPlayer = target->getPlayer();
+			if (casterPlayer && targetPlayer) {
+				healthChange = healthChange / 2;
+
+				if (g_config.getBoolean(ConfigManager::TEAM_MODE) && 
+					casterPlayer->getGuildId() == targetPlayer->getGuildId()) 
+				{
+					int damagePercent = g_config.getNumber(ConfigManager::DAMAGE_PERCENT);
+					healthChange = (healthChange * damagePercent) / 100;
+				}
+			}
 		}
 	}
 
@@ -562,8 +584,19 @@ bool Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	int32_t manaChange = random_range(var->minChange, var->maxChange, DISTRO_NORMAL);
 
 	if(manaChange < 0){
-		if(caster && caster->getPlayer() && target->getPlayer()){
-			manaChange = manaChange/2;
+		if (caster && target) {
+			Player* casterPlayer = caster->getPlayer();
+			Player* targetPlayer = target->getPlayer();
+			if (casterPlayer && targetPlayer) {
+				manaChange = manaChange / 2;
+
+				if (g_config.getBoolean(ConfigManager::TEAM_MODE) && 
+					casterPlayer->getGuildId() == targetPlayer->getGuildId()) 
+				{
+					int damagePercent = g_config.getNumber(ConfigManager::DAMAGE_PERCENT);
+					manaChange = (manaChange * damagePercent) / 100;
+				}
+			}
 		}
 	}
 
@@ -1448,4 +1481,3 @@ void MagicField::onStepInField(Creature* creature, bool purposeful/*= true*/)
 		}
 	}
 }
-

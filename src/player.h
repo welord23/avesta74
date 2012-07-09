@@ -28,7 +28,7 @@
 #include "cylinder.h"
 #include "enums.h"
 #include "vocation.h"
-#include "protocol74.h"
+#include "protocolgame.h"
 #include "party.h"
 
 #include <vector>
@@ -37,7 +37,7 @@
 
 class House;
 class Weapon;
-class Protocol74;
+class ProtocolGame;
 class Npc;
 class Party;
 class SchedulerTask;
@@ -57,10 +57,10 @@ enum playerinfo_t {
 	PLAYERINFO_MAXMANA,
 	PLAYERINFO_MAGICLEVEL,
 	PLAYERINFO_MAGICLEVELPERCENT
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	,
 	PLAYERINFO_SOUL
-#endif
+#endif // __PROTOCOL_76__
 };
 
 enum freeslot_t {
@@ -110,7 +110,7 @@ public:
 	static uint32_t playerCount;
 #endif
 
-	Player(const std::string& name, Protocol74* p);
+	Player(const std::string& name, ProtocolGame* p);
 	virtual ~Player();
 
 	virtual Player* getPlayer() {return this;}
@@ -295,9 +295,9 @@ public:
 	virtual void changeHealth(int32_t healthChange);
 	virtual void changeMana(int32_t manaChange);
 
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	void changeSoul(int32_t soulChange);
-#endif
+#endif // __PROTOCOL_76__
 
 	bool isPzLocked() const { return pzLocked; }
 	virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
@@ -617,7 +617,7 @@ protected:
 	virtual void __internalAddThing(uint32_t index, Thing* thing);
 
 protected:
-	Protocol74* client;
+	ProtocolGame* client;
 
 	uint32_t level;
 	uint32_t levelPercent;
@@ -633,9 +633,9 @@ protected:
 	Vocation_t vocation_id;
 	Vocation* vocation;
 	playersex_t sex;
-#ifdef __76__
+#ifdef __PROTOCOL_76__
 	int32_t soul, soulMax;
-#endif
+#endif // __PROTOCOL_76__
 	uint64_t groupFlags;
 	uint16_t premiumDays;
 	uint32_t MessageBufferTicks;
@@ -779,7 +779,7 @@ protected:
 	friend class Map;
 	friend class Actions;
 	friend class IOPlayer;
-	friend class Protocol74;
+	friend class ProtocolGame;
 };
 
 #endif

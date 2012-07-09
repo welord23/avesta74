@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "otpch.h"
 
-#include "const74.h"
+#include "const.h"
 #include "player.h"
 #include "monster.h"
 #include "npc.h"

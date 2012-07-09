@@ -21,10 +21,14 @@
 #ifndef __OTSERV_DEFINITIONS_H__
 #define __OTSERV_DEFINITIONS_H__
 
-#define OTSERV_VERSION "0.6.4"
+#define OTSERV_VERSION "0.6.5"
 #define OTSERV_NAME "Avesta"
-#ifdef __76__
+
+#if defined (__PROTOCOL_76__)
 #define OTSERV_CLIENT_VERSION "7.60"
+#elif defined (__PROTOCOL_77__)
+#define __PROTOCOL_76__
+#define OTSERV_CLIENT_VERSION "7.70"
 #else
 #define OTSERV_CLIENT_VERSION "7.40"
 #endif

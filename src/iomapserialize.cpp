@@ -548,13 +548,13 @@ bool IOMapSerialize::saveItem(PropWriteStream& stream, const Item* item)
 		// Hack our way into the attributes
 		stream.ADD_UCHAR(ATTR_CONTAINER_ITEMS);
 		stream.ADD_ULONG(container->size());
-		for(ItemList::const_reverse_iterator i = container->getReversedItems(); i != container->getReversedEnd(); ++i){
+		for(ItemList::const_reverse_iterator i = container->getReversedItems();
+			i != container->getReversedEnd(); ++i){
 			saveItem(stream, *i);
 		}
 	}
 
 	stream.ADD_UCHAR(0x00); // attr end
-
 	return true;
 }
 

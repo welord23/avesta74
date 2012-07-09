@@ -25,7 +25,7 @@
 #include <list>
 #include <string>
 
-#include "const74.h"
+#include "const.h"
 #include "definitions.h"
 
 class Player;

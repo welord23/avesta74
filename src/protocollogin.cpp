@@ -27,13 +27,20 @@
 #include "tools.h"
 #include "ioaccount.h"
 #include "ban.h"
-#include <iomanip>
 #include "game.h"
+#ifdef __PROTOCOL_77__
+#include "rsa.h"
+#endif // __PROTOCOL_77__
+
+#include <iomanip>
 
 extern ConfigManager g_config;
 extern IPList serverIPs;
 extern BanManager g_bans;
 extern Game g_game;
+#ifdef __PROTOCOL_77__
+extern RSA* g_otservRSA;
+#endif // __PROTOCOL_77__
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 uint32_t ProtocolLogin::protocolLoginCount = 0;
@@ -73,6 +80,21 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	/*uint16_t clientos =*/ msg.GetU16();
 	uint16_t version  = msg.GetU16();
 	msg.SkipBytes(12);
+
+#ifdef __PROTOCOL_77__
+	if(!RSA_decrypt(g_otservRSA, msg)){
+		getConnection()->closeConnection();
+		return false;
+	}
+
+	uint32_t key[4];
+	key[0] = msg.GetU32();
+	key[1] = msg.GetU32();
+	key[2] = msg.GetU32();
+	key[3] = msg.GetU32();
+	enableXTEAEncryption();
+	setXTEAKey(key);
+#endif // __PROTOCOL_77__
 
 	uint32_t accnumber = msg.GetU32();
 	std::string password = msg.GetString();
@@ -125,7 +147,6 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	}
 
 	g_bans.addLoginAttempt(clientip, true);
-		
 	
 	OutputMessage_ptr output = OutputMessagePool::getInstance()->getOutputMessage(this, false);
 	if(output){
