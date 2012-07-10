@@ -114,7 +114,8 @@ bool ChatChannel::addUser(Player* player)
 	if(it != m_users.end())
 		return false;
 		
-	if(getId() == 0x03 && !player->hasFlag(PlayerFlag_CanAnswerRuleViolations)){ //Rule Violations channel
+	if(getId() == CHANNEL_RULE_REP &&
+		!player->hasFlag(PlayerFlag_CanAnswerRuleViolations)){
     	return false;
     }
 	
@@ -135,14 +136,24 @@ bool ChatChannel::removeUser(Player* player)
 
 bool ChatChannel::talk(Player* fromPlayer, SpeakClasses type, const std::string& text, uint32_t time /*= 0*/)
 {
-	bool success = false;
+	// Can't speak to a channel you're not connected to
+	UsersMap::const_iterator iter = m_users.find(fromPlayer->getID());
+	if(iter == m_users.end())
+		return false;
+
+	// Add trade muted condition
+	if(getId() == CHANNEL_TRADE){
+		Condition* condition = Condition::createCondition(
+			CONDITIONID_DEFAULT, CONDITION_TRADE_MUTED, 120000, 0);
+		fromPlayer->addCondition(condition);
+	}
+
 	UsersMap::iterator it;
-	
 	for(it = m_users.begin(); it != m_users.end(); ++it){
 		it->second->sendToChannel(fromPlayer, type, text, getId(), time);
-		success = true;
 	}
-	return success;
+
+	return true;
 }
 
 Chat::Chat()
@@ -150,27 +161,27 @@ Chat::Chat()
 	// Create the default channels
 	ChatChannel *newChannel;
 	
-	newChannel = new ChatChannel(0x03, "Rule Violations");
+	newChannel = new ChatChannel(CHANNEL_RULE_REP, "Rule Violations");
 	if(newChannel)
-        m_normalChannels[0x03] = newChannel;
+        m_normalChannels[CHANNEL_RULE_REP] = newChannel;
 		
-	newChannel = new ChatChannel(0x04, "Game-Chat");
+	newChannel = new ChatChannel(CHANNEL_GAME_CHAT, "Game-Chat");
 	if(newChannel)
-		m_normalChannels[0x04] = newChannel;
+		m_normalChannels[CHANNEL_GAME_CHAT] = newChannel;
 		
-	newChannel = new ChatChannel(0x05, "Trade");
+	newChannel = new ChatChannel(CHANNEL_TRADE, "Trade");
 	if(newChannel)
-		m_normalChannels[0x05] = newChannel;
+		m_normalChannels[CHANNEL_TRADE] = newChannel;
 		
-	newChannel = new ChatChannel(0x06, "RL-Chat");
+	newChannel = new ChatChannel(CHANNEL_RL_CHAT, "RL-Chat");
 	if(newChannel)
-		m_normalChannels[0x06] = newChannel;
+		m_normalChannels[CHANNEL_RL_CHAT] = newChannel;
 				
-	newChannel = new ChatChannel(0x08, "Help");
+	newChannel = new ChatChannel(CHANNEL_HELP, "Help");
 	if(newChannel)
-		m_normalChannels[0x08] = newChannel;
+		m_normalChannels[CHANNEL_HELP] = newChannel;
 		
-	newChannel = new PrivateChatChannel(0xFFFF, "Private Chat Channel");
+	newChannel = new PrivateChatChannel(CHANNEL_PRIVATE, "Private Chat Channel");
 	if(newChannel)
 		dummyPrivate = newChannel;
 	
@@ -196,12 +207,42 @@ Chat::~Chat()
 	m_privateChannels.clear();
 }
 
+uint16_t Chat::getFreePrivateChannelId()
+{
+	for(uint16_t i = 100; i < 10000; ++i){
+		if(m_privateChannels.find(i) == m_privateChannels.end()){
+			return i;
+		}
+	}
+	return 0;
+}
+
+bool Chat::isPrivateChannel(uint16_t channelId)
+{
+	if(m_privateChannels.find(channelId) == m_privateChannels.end()){
+		return false;
+	}
+
+	return true;
+}
+
+bool Chat::isMuteableChannel(uint16_t channelId, SpeakClasses type)
+{
+	if (type == SPEAK_CHANNEL_Y) {
+		if (channelId == CHANNEL_GUILD || isPrivateChannel(channelId)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 ChatChannel* Chat::createChannel(Player* player, uint16_t channelId)
 {
 	if(getChannel(player, channelId))
 		return NULL;
 		
-	if(channelId == 0x00){	
+	if(channelId == CHANNEL_GUILD){	
 		ChatChannel *newChannel = new ChatChannel(channelId, player->getGuildName());
 		if(!newChannel)
 			return NULL;
@@ -209,24 +250,25 @@ ChatChannel* Chat::createChannel(Player* player, uint16_t channelId)
 		m_guildChannels[player->getGuildId()] = newChannel;
 		return newChannel;
 	}
-	else if(channelId == 0xFFFF){
-		//only 1 private channel for each player
+	else if(channelId == CHANNEL_PRIVATE){
+		// Only 1 private channel for each player
 		if(getPrivateChannel(player)){
 			return NULL;
 		}
 		
-		//find a free private channel slot
-		for(uint16_t i = 100; i < 10000; ++i){
-			if(m_privateChannels.find(i) == m_privateChannels.end()){
-				PrivateChatChannel* newChannel = new PrivateChatChannel(i, player->getName() + "'s Channel");
-				if(!newChannel)
-					return NULL;
-				
-				newChannel->setOwner(player->getGUID());
+		// Find a free private channel slot
+		uint16_t i = getFreePrivateChannelId();
+		if (i != 0) {
+			PrivateChatChannel* newChannel = new PrivateChatChannel(
+				i, player->getName() + "'s Channel");
 
-				m_privateChannels[i] = newChannel;
-				return newChannel;
+			if (!newChannel) {
+				return NULL;
 			}
+
+			newChannel->setOwner(player->getGUID());
+			m_privateChannels[i] = newChannel;
+			return newChannel;
 		}
 	}
 		
@@ -235,7 +277,7 @@ ChatChannel* Chat::createChannel(Player* player, uint16_t channelId)
 
 bool Chat::deleteChannel(Player* player, uint16_t channelId)
 {
-	if(channelId == 0x00){
+	if(channelId == CHANNEL_GUILD){
 		GuildChannelMap::iterator it = m_guildChannels.find(player->getGuildId());
 		if(it == m_guildChannels.end())
 			return false;
@@ -308,18 +350,27 @@ bool Chat::talkToChannel(Player* player, SpeakClasses type, const std::string& t
 		return false;
 
 	switch(channelId){
-		case 0x08:
+		case CHANNEL_TRADE:
 		{
-			//0x08 is the channelId of Help channel
+			if (player->hasCondition(CONDITION_TRADE_MUTED) &&
+				!player->hasFlag(PlayerFlag_CannotBeMuted)) 
+			{
+				player->sendCancel("You may only place one offer in two minutes.");
+				return true;
+			}
+			break;
+		}
+
+		case CHANNEL_HELP:
+		{
 			if(type == SPEAK_CHANNEL_Y && player->hasFlag(PlayerFlag_TalkOrangeHelpChannel)){
 				type = SPEAK_CHANNEL_O;
 			}
 			break;
 		}
+
 		default:
-		{
 			break;
-		}
 	}
 
 	if(channel->talk(player, type, text)){
@@ -347,15 +398,15 @@ ChannelList Chat::getChannelList(Player* player)
 		
 	// If has guild
 	if(player->getGuildId() && player->getGuildName().length()){
-		ChatChannel *channel = getChannel(player, 0x00);
+		ChatChannel *channel = getChannel(player, CHANNEL_GUILD);
 		if(channel)
 			list.push_back(channel);
-		else if((channel = createChannel(player, 0x00)))
+		else if((channel = createChannel(player, CHANNEL_GUILD)))
 			list.push_back(channel);
 	}
 				
 	for(itn = m_normalChannels.begin(); itn != m_normalChannels.end(); ++itn){
-		if(itn->first == 0x03 && !player->hasFlag(PlayerFlag_CanAnswerRuleViolations)){ //Rule violations channel
+		if(itn->first == CHANNEL_RULE_REP && !player->hasFlag(PlayerFlag_CanAnswerRuleViolations)){
 		    continue;
         }
         
@@ -375,7 +426,7 @@ ChannelList Chat::getChannelList(Player* player)
 		}
 	}
 	
-	if(!gotPrivate)
+	if(!gotPrivate && player->isPremium())
 		list.push_front(dummyPrivate);
 	
 	return list;
@@ -383,7 +434,7 @@ ChannelList Chat::getChannelList(Player* player)
 
 ChatChannel* Chat::getChannel(Player* player, uint16_t channelId)
 {
-	if(channelId == 0x00){
+	if(channelId == CHANNEL_GUILD){
 		GuildChannelMap::iterator git = m_guildChannels.find(player->getGuildId());
 		if(git != m_guildChannels.end()){
 			return git->second;
@@ -393,7 +444,7 @@ ChatChannel* Chat::getChannel(Player* player, uint16_t channelId)
 
 	NormalChannelMap::iterator nit = m_normalChannels.find(channelId);
 	if(nit != m_normalChannels.end()){
-		if(channelId == 0x03 && !player->hasFlag(PlayerFlag_CanAnswerRuleViolations)){ //Rule violations channel
+		if(channelId == CHANNEL_RULE_REP && !player->hasFlag(PlayerFlag_CanAnswerRuleViolations)){
 			return NULL;
 		}
 
