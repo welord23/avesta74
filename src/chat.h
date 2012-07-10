@@ -32,6 +32,18 @@ class Player;
 
 typedef std::map<uint32_t, Player*> UsersMap;
 
+enum ChannelID {
+	CHANNEL_GUILD      = 0x00,
+	CHANNEL_RULE_REP   = 0x03,
+	CHANNEL_GAME_CHAT  = 0x04,
+	CHANNEL_TRADE      = 0x05,
+	//CHANNEL_TRADE_ROOK = 0x06,
+	CHANNEL_RL_CHAT    = 0x07,
+	//CHANNEL_PARTY      = 0x08,
+	CHANNEL_HELP       = 0x09,
+	CHANNEL_PRIVATE    = 0xFFFF
+};
+
 class ChatChannel
 {
 public:
@@ -94,8 +106,13 @@ public:
 	bool addUserToChannel(Player* player, uint16_t channelId);
 	bool removeUserFromChannel(Player* player, uint16_t channelId);
 	void removeUserFromAllChannels(Player* player);
+
+	uint16_t getFreePrivateChannelId();
+	bool isPrivateChannel(uint16_t channelId);
+	bool isMuteableChannel(uint16_t channelId, SpeakClasses type);
 	
-	bool talkToChannel(Player* player, SpeakClasses type, const std::string& text, unsigned short channelId);	
+	bool talkToChannel(Player* player, SpeakClasses type,
+		const std::string& text, unsigned short channelId);	
 	
 	std::string getChannelName(Player* player, uint16_t channelId);	
 	ChannelList getChannelList(Player* player);
@@ -105,7 +122,6 @@ public:
 	PrivateChatChannel* getPrivateChannel(Player* player);
 	
 private:
-	
 	typedef std::map<uint16_t, ChatChannel*> NormalChannelMap;
 	typedef std::map<uint32_t, ChatChannel*> GuildChannelMap;
 	NormalChannelMap m_normalChannels;

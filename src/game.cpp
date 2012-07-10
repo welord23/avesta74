@@ -1943,7 +1943,7 @@ bool Game::playerCreatePrivateChannel(uint32_t playerId)
 	if(!player || player->isRemoved())
 		return false;
 
-	ChatChannel* channel = g_chat.createChannel(player, 0xFFFF);
+	ChatChannel* channel = g_chat.createChannel(player, CHANNEL_PRIVATE);
 
 	if(!channel){
 		return false;
@@ -2026,11 +2026,10 @@ bool Game::playerOpenChannel(uint32_t playerId, uint16_t channelId)
 		return false;
 	}
 
-	if(channel->getId() != 0x03){
+	if(channel->getId() != CHANNEL_RULE_REP){
 		player->sendChannel(channel->getId(), channel->getName());
 	}
 	else{
-		// 0x03 is the Rule Violations channel, send it properly
 		player->sendRuleViolationsChannel(channel->getId());
 	}
 
@@ -2091,9 +2090,11 @@ bool Game::playerProcessRuleViolation(uint32_t playerId, const std::string& name
 	rvr.isOpen = false;
 	rvr.gamemaster = player;
 
-	ChatChannel* channel = g_chat.getChannelById(0x03);
+	ChatChannel* channel = g_chat.getChannelById(CHANNEL_RULE_REP);
 	if(channel){
-		for(UsersMap::const_iterator it = channel->getUsers().begin(); it != channel->getUsers().end(); ++it){
+		for(UsersMap::const_iterator it = channel->getUsers().begin();
+			it != channel->getUsers().end(); ++it)
+		{
 			if(it->second){
 				it->second->sendRemoveReport(reporter->getName());
 			}
@@ -3165,14 +3166,15 @@ bool Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 	if(!player || player->isRemoved())
 		return false;
 
+	bool isMuteableChannel = g_chat.isMuteableChannel(channelId, type);
 	uint32_t muteTime = player->isMuted();
-	if(muteTime > 0){
+
+	if(isMuteableChannel && muteTime > 0){
 		std::stringstream ss;
 		ss << "You are still muted for " << muteTime << " seconds.";
 		player->sendTextMessage(MSG_STATUS_SMALL, ss.str());
 		return false;
 	}
-
 
 	TalkActionResult_t result;
 	result = g_talkactions->onPlayerSpeak(player, type, text);
@@ -3184,11 +3186,16 @@ bool Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 		return true;
 	}
 
-	if(playerSaySpell(player, type, text)){
-		return true;
+	if(isMuteableChannel || muteTime == 0){
+		if(playerSaySpell(player, type, text)){
+			return true;
+		}
 	}
 
-	player->removeMessageBuffer();
+	if(isMuteableChannel){
+		player->removeMessageBuffer();
+	}
+
 	player->resetIdleTime();
 
 	switch(type){
@@ -3329,7 +3336,8 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 	return true;
 }
 
-bool Game::playerTalkToChannel(Player* player, SpeakClasses type, const std::string& text, unsigned short channelId)
+bool Game::playerTalkToChannel(Player* player, SpeakClasses type,
+	const std::string& text, unsigned short channelId)
 {
 	if(type == SPEAK_CHANNEL_R1 && !player->hasFlag(PlayerFlag_CanTalkRedChannel)){
 		type = SPEAK_CHANNEL_Y;
@@ -3338,14 +3346,13 @@ bool Game::playerTalkToChannel(Player* player, SpeakClasses type, const std::str
 		type = SPEAK_CHANNEL_Y;
 	}
 
-	g_chat.talkToChannel(player, type, text, channelId);
-	return true;
+	return g_chat.talkToChannel(player, type, text, channelId);
 }
 
 bool Game::playerReportRuleViolation(Player* player, const std::string& text)
 {
-	//Do not allow reports on multiclones worlds
-	//Since reports are name-based
+	// Do not allow reports on multiclones worlds
+	// Since reports are name-based
 	if(g_config.getBoolean(ConfigManager::ALLOW_CLONES)){
 		player->sendTextMessage(MSG_INFO_DESCR, "Rule violations reports are disabled.");
 		return false;
@@ -3361,9 +3368,15 @@ bool Game::playerReportRuleViolation(Player* player, const std::string& text)
 
 	ruleViolations[player->getID()] = rvr;
 
-	ChatChannel* channel = g_chat.getChannelById(0x03); //Rule Violations channel
+	ChatChannel* channel = g_chat.getChannelById(CHANNEL_RULE_REP);
 	if(channel){
-		channel->talk(player, SPEAK_RVR_CHANNEL, text, rvr->time);
+		for(UsersMap::const_iterator it = channel->getUsers().begin();
+			it != channel->getUsers().end(); ++it)
+		{
+			if(it->second){
+				it->second->sendToChannel(player, SPEAK_RVR_CHANNEL, text, CHANNEL_RULE_REP, rvr->time);
+			}
+		}
 		return true;
 	}
 	return false;
@@ -4140,14 +4153,16 @@ bool Game::cancelRuleViolation(Player* player)
 
 	Player* gamemaster = it->second->gamemaster;
 	if(!it->second->isOpen && gamemaster){
-		//Send to the responder
+		// Send to the responder
 		gamemaster->sendRuleViolationCancel(player->getName());
 	}
 	else{
-		//Send to channel
-		ChatChannel* channel = g_chat.getChannelById(0x03);
+		// Send to channel
+		ChatChannel* channel = g_chat.getChannelById(CHANNEL_RULE_REP);
 		if(channel){
-			for(UsersMap::const_iterator ut = channel->getUsers().begin(); ut != channel->getUsers().end(); ++ut){
+			for(UsersMap::const_iterator ut = channel->getUsers().begin();
+				ut != channel->getUsers().end(); ++ut)
+			{
 				if(ut->second){
 					ut->second->sendRemoveReport(player->getName());
 				}
@@ -4155,7 +4170,7 @@ bool Game::cancelRuleViolation(Player* player)
 		}
 	}
 
-	//Now erase it
+	// Now erase it
 	ruleViolations.erase(it);
 	return true;
 }
@@ -4170,9 +4185,11 @@ bool Game::closeRuleViolation(Player* player)
 	ruleViolations.erase(it);
 	player->sendLockRuleViolation();
 
-	ChatChannel* channel = g_chat.getChannelById(0x03);
+	ChatChannel* channel = g_chat.getChannelById(CHANNEL_RULE_REP);
 	if(channel){
-		for(UsersMap::const_iterator ut = channel->getUsers().begin(); ut != channel->getUsers().end(); ++ut){
+		for(UsersMap::const_iterator ut = channel->getUsers().begin();
+			ut != channel->getUsers().end(); ++ut)
+		{
 			if(ut->second){
 				ut->second->sendRemoveReport(player->getName());
 			}

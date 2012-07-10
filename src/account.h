@@ -18,7 +18,6 @@
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
 
-
 #ifndef __OTSERV_ACCOUNT_H__
 #define __OTSERV_ACCOUNT_H__
 
@@ -33,14 +32,14 @@ public:
   Account();
   ~Account();
 
-  uint32_t accnumber;
-  // < current time is none, (time_t)(-1) is infinite.
-  time_t premEnd;
-  int32_t warnings;
-  static uint16_t getPremiumDaysLeft(uint32_t _premEnd);
+  static uint16_t getPremiumDaysLeft(int32_t _premEnd);
 
+  uint32_t accnumber;
+  int32_t warnings;
   std::string password;
 
+  // < current time is none, (time_t)(-1) is infinite.
+  time_t premEnd;
   std::list<std::string> charList;
 };
 
