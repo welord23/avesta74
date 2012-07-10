@@ -699,7 +699,7 @@ bool Door::readAttr(AttrTypes_t attr, PropStream& propStream)
 {
 	if(ATTR_HOUSEDOORID == attr){
 		unsigned char _doorId = 0;
-		if(!propStream.GET_UCHAR(_doorId)){
+		if(!propStream.GET_UINT8(_doorId)){
 			return false;
 		}
 
@@ -717,8 +717,8 @@ bool Door::serializeAttr(PropWriteStream& propWriteStream) const
 	/*
 	if(house){
 		unsigned char _doorId = getDoorId();
-		propWriteStream.ADD_UCHAR(ATTR_HOUSEDOORID);
-		propWriteStream.ADD_UCHAR(_doorId);
+		propWriteStream.ADD_UINT8(ATTR_HOUSEDOORID);
+		propWriteStream.ADD_UINT8(_doorId);
 	}
 	*/
 

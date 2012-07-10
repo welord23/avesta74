@@ -177,28 +177,33 @@ int Items::loadFromOtb(std::string file)
 		//attributes
 		//0x01 = version data
 		uint32_t flags;
-		if(!props.GET_ULONG(flags)){
+		if(!props.GET_UINT32(flags)){
 			return ERROR_INVALID_FORMAT;
 		}
 		attribute_t attr;
-		if(!props.GET_VALUE(attr)){
+		if(!props.GET_UINT8(attr)){
 			return ERROR_INVALID_FORMAT;
 		}
 		if(attr == ROOT_ATTR_VERSION){
 			datasize_t datalen = 0;
-			if(!props.GET_VALUE(datalen)){
+			if(!props.GET_UINT16(datalen)){
 				return ERROR_INVALID_FORMAT;
 			}
 			if(datalen != sizeof(VERSIONINFO)){
 				return ERROR_INVALID_FORMAT;
 			}
-			VERSIONINFO *vi;
-			if(!props.GET_STRUCT(vi)){
+			VERSIONINFO vi;
+			if(		!props.GET_UINT32(vi.dwMajorVersion) ||
+					!props.GET_UINT32(vi.dwMinorVersion) ||
+					!props.GET_UINT32(vi.dwBuildNumber) ||
+					!props.GET_RAWSTRING((char*)&vi.CSDVersion, sizeof(vi.CSDVersion)))
+			{
 				return ERROR_INVALID_FORMAT;
 			}
-			Items::dwMajorVersion = vi->dwMajorVersion;	//items otb format file version
-			Items::dwMinorVersion = vi->dwMinorVersion;	//client version
-			Items::dwBuildNumber = vi->dwBuildNumber;	//revision
+
+			Items::dwMajorVersion = vi.dwMajorVersion;	//items otb format file version
+			Items::dwMinorVersion = vi.dwMinorVersion;	//client version
+			Items::dwBuildNumber = vi.dwBuildNumber;	//revision
 		}
 	}
 #ifdef __PROTOCOL_76__
@@ -211,7 +216,8 @@ int Items::loadFromOtb(std::string file)
 	}
 
 	if(Items::dwMajorVersion == 0xFFFFFFFF){
-		std::cout << "[Warning] Items::loadFromOtb items.otb using generic client version." << std::endl;
+		std::cout << "[Warning] Items::loadFromOtb items.otb using generic client version."
+			<< std::endl;
 	}
 
 	node = f.getChildNode(node, type);
@@ -255,7 +261,7 @@ int Items::loadFromOtb(std::string file)
 		}
 
 		//read 4 byte flags
-		if(!props.GET_VALUE(flags)){
+		if(!props.GET_UINT32(flags)){
 			return ERROR_INVALID_FORMAT;
 		}
 
@@ -285,9 +291,9 @@ int Items::loadFromOtb(std::string file)
 
 		attribute_t attrib;
 		datasize_t datalen = 0;
-		while(props.GET_VALUE(attrib)){
+		while(props.GET_UINT8(attrib)){
 			//size of data
-			if(!props.GET_VALUE(datalen)){
+			if(!props.GET_UINT16(datalen)){
 				delete iType;
 				return ERROR_INVALID_FORMAT;
 			}
@@ -298,7 +304,7 @@ int Items::loadFromOtb(std::string file)
 					return ERROR_INVALID_FORMAT;
 
 				uint16_t serverid;
-				if(!props.GET_USHORT(serverid))
+				if(!props.GET_UINT16(serverid))
 					return ERROR_INVALID_FORMAT;
 
 				if(serverid > 20000)
@@ -313,7 +319,7 @@ int Items::loadFromOtb(std::string file)
 					return ERROR_INVALID_FORMAT;
 
 				uint16_t clientid;
-				if(!props.GET_USHORT(clientid))
+				if(!props.GET_UINT16(clientid))
 					return ERROR_INVALID_FORMAT;
 
 				iType->clientId = clientid;
@@ -325,7 +331,7 @@ int Items::loadFromOtb(std::string file)
 					return ERROR_INVALID_FORMAT;
 
 				uint16_t speed;
-				if(!props.GET_USHORT(speed))
+				if(!props.GET_UINT16(speed))
 					return ERROR_INVALID_FORMAT;
 
 				iType->speed = speed;
@@ -337,12 +343,15 @@ int Items::loadFromOtb(std::string file)
 				if(datalen != sizeof(lightBlock2))
 					return ERROR_INVALID_FORMAT;
 
-				lightBlock2* lb2;
-				if(!props.GET_STRUCT(lb2))
+				lightBlock2 lb2;
+				if(		!props.GET_UINT16(lb2.lightLevel) ||
+						!props.GET_UINT16(lb2.lightColor))
+				{
 					return ERROR_INVALID_FORMAT;
+				}
 
-				iType->lightLevel = lb2->lightLevel;
-				iType->lightColor = lb2->lightColor;
+				iType->lightLevel = lb2.lightLevel;
+				iType->lightColor = lb2.lightColor;
 				break;
 			}
 			case ITEM_ATTR_TOPORDER:
@@ -351,7 +360,7 @@ int Items::loadFromOtb(std::string file)
 					return ERROR_INVALID_FORMAT;
 
 				uint8_t v;
-				if(!props.GET_UCHAR(v))
+				if(!props.GET_UINT8(v))
 					return ERROR_INVALID_FORMAT;
 
 				iType->alwaysOnTopOrder = v;

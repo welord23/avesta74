@@ -464,7 +464,7 @@ bool IOPlayer::savePlayer(Player* player)
 				return false;
 			}
 
-			propWriteStream.ADD_UCHAR(CONDITIONATTR_END);
+			propWriteStream.ADD_UINT8(CONDITIONATTR_END);
 		}
 	}
 
