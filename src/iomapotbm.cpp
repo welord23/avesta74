@@ -83,18 +83,23 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 		return false;
 	}
 
-	OTBM_root_header* root_header;
-	if(!propStream.GET_STRUCT(root_header)){
+	OTBM_root_header root_header;
+	if(		!propStream.GET_UINT32(root_header.version) ||
+			!propStream.GET_UINT16(root_header.width) ||
+			!propStream.GET_UINT16(root_header.height) ||
+			!propStream.GET_UINT32(root_header.majorVersionItems) ||
+			!propStream.GET_UINT32(root_header.minorVersionItems))
+	{
 		setLastErrorString("Could not read header.");
 		return false;
 	}
 	
-	if(root_header->version > 2){
+	if(root_header.version > 2){
 		setLastErrorString("Unknown OTBM version detected, please update your server.");;
 		return false;
 	}
 	
-	if(root_header->majorVersionItems > (unsigned long)Items::dwMajorVersion){
+	if(root_header.majorVersionItems > (unsigned long)Items::dwMajorVersion){
 		setLastErrorString("The map was saved with a different items.otb version, an upgraded items.otb is required.");
 		return false;
 	}
@@ -102,18 +107,18 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 	// Prevent load maps saved with items.otb previous to
 	// version 800, because of the change to stackable of 
 	// itemid 3965
-	if(root_header->minorVersionItems < CLIENT_VERSION_740){
+	if(root_header.minorVersionItems < CLIENT_VERSION_740){
 		setLastErrorString("This map needs to be updated.");
 		return false;
 	}
 
-	if(root_header->minorVersionItems > (unsigned long)Items::dwMinorVersion){
+	if(root_header.minorVersionItems > (unsigned long)Items::dwMinorVersion){
 		std::cout << "Warning: [OTBM loader] This map needs an updated items OTB file." <<std::endl;
 	}
 
-	std::cout << "Map size: " << root_header->width << "x" << root_header->height << std::endl;
-	map->mapWidth = root_header->width;
-	map->mapHeight = root_header->height;
+	std::cout << "Map size: " << root_header.width << "x" << root_header.height << std::endl;
+	map->mapWidth = root_header.width;
+	map->mapHeight = root_header.height;
 
 	NODE nodeMap = f.getChildNode(root, type);
 	
@@ -130,7 +135,7 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 	unsigned char attribute;
 	std::string mapDescription;
 	std::string tmp;
-	while(propStream.GET_UCHAR(attribute)){
+	while(propStream.GET_UINT8(attribute)){
 		switch(attribute){
 		case OTBM_ATTR_DESCRIPTION:
 			if(!propStream.GET_STRING(mapDescription)){
@@ -182,16 +187,19 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 				return false;
 			}
 			
-			OTBM_Tile_area_coords* area_coord;
-			if(!propStream.GET_STRUCT(area_coord)){
+			OTBM_Tile_area_coords area_coord;
+			if(		!propStream.GET_UINT16(area_coord._x) ||
+					!propStream.GET_UINT16(area_coord._y) ||
+					!propStream.GET_UINT8(area_coord._z))
+			{
 				setLastErrorString("Invalid map node.");
 				return false;
 			}
 			
-			int base_x, base_y, base_z;
-			base_x = area_coord->_x;
-			base_y = area_coord->_y;
-			base_z = area_coord->_z;
+			int32_t base_x, base_y, base_z;
+			base_x = area_coord._x;
+			base_y = area_coord._y;
+			base_z = area_coord._z;
 			
 			NODE nodeTile = f.getChildNode(nodeMapData, type);
 			while(nodeTile != NO_NODE){
@@ -207,14 +215,16 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 					}
 					
 					unsigned short px, py, pz;
-					OTBM_Tile_coords* tile_coord;
-					if(!propStream.GET_STRUCT(tile_coord)){
+					OTBM_Tile_coords tile_coord;
+					if(		!propStream.GET_UINT8(tile_coord._x) ||
+							!propStream.GET_UINT8(tile_coord._y))
+					{
 						setLastErrorString("Could not read tile position.");
 						return false;
 					}
 
-					px = base_x + tile_coord->_x;
-					py = base_y + tile_coord->_y;
+					px = base_x + tile_coord._x;
+					py = base_y + tile_coord._y;
 					pz = base_z;
 					
 					bool isHouseTile = false;
@@ -225,7 +235,7 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 					}
 					else if(type == OTBM_HOUSETILE){
 						uint32_t _houseid;
-						if(!propStream.GET_ULONG(_houseid)){
+						if(!propStream.GET_UINT32(_houseid)){
 							std::stringstream ss;
 							ss << "[x:" << px << ", y:" << py << ", z:" << pz << "] " << "Could not read house id.";
 							setLastErrorString(ss.str());
@@ -247,12 +257,12 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 
 					//read tile attributes
 					unsigned char attribute;
-					while(propStream.GET_UCHAR(attribute)){
+					while(propStream.GET_UINT8(attribute)){
 						switch(attribute){
 						case OTBM_ATTR_TILE_FLAGS:
 						{
 							uint32_t flags;
-							if(!propStream.GET_ULONG(flags)){
+							if(!propStream.GET_UINT32(flags)){
 								std::stringstream ss;
 								ss << "[x:" << px << ", y:" << py << ", z:" << pz << "] " << "Failed to read tile flags.";
 								setLastErrorString(ss.str());
@@ -386,7 +396,7 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 					}
 					
 					uint32_t townid = 0;
-					if(!propStream.GET_ULONG(townid)){
+					if(!propStream.GET_UINT32(townid)){
 						setLastErrorString("Could not read town id.");
 						return false;
 					}
@@ -405,16 +415,19 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 
 					town->setName(townName);
 
-					OTBM_TownTemple_coords *town_coords;
-					if(!propStream.GET_STRUCT(town_coords)){
+					OTBM_TownTemple_coords town_coords;
+					if(		!propStream.GET_UINT16(town_coords._x) ||
+							!propStream.GET_UINT16(town_coords._y) ||
+							!propStream.GET_UINT8(town_coords._z))
+					{
 						setLastErrorString("Could not read town coordinates.");
 						return false;
 					}
 
 					Position pos;
-					pos.x = town_coords->_x;
-					pos.y = town_coords->_y;
-					pos.z = town_coords->_z;
+					pos.x = town_coords._x;
+					pos.y = town_coords._y;
+					pos.z = town_coords._z;
 					town->setTemplePos(pos);
 				}
 				else{
@@ -425,7 +438,7 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 				nodeTown = f.getNextNode(nodeTown, type);
 			}
 		}
-		else if(type == OTBM_WAYPOINTS && root_header->version >= 2){
+		else if(type == OTBM_WAYPOINTS && root_header.version >= 2){
 			NODE nodeWaypoint = f.getChildNode(nodeMapData, type);
 			while(nodeWaypoint != NO_NODE){
 				if(type == OTBM_WAYPOINT){
@@ -442,15 +455,18 @@ bool IOMapOTBM::loadMap(Map* map, const std::string& identifier)
 						return false;
 					}
 
-					OTBM_TownTemple_coords* wp_coords;
-					if(!propStream.GET_STRUCT(wp_coords)){
+					OTBM_TownTemple_coords wp_coords;
+					if(		!propStream.GET_UINT16(wp_coords._x) ||
+							!propStream.GET_UINT16(wp_coords._y) ||
+							!propStream.GET_UINT8(wp_coords._z))
+					{
 						setLastErrorString("Could not read waypoint coordinates.");
 						return false;
 					}
 
-					pos.x = wp_coords->_x;
-					pos.y = wp_coords->_y;
-					pos.z = wp_coords->_z;
+					pos.x = wp_coords._x;
+					pos.y = wp_coords._y;
+					pos.z = wp_coords._z;
 
 					Waypoint_ptr wp(new Waypoint(name, pos));
 					map->waypoints.addWaypoint(wp);
