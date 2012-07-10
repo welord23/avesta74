@@ -1188,7 +1188,11 @@ QTreeNode::~QTreeNode()
 QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y)
 {
 	if(!isLeaf()){
+#ifndef __SWAP_ENDIAN__
 		uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
+#else
+		uint32_t index = ((swap_uint32(x) & 0x8000) >> 15) | ((swap_uint32(y) & 0x8000) >> 14);
+#endif
 		if(m_child[index]){
 			return m_child[index]->getLeaf(x*2, y*2);
 		}
@@ -1207,7 +1211,11 @@ QTreeLeafNode* QTreeNode::getLeafStatic(QTreeNode* root, uint32_t x, uint32_t y)
 	uint32_t currentX = x, currentY = y;
 	while(currentNode){
 		if(!currentNode->isLeaf()){
+#ifndef __SWAP_ENDIAN__
 			uint32_t index = ((currentX & 0x8000) >> 15) | ((currentY & 0x8000) >> 14);
+#else
+			uint32_t index = ((swap_uint32(currentX) & 0x8000) >> 15) | ((swap_uint32(currentY) & 0x8000) >> 14);
+#endif
 			if(currentNode->m_child[index]){
 				currentNode = currentNode->m_child[index];
 				currentX = currentX*2;
@@ -1227,7 +1235,11 @@ QTreeLeafNode* QTreeNode::getLeafStatic(QTreeNode* root, uint32_t x, uint32_t y)
 QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level)
 {
 	if(!isLeaf()){
+#ifndef __SWAP_ENDIAN__
 		uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
+#else
+		uint32_t index = ((swap_uint32(x) & 0x8000) >> 15) | ((swap_uint32(y) & 0x8000) >> 14);
+#endif
 		if(!m_child[index]){
 			if(level != FLOOR_BITS){
 				m_child[index] = new QTreeNode();
