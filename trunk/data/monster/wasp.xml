@@ -35,7 +35,4 @@
   <voices interval="5000" chance="100">
     <voice sentence="Bsssssss"/>
   </voices>
-  <loot>
-    <item id="5902" countmax="1" chance1="5000" chancemax="0"/>
-  </loot>
 </monster>

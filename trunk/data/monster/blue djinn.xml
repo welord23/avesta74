@@ -57,7 +57,6 @@
   <loot>
     <item id="1978" countmax="1" chance="2500"/>
     <item id="2745" countmax="1" chance="1000"/>
-    <item id="7378" countmax="2" chance1="2000" chancemax="0"/>
     <item id="2146" countmax="4" chance="2500"/>
     <item id="2148" countmax="20" chance1="100000" chancemax="0"/>
     <item id="2684" countmax="5" chance1="50000" chancemax="0"/>
@@ -66,6 +65,5 @@
     <item id="1971" chance="10000"/>
     <item id="2044" chance="20000"/>
     <item id="2063" countmax="1" chance="7500"/>
-    <item id="5912" countmax="1" chance1="5000" chancemax="0"/>
   </loot>
 </monster>

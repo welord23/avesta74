@@ -43,7 +43,6 @@
     <voice sentence="Your existence will end here!"/>
   </voices>
   <loot>
-    <item id="3976" countmax="10" chance1="50000" chancemax="0"/>
     <item id="2148" countmax="10" chance1="100000" chancemax="0"/>
     <item id="2544" countmax="10" chance1="50000" chancemax="0"/>
     <item id="2484" chance="10000"/>
@@ -54,7 +53,6 @@
         <item id="2148" countmax="5" chance1="80000" chancemax="0"/>
         <item id="2642" chance="5500"/>
         <item id="2397" chance="4000"/>
-        <item id="5921" countmax="1" chance1="5000" chancemax="0"/>
       </inside>
     </item>
   </loot>

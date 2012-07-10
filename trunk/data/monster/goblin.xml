@@ -43,7 +43,6 @@
     <voice sentence="Me green, me mean!"/>
   </voices>
   <loot>
-    <item id="3976" countmax="10" chance1="50000" chancemax="0"/>
     <item id="2148" countmax="10" chance1="100000" chancemax="0"/>
     <item id="2420" chance="10000"/>
     <item id="2461" chance="10000"/>

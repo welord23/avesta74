@@ -48,7 +48,6 @@
     <voice sentence="FCHHHHH" yell="1"/>
   </voices>
   <loot>
-    <item id="3976" countmax="10" chance1="50000" chancemax="0"/>
     <item id="2672" countmax="2" chance1="20000" chancemax="0"/>
     <item id="2148" countmax="100" chance1="100000" chancemax="0"/>
     <item id="2398" chance="20000"/>
@@ -59,10 +58,8 @@
     <item id="2647" chance="2222"/>
     <item id="2457" chance="3333"/>
     <item id="2387" chance="4000"/>
-    <item id="7430" chance="4000"/>
     <item id="2397" chance="5000"/>
     <item id="2546" countmax="10" chance1="4000" chancemax="0"/>
-    <item id="5877" countmax="1" chance1="4000" chancemax="0"/>
     <item id="1987" chance="100000">
       <inside>
         <item id="2187" chance="1111" /> -- wand of Inferno
@@ -72,7 +69,6 @@
         <item id="2177" chance="2000"/>
         <item id="2413" chance="6666"/>
         <item id="2409" chance="509"/>
-        <item id="5920" countmax="1" chance1="5000" chancemax="0"/>
       </inside>
     </item>
   </loot>

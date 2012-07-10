@@ -55,12 +55,9 @@
   <loot>
     <item id="2148" countmax="40" chance1="100000" chancemax="0"/>
     <item id="2032" chance="10000"/>
-    <item id="3969" chance="150"/>
     <item id="2392" chance="220"/>
     <item id="2804" countmax="2" chance1="20000" chancemax="0"/>
-    <item id="3976" countmax="10" chance1="50000" chancemax="0"/>
-    <item id="5809" chance="2500"/>
-    <item id="2186" chance="500"/> --moonlight rod
+    <item id="2186" chance="500"/>
     <item id="1987" chance="100000">
       <inside>
        <item id="2483" countmax="1" chance="8500"/>
