@@ -54,7 +54,7 @@ enum ConditionType_t {
 	CONDITION_ATTRIBUTES    = 1 << 16,
 	CONDITION_EXHAUST_COMBAT = 1 << 17,
 	CONDITION_EXHAUST_HEAL   = 1 << 18,
-	CONDITION_TRADE_MUTED
+	CONDITION_TRADE_MUTED    = 1 << 19
 };
 
 enum ConditionEnd_t{
