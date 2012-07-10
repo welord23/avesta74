@@ -42,12 +42,14 @@
 #include "teleport.h"
 #include "ban.h"
 #include "ioaccount.h"
+#include "movement.h"
 
 extern Game g_game;
 extern Monsters g_monsters;
 extern BanManager g_bans;
 extern ConfigManager g_config;
 extern Spells* g_spells;
+extern MoveEvents* g_moveEvents;
 
 enum{
 	EVENT_ID_LOADING = 1,
@@ -3485,8 +3487,12 @@ int LuaScriptInterface::luaDoSetItemActionId(lua_State *L)
 
 	Item* item = env->getItemByUID(uid);
 	if(item){
+		if(item->getActionId() != 0){
+			g_moveEvents->onRemoveTileItem(item->getTile(), item);
+		}
 		item->setActionId(actionid);
-		lua_pushnumber(L, LUA_NO_ERROR);
+		g_moveEvents->onAddTileItem(item->getTile(), item);
+		lua_pushboolean(L, true);
 	}
 	else{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
