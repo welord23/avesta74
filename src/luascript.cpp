@@ -3492,7 +3492,7 @@ int LuaScriptInterface::luaDoSetItemActionId(lua_State *L)
 		}
 		item->setActionId(actionid);
 		g_moveEvents->onAddTileItem(item->getTile(), item);
-		lua_pushboolean(L, true);
+		lua_pushnumber(L, LUA_NO_ERROR);
 	}
 	else{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
