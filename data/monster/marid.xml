@@ -72,8 +72,7 @@
     <item id="1872" countmax="1" chance="2500"/>
     <item id="2148" countmax="50" chance1="100000" chancemax="0"/>
     <item id="2442" chance="5000"/>
-    <item id="2183" chance="1000" /> -- tempest rod
-    <item id="5912" countmax="1" chance1="5000" chancemax="0"/>
+    <item id="2183" chance="1000" />
     <item id="1987" chance="100000">
       <inside>
         <item id="2070" chance="300"/>

@@ -54,7 +54,6 @@
     <voice sentence="Vihil Ealuel!"/>
   </voices>
   <loot>
-    <item id="3976" countmax="10" chance1="50000" chancemax="0"/>
     <item id="2148" countmax="20" chance1="100000" chancemax="0"/>
     <item id="1949" chance="10000"/>
     <item id="2578" chance="5000"/>
@@ -66,7 +65,6 @@
     <item id="2600" chance="33333"/>
     <item id="2177" chance="2857"/>
     <item id="2689" countmax="3" chance1="20000" chancemax="0"/>
-    <item id="5922" countmax="1" chance1="5000" chancemax="0"/>
     <item id="1987" chance="100000">
       <inside>
         <item id="2189" chance="1333" /> -- wand of cosmic energy

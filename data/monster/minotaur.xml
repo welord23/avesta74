@@ -36,13 +36,11 @@
     <voice sentence="kaplar!"/>
   </voices>
   <loot>
-    <item id="3976" countmax="10" chance1="50000" chancemax="0"/>
     <item id="2148" countmax="28" chance1="100000" chancemax="0"/>
     <item id="2464" chance="10000"/>
     <item id="2386" chance="10000"/>
     <item id="2649" chance="10000"/>
     <item id="2554" chance="10000"/>
-    <item id="5878" countmax="1" chance1="5000" chancemax="0"/>
     <item id="1987" chance="100000">
       <inside>
         <item id="2458" chance="10000"/>
