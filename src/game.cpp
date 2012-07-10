@@ -1862,10 +1862,12 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, uint32_t flags /*= 0*/)
 {
-	if(newPos == thing->getPosition())
+	if(newPos == thing->getPosition()) {
 		return RET_NOERROR;
-	else if(thing->isRemoved())
+	}
+	else if(thing->isRemoved()) {
 		return RET_NOTPOSSIBLE;
+	}
 
 	Tile* toTile = getTile(newPos.x, newPos.y, newPos.z);
 	if(toTile){
@@ -1876,7 +1878,7 @@ ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, uint32_
 				HouseTile* houseTile = player->getTile()->getHouseTile();
 				if(houseTile){
 					House* house = houseTile->getHouse();
-					if(house && house->isInvited(player)){
+					if(house && !house->isInvited(player)){
 						return RET_NOTPOSSIBLE;
 					}
 				}
@@ -1886,7 +1888,8 @@ ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, uint32_
 			return RET_NOERROR;
 		}
 		else if(Item* item = thing->getItem()){
-			return internalMoveItem(item->getParent(), toTile, INDEX_WHEREEVER, item, item->getItemCount(), NULL, flags);
+			return internalMoveItem(
+				item->getParent(), toTile, INDEX_WHEREEVER, item, item->getItemCount(), NULL, flags);
 		}
 	}
 
