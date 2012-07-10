@@ -38,7 +38,8 @@ extern Vocations g_vocations;
 extern MoveEvents* g_moveEvents;
 
 MoveEvents::MoveEvents() :
-m_scriptInterface("MoveEvents Interface")
+	m_scriptInterface("MoveEvents Interface"),
+	m_lastCacheTile(NULL)
 {
 	m_scriptInterface.initState();
 }
@@ -50,6 +51,9 @@ MoveEvents::~MoveEvents()
 
 void MoveEvents::clear()
 {
+	m_lastCacheTile = NULL;
+	m_lastCacheItemVector.clear();
+
 	MoveListMap::iterator it = m_itemIdMap.begin();
 	while(it != m_itemIdMap.end()){
 		for(int i = 0; i < MOVE_EVENT_LAST; ++i){
@@ -224,7 +228,9 @@ MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t slot)
 	MoveListMap::iterator it = m_itemIdMap.find(item->getID());
 	if(it != m_itemIdMap.end()){
 		std::list<MoveEvent*>& moveEventList = it->second.moveEvent[eventType];
-		for(std::list<MoveEvent*>::iterator it = moveEventList.begin(); it != moveEventList.end(); ++it){
+		for(std::list<MoveEvent*>::iterator it = moveEventList.begin(); 
+			it != moveEventList.end(); ++it)
+		{
 			if(((*it)->getSlot() & slotp) != 0){
 				return *it;
 			}
@@ -286,7 +292,7 @@ void MoveEvents::addEvent(MoveEvent* moveEvent, Position pos, MovePosListMap& ma
 	}
 }
 
-MoveEvent* MoveEvents::getEvent(Tile* tile, MoveEvent_t eventType)
+MoveEvent* MoveEvents::getEvent(const Tile* tile, MoveEvent_t eventType)
 {
 	MovePosListMap::iterator it = m_positionMap.find(tile->getPosition());
 	if(it != m_positionMap.end()){
@@ -295,37 +301,77 @@ MoveEvent* MoveEvents::getEvent(Tile* tile, MoveEvent_t eventType)
 			return *moveEventList.begin();
 		}
 	}
-	
+
 	return NULL;
 }
 
-uint32_t MoveEvents::onCreatureMove(Creature* creature, Tile* tile, bool isIn)
+uint32_t MoveEvents::onCreatureMove(Creature* creature, const Tile* fromTile, const Tile* toTile, bool isIn)
 {
 	MoveEvent_t eventType;
+	const Tile* tile = NULL;
 	if(isIn){
+		tile = toTile;
 		eventType = MOVE_EVENT_STEP_IN;
 	}
 	else{
+		tile = fromTile;
 		eventType = MOVE_EVENT_STEP_OUT;
+	}
+
+	Position fromPos(0, 0, 0);
+	if(fromTile){
+		fromPos = fromTile->getPosition();
+	}
+
+	Position toPos(0, 0, 0);
+	if(toTile){
+		toPos = toTile->getPosition();
 	}
 
 	uint32_t ret = 1;
 	MoveEvent* moveEvent = getEvent(tile, eventType);
 	if(moveEvent){
-		ret = ret & moveEvent->fireStepEvent(creature, NULL, tile->getPosition());
+		ret = ret & moveEvent->fireStepEvent(creature, NULL, fromPos, toPos);
 	}
 
-	int32_t j = tile->__getLastIndex();
 	Item* tileItem = NULL;
+	if(m_lastCacheTile == tile){
+		if(m_lastCacheItemVector.empty()){
+			return ret;
+		}
+
+		//We can not use iterators here since the scripts can invalidate the iterator
+		for(uint32_t i = 0; i < m_lastCacheItemVector.size(); ++i){
+			tileItem = m_lastCacheItemVector[i];
+			if(tileItem){
+				moveEvent = getEvent(tileItem, eventType);
+				if(moveEvent){
+					ret = ret & moveEvent->fireStepEvent(creature, tileItem, fromPos, toPos);
+				}
+			}
+		}
+		return ret;
+	}
+
+	m_lastCacheTile = tile;
+	m_lastCacheItemVector.clear();
+
+	//We can not use iterators here since the scripts can invalidate the iterator
+	int32_t j = tile->__getLastIndex();
 	for(int32_t i = tile->__getFirstIndex(); i < j; ++i){
 		Thing* thing = tile->__getThing(i);
 		if(thing && (tileItem = thing->getItem())){
 			moveEvent = getEvent(tileItem, eventType);
 			if(moveEvent){
-				ret = ret & moveEvent->fireStepEvent(creature, tileItem, tile->getPosition());
+				m_lastCacheItemVector.push_back(tileItem);
+				ret = ret & moveEvent->fireStepEvent(creature, tileItem, fromPos, toPos);
+			}
+			else if(hasTileEvent(tileItem)){
+				m_lastCacheItemVector.push_back(tileItem);
 			}
 		}
 	}
+
 	return ret;
 }
 
@@ -364,27 +410,96 @@ uint32_t MoveEvents::onItemMove(Item* item, Tile* tile, bool isAdd)
 
 	MoveEvent* moveEvent = getEvent(tile, eventType1);
 	if(moveEvent){
-		ret = ret & moveEvent->fireAddRemItem(item, NULL, tile->getPosition());
+		ret &= moveEvent->fireAddRemItem(item, NULL, tile->getPosition());
 	}
 
 	moveEvent = getEvent(item, eventType1);
 	if(moveEvent){
-		ret = ret & moveEvent->fireAddRemItem(item, NULL, tile->getPosition());
+		ret &= moveEvent->fireAddRemItem(item, NULL, tile->getPosition());
 	}
 
-	int32_t j = tile->__getLastIndex();
 	Item* tileItem = NULL;
+	if(m_lastCacheTile == tile){
+		if(m_lastCacheItemVector.empty()){
+			return false;
+		}
+
+		//We can not use iterators here since the scripts can invalidate the iterator
+		for(uint32_t i = 0; i < m_lastCacheItemVector.size(); ++i){
+			tileItem = m_lastCacheItemVector[i];
+			if(tileItem && tileItem != item){
+				moveEvent = getEvent(tileItem, eventType2);
+				if(moveEvent){
+					ret &= moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	m_lastCacheTile = tile;
+	m_lastCacheItemVector.clear();
+
+	//We can not use iterators here since the scripts can invalidate the iterator
+	int32_t j = tile->__getLastIndex();
 	for(int32_t i = tile->__getFirstIndex(); i < j; ++i){
 		Thing* thing = tile->__getThing(i);
 		if(thing && (tileItem = thing->getItem()) && (tileItem != item)){
 			moveEvent = getEvent(tileItem, eventType2);
 			if(moveEvent){
-				ret = ret & moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
+				m_lastCacheItemVector.push_back(tileItem);
+				ret &= moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
+			}
+			else if(hasTileEvent(tileItem)){
+				m_lastCacheItemVector.push_back(tileItem);
 			}
 		}
 	}
 
 	return ret;
+}
+
+bool MoveEvents::hasTileEvent(Item* item)
+{
+	return( getEvent(item, MOVE_EVENT_ADD_ITEM_ITEMTILE) ||
+			getEvent(item, MOVE_EVENT_REMOVE_ITEM_ITEMTILE) ||
+			getEvent(item, MOVE_EVENT_STEP_IN) ||
+			getEvent(item, MOVE_EVENT_STEP_OUT));
+}
+
+void MoveEvents::onAddTileItem(const Tile* tile, Item* item)
+{
+	if(m_lastCacheTile == tile){
+		std::vector<Item*>::iterator it = std::find(
+			m_lastCacheItemVector.begin(), m_lastCacheItemVector.end(), item);
+		if(it == m_lastCacheItemVector.end()){
+			if(hasTileEvent(item)){
+				m_lastCacheItemVector.push_back(item);
+			}
+		}
+	}
+}
+
+void MoveEvents::onRemoveTileItem(const Tile* tile, Item* item)
+{
+	if(m_lastCacheTile == tile){
+		for(uint32_t i = 0; i < m_lastCacheItemVector.size(); ++i){
+			if(m_lastCacheItemVector[i] == item){
+				m_lastCacheItemVector[i] = NULL;
+				break;
+			}
+		}
+	}
+}
+
+ReturnValue MoveEvents::canPlayerWearEquip(Player* player, Item* item, slots_t slot)
+{
+	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
+	if(moveEvent){
+		return moveEvent->canPlayerWearEquip(player, slot);
+	}
+	return RET_NOERROR;
 }
 
 MoveEvent::MoveEvent(LuaScriptInterface* _interface) :
@@ -421,9 +536,11 @@ std::string MoveEvent::getScriptEventName()
 		return "onDeEquip";
 		break;
 	case MOVE_EVENT_ADD_ITEM:
+	case MOVE_EVENT_ADD_ITEM_ITEMTILE:
 		return "onAddItem";
 		break;
 	case MOVE_EVENT_REMOVE_ITEM:
+	case MOVE_EVENT_REMOVE_ITEM_ITEMTILE:
 		return "onRemoveItem";
 		break;
 	default:
@@ -611,7 +728,8 @@ void MoveEvent::setEventType(MoveEvent_t type)
 	m_eventType = type;
 }
 
-uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position& pos)
+uint32_t MoveEvent::StepInField(Creature* creature, Item* item,
+	const Position& fromPos, const Position& toPos)
 {
 	MagicField* field = item->getMagicField();
 
@@ -627,7 +745,8 @@ uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position& 
 	return LUA_ERROR_ITEM_NOT_FOUND;
 }
 
-uint32_t MoveEvent::StepOutField(Creature* creature, Item* item, const Position& pos)
+uint32_t MoveEvent::StepOutField(Creature* creature, Item* item,
+	const Position& fromPos, const Position& toPos)
 {
 	return 1;
 }
@@ -636,7 +755,9 @@ uint32_t MoveEvent::AddItemField(Item* item, Item* tileItem, const Position& pos
 {
 	if(MagicField* field = item->getMagicField()){
 		Tile* tile = item->getTile();
-		for(CreatureVector::iterator cit = tile->creatures.begin(); cit != tile->creatures.end(); ++cit){
+		for(CreatureVector::iterator cit = tile->creatures.begin();
+			cit != tile->creatures.end(); ++cit)
+		{
 			field->onStepInField(*cit);
 		}
 
@@ -660,8 +781,8 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	//Enable item only when requirements are complete
 	//This includes item transforming
 	if(!player->hasFlag(PlayerFlag_IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0){
-		if((int32_t)player->getLevel() < moveEvent->getReqLevel()
-			|| (int32_t)player->getMagicLevel() < moveEvent->getReqMagLv() ||
+		if((int32_t)player->getLevel() < moveEvent->getReqLevel() ||
+			(int32_t)player->getMagicLevel() < moveEvent->getReqMagLv() ||
 			!player->isPremium() && moveEvent->isPremium())
 		{
 			return 1;
@@ -822,31 +943,33 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent* moveEvent, Player* player, Item* item
 	return 1;
 }
 
-uint32_t MoveEvent::fireStepEvent(Creature* creature, Item* item, const Position& pos)
+uint32_t MoveEvent::fireStepEvent(Creature* creature, Item* item,
+	const Position& fromPos, const Position& toPos)
 {
 	if(m_scripted){
-		return executeStep(creature, item, pos);
+		return executeStep(creature, item, fromPos, toPos);
 	}
 	else{
-		return stepFunction(creature, item, pos);
+		return stepFunction(creature, item, fromPos, toPos);
 	}
 }
 
-uint32_t MoveEvent::executeStep(Creature* creature, Item* item, const Position& pos)
+uint32_t MoveEvent::executeStep(Creature* creature, Item* item, 
+	const Position& fromPos, const Position& toPos)
 {
-	//onStepIn(cid, item, pos)
-	//onStepOut(cid, item, pos)
+	//onStepIn(cid, item, topos, frompos)
+	//onStepOut(cid, item, topos, frompos)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
-		#ifdef __DEBUG_LUASCRIPTS__
+#ifdef __DEBUG_LUASCRIPTS__
 		std::stringstream desc;
-		desc << creature->getName() << " itemid: " << item->getID() << " - " << pos;
+		desc << creature->getName() << " itemid: " << item->getID() << " - " << toPos;
 		env->setEventDesc(desc.str());
-		#endif
+#endif
 
 		env->setScriptId(m_scriptId, m_scriptInterface);
-		env->setRealPos(pos);
+		env->setRealPos(creature->getPosition());
 
 		uint32_t cid = env->addThing(creature);
 		uint32_t itemid = env->addThing(item);
@@ -856,12 +979,13 @@ uint32_t MoveEvent::executeStep(Creature* creature, Item* item, const Position& 
 		m_scriptInterface->pushFunction(m_scriptId);
 		lua_pushnumber(L, cid);
 		LuaScriptInterface::pushThing(L, item, itemid);
-		LuaScriptInterface::pushPosition(L, pos, 0);
+		LuaScriptInterface::pushPosition(L, toPos, 0);
+		LuaScriptInterface::pushPosition(L, fromPos, 0);
 
-		int32_t result = m_scriptInterface->callFunction(3);
+		int32_t result = m_scriptInterface->callFunction(4);
 		m_scriptInterface->releaseScriptEnv();
 
-		return (result != LUA_FALSE);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. MoveEvent::executeStep" << std::endl;
@@ -964,4 +1088,31 @@ uint32_t MoveEvent::executeAddRemItem(Item* item, Item* tileItem, const Position
 		std::cout << "[Error] Call stack overflow. MoveEvent::executeAddRemItem" << std::endl;
 		return 0;
 	}
+}
+
+ReturnValue MoveEvent::canPlayerWearEquip(Player* player, slots_t slot)
+{
+	//check if we need to continue
+	if(player->isItemAbilityEnabled(slot) ||
+		player->hasFlag(PlayerFlag_IgnoreWeaponCheck) ||
+		getWieldInfo() == 0){
+		return RET_NOERROR;
+	}
+
+	//check all required values
+	const VocEquipMap vocMap = getVocEquipMap();
+	if(!vocMap.empty() && vocMap.find(player->getVocationId()) == vocMap.end()){
+		return RET_NOTREQUIREDPROFESSION;
+	}
+	if(player->getLevel() < getReqLevel()){
+		return RET_NOTREQUIREDLEVEL;
+	}
+	if(player->getMagicLevel() < getReqMagLv()){
+		return RET_NOTENOUGHMAGICLEVEL;
+	}
+	if(!player->isPremium() && isPremium()){
+		return RET_NEEDPREMIUMTOEQUIPITEM;
+	}
+
+	return RET_NOERROR;
 }

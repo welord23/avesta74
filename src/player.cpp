@@ -1166,6 +1166,18 @@ void Player::sendCancelMessage(ReturnValue message) const
 		sendCancel("You are not the owner.");
 		break;
 
+	case RET_NOTREQUIREDPROFESSION:
+		sendCancel("You don't have the required profession.");
+		break;
+
+	case RET_NOTREQUIREDLEVEL:
+		sendCancel("You don't have the required level.");
+		break;
+
+	case RET_NEEDPREMIUMTOEQUIPITEM:
+		sendCancel("You need a premium account to equip this item.");
+		break;
+
 	case RET_NOTPOSSIBLE:
 	default:
 		sendCancel("Sorry, not possible.");
@@ -2594,9 +2606,18 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 	if(ret == RET_NOERROR || ret == RET_NOTENOUGHROOM){
 		//need an exchange with source?
 		if(getInventoryItem((slots_t)index) != NULL){
-			if(!getInventoryItem((slots_t)index)->isStackable() || getInventoryItem((slots_t)index)->getID() != item->getID()){
+			if(!getInventoryItem((slots_t)index)->isStackable() ||
+				getInventoryItem((slots_t)index)->getID() != item->getID())
+			{
 				return RET_NEEDEXCHANGE;
 			}
+		}
+
+		//check moveEvent
+		ReturnValue _ret = g_moveEvents->canPlayerWearEquip(
+			const_cast<Player*>(this), const_cast<Item*>(item), (slots_t)index);
+		if(_ret != RET_NOERROR){
+			return _ret;
 		}
 
 		//check if enough capacity
