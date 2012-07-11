@@ -52,6 +52,7 @@
 #include "raids.h"
 #include "spawn.h"
 #include "ioaccount.h"
+#include "globalevent.h"
 
 #if defined __EXCEPTION_TRACER__
 #include "exception.h"
@@ -66,6 +67,7 @@ extern BanManager g_bans;
 extern Chat g_chat;
 extern TalkActions* g_talkactions;
 extern Spells* g_spells;
+extern GlobalEvents* g_globalEvents;
 
 Game::Game()
 {
@@ -132,11 +134,13 @@ void Game::setGameState(GameState_t newState)
 
 
 				loadGameState();
+				g_globalEvents->startup();
 				break;
 			}
 
 			case GAME_STATE_SHUTDOWN:
 			{
+				g_globalEvents->execute(GLOBALEVENT_SHUTDOWN);
 				//kick all players that are still online
 				AutoList<Player>::listiterator it = Player::listPlayer.list.begin();
 				while(it != Player::listPlayer.list.end()){

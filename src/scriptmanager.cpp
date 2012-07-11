@@ -23,15 +23,16 @@
 #include "luascript.h"
 #include "configmanager.h"
 
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
 #include "actions.h"
 #include "talkaction.h"
 #include "spells.h"
 #include "movement.h"
 #include "weapons.h"
 #include "creatureevent.h"
+#include "globalevent.h"
+
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 
 Actions* g_actions = NULL;
 TalkActions* g_talkactions = NULL;
@@ -39,6 +40,7 @@ Spells* g_spells = NULL;
 MoveEvents* g_moveEvents = NULL;
 Weapons* g_weapons = NULL;
 CreatureEvents* g_creatureEvents = NULL;
+GlobalEvents* g_globalEvents = NULL;
 
 extern ConfigManager g_config;
 extern void ErrorMessage(const char* message) ;
@@ -128,6 +130,15 @@ bool ScriptingManager::loadScriptSystems()
 	g_creatureEvents = new CreatureEvents();
 	if(!g_creatureEvents->loadFromXml(datadir)){
 		ErrorMessage("Unable to load CreatureEvents!");
+		return false;
+	}
+	std::cout << "[done]" << std::endl;
+
+	//load global events
+	std::cout << ":: Loading GlobalEvents ...";
+	g_globalEvents = new GlobalEvents();
+	if(!g_globalEvents->loadFromXml(datadir)){
+		ErrorMessage("Unable to load GlobalEvents!");
 		return false;
 	}
 	std::cout << "[done]" << std::endl;

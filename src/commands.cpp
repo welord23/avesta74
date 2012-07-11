@@ -44,6 +44,7 @@ typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
 #include "spells.h"
 #include "weapons.h"
 #include "raids.h"
+#include "globalevent.h"
 
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 #include "outputmessage.h"
@@ -66,6 +67,7 @@ extern Spells* g_spells;
 extern Weapons* g_weapons;
 extern CreatureEvents* g_creatureEvents;
 extern Game g_game;
+extern GlobalEvents* g_globalEvents;
 
 extern bool readXMLInteger(xmlNodePtr p, const char *tag, int &value);
 
@@ -538,6 +540,10 @@ bool Commands::reloadInfo(Creature* creature, const std::string& cmd, const std:
 	else if(param == "creaturescripts" || param == "creature scripts" || param == "cs"){
 		g_creatureEvents->reload();
 		if(player) player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Reloaded creature scripts.");
+	}
+	else if(param == "globalevent" || param == "global event" || param == "ge"){
+		g_creatureEvents->reload();
+		if(player) player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Reloaded global events.");
 	}
 	else{
 		if(player) player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Option not found.");

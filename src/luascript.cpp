@@ -777,7 +777,6 @@ int32_t LuaScriptInterface::callFunction(uint32_t nParams)
 	int32_t result = LUA_NO_ERROR;
 
 	int size0 = lua_gettop(m_luaState);
-	
 	int error_index = lua_gettop(m_luaState) - nParams;
 	lua_pushcfunction(m_luaState, luaErrorHandler);
 	lua_insert(m_luaState, error_index);
