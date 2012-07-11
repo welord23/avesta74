@@ -10,20 +10,20 @@ function getNext()
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setFocus(nextPlayer)
 			greet(nextPlayer, _delay * 2)
-			updateIdle()
+			updateNpcIdle()
 			return
 		else
 			getNext()
 		end
 	end
 	
-	setFocus(0)
-	resetIdle()
+	setNpcFocus(0)
+	resetNpcIdle()
 end
 
 function _selfSay(message)
 	selfSay(message, _delay)
-	updateIdle()
+	updateNpcIdle()
 end
 
 function selfSay_(message)
@@ -35,7 +35,7 @@ function onCreatureAppear(cid)
 end
 
 function onCreatureDisappear(cid)
-	if (getFocus() == cid) then
+	if (getNpcFocus() == cid) then
 		selfSay('See you.', _delay)
 		getNext()
 	else
@@ -44,7 +44,7 @@ function onCreatureDisappear(cid)
 end
 
 function onCreatureMove(cid, oldPos, newPos)
-	if (getFocus() == cid) then
+	if (getNpcFocus() == cid) then
 		faceCreature(cid)
 	end
 end
@@ -65,18 +65,18 @@ local function greet(cid, delay)
 end
 
 function onCreatureSay(cid, type, msg)
-	if (getFocus() == 0) then
+	if (getNpcFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			if (getPlayerLevel(cid) < 15) then
 				selfSay('I don\'t talk to little children!!', _delay)
 			else
-				updateIdle()
-				setFocus(cid)
+				updateNpcIdle()
+				setNpcFocus(cid)
 				greet(cid, _delay)
 			end
 		end
 		
-	elseif (getFocus() ~= cid) then 
+	elseif (getNpcFocus() ~= cid) then 
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			selfSay('Silence, unworthy creature!', _delay)
 			if (getPlayerLevel(cid) >= 15) then
@@ -192,9 +192,9 @@ function onCreatureSay(cid, type, msg)
 end
 
 function onThink()
-	if (getFocus() ~= 0) then
-		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
-			selfSay('Run away, unworthy ' .. getCreatureName(getFocus()) .. '!', _delay)
+	if (getNpcFocus() ~= 0) then
+		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
+			selfSay('Run away, unworthy ' .. getCreatureName(getNpcFocus()) .. '!', _delay)
 			getNext()
 		end
 	end
