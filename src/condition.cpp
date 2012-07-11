@@ -951,7 +951,7 @@ bool ConditionSoul::unserializeProp(ConditionAttr_t attr, PropStream& propStream
 {
 	if(attr == CONDITIONATTR_SOULGAIN){
 		uint32_t value = 0;
-		if(!propStream.GET_VALUE(value)){
+		if(!propStream.GET_UINT32(value)){
 			return false;
 		}
 
@@ -960,7 +960,7 @@ bool ConditionSoul::unserializeProp(ConditionAttr_t attr, PropStream& propStream
 	}
 	else if(attr == CONDITIONATTR_SOULTICKS){
 		uint32_t value = 0;
-		if(!propStream.GET_VALUE(value)){
+		if(!propStream.GET_UINT32(value)){
 			return false;
 		}
 
@@ -978,10 +978,10 @@ bool ConditionSoul::serialize(PropWriteStream& propWriteStream)
 	}
 
 	propWriteStream.ADD_UINT8(CONDITIONATTR_SOULGAIN);
-	propWriteStream.ADD_VALUE(soulGain);
+	propWriteStream.ADD_UINT32(soulGain);
 
 	propWriteStream.ADD_UINT8(CONDITIONATTR_SOULTICKS);
-	propWriteStream.ADD_VALUE(soulTicks);
+	propWriteStream.ADD_UINT32(soulTicks);
 
 	return true;
 }
