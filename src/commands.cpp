@@ -542,7 +542,7 @@ bool Commands::reloadInfo(Creature* creature, const std::string& cmd, const std:
 		if(player) player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Reloaded creature scripts.");
 	}
 	else if(param == "globalevent" || param == "global event" || param == "ge"){
-		g_creatureEvents->reload();
+		g_globalEvents->reload();
 		if(player) player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Reloaded global events.");
 	}
 	else{
