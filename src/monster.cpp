@@ -1468,6 +1468,7 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 	}
 }
 
+#ifndef __PROTOCOL_76__
 bool Monster::canSee(const Position& pos) const
 {
 	if(pos.z != getPosition().z){
@@ -1476,3 +1477,4 @@ bool Monster::canSee(const Position& pos) const
 
 	return Creature::canSee(pos);
 }
+#endif // __PROTOCOL_76__
