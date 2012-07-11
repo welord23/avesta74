@@ -177,7 +177,8 @@ public:
 	uint32_t getMagicLevel() const {return getPlayerInfo(PLAYERINFO_MAGICLEVEL);}
 	int32_t getAccessLevel() const {return accessLevel;}
 
-	uint32_t resetIdle() {return idleTime = 0;}
+	void checkIdleTime(uint32_t ticks);
+	void resetIdle() {idleTime = 0; idleWarned = false;}
 
 	void setVocation(uint32_t vocId);
 	uint32_t getVocationId() const;
@@ -644,7 +645,9 @@ protected:
 	uint32_t nextStepEvent;
 	uint32_t walkTaskEvent;
 	SchedulerTask* walkTask;
+
 	uint32_t idleTime;
+	bool idleWarned;
 
 	double inventoryWeight;
 	double capacity;

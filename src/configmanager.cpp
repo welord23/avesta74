@@ -130,7 +130,8 @@ bool ConfigManager::loadFile(const std::string& _filename)
 	m_confInteger[PREMIUM_ONLY_BEDS] = getGlobalBoolean(L, "PremOnlyBeds", true);
 
 	m_confInteger[FRAG_TIME] = getGlobalNumber(L, "TimeToDecreaseFrags", 24 * 60 * 60 * 1000);
-	m_confInteger[MAX_IDLE_TIME] = getGlobalNumber(L, "MaxIdleTime", 15);
+	m_confInteger[IDLE_TIME_KICK] = getGlobalNumber(L, "IdleTimeKick", 900000);
+	m_confInteger[IDLE_TIME_WARNING] = getGlobalNumber(L, "IdleTimeWarning", 840000);
 
 	m_confInteger[NOTATIONS_TO_BAN] = getGlobalNumber(L, "NotationsToBan", 3);
 	m_confInteger[WARNINGS_TO_FINALBAN] = getGlobalNumber(L, "WarningsToFinalBan", 4);

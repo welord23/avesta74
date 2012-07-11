@@ -102,7 +102,9 @@ Creature()
 	MessageBufferTicks = 0;
 	MessageBufferCount = 0;
 	nextAction = 0;
+
 	idleTime = 0;
+	idleWarned = false;
 
 	pzLocked = false;
 	bloodHitCount = 0;
@@ -1695,17 +1697,7 @@ void Player::onThink(uint32_t interval)
 		addMessageBuffer();
 	}
 
-	idleTime += interval;
-	if((int)idleTime >= (g_config.getNumber(ConfigManager::MAX_IDLE_TIME) * 60000) + 60000 &&
-		getAccessLevel() < 2) 
-	{
-		g_game.removeCreature(this);
-	}
-	else if(client && idleTime == 60000 * (g_config.getNumber(ConfigManager::MAX_IDLE_TIME)) && getAccessLevel() < 2){
-		char buffer[100];
-		sprintf(buffer, "You have been idle for %d minutes, you will be disconnected in one minute if you are still idle.", g_config.getNumber(ConfigManager::MAX_IDLE_TIME));
-		client->sendTextMessage(MSG_STATUS_WARNING, buffer);
-	}
+	checkIdleTime(interval);
 
 #ifdef __SKULLSYSTEM__
 	checkRedSkullTicks(interval);
@@ -3946,4 +3938,30 @@ bool Player::transferMoneyTo(const std::string& name, uint32_t amount)
 	}
 
 	return true;
+}
+
+void Player::checkIdleTime(uint32_t ticks)
+{
+	if(g_config.getNumber(ConfigManager::IDLE_TIME_KICK) > 0 && !hasFlag(PlayerFlag_CanAlwaysLogin)){
+		static uint32_t kickTime = g_config.getNumber(ConfigManager::IDLE_TIME_KICK);
+		static uint32_t warningTime = g_config.getNumber(ConfigManager::IDLE_TIME_WARNING);
+		static uint32_t alreadyIdleTime = warningTime / 60000;
+		static uint32_t remainingTime = (kickTime - warningTime) / 60000;
+
+		idleTime += ticks;
+		if (idleTime >= kickTime) {
+			kickPlayer();
+		}
+		else if (idleTime >= warningTime && !idleWarned) {
+			idleWarned = true;
+
+			std::stringstream message;
+			message << "You have been idle for " << alreadyIdleTime
+				<< (alreadyIdleTime == 1 ? " minute" : " minutes")
+				<< " , you will be disconnected in " << remainingTime
+				<< (remainingTime == 1 ? " minute" : " minutes")
+				<< " if you are still idle.";
+			sendTextMessage(MSG_STATUS_WARNING, message.str());
+		}
+	}
 }
