@@ -104,7 +104,7 @@ TalkActionResult_t TalkActions::onPlayerSpeak(Player* player, SpeakClasses type,
 	}
 	else {
 		str_words_quote = words;
-		str_param_quote = std::string(""); 
+		str_param_quote = std::string("");
 	}
 	
 	trim_left(str_words_quote, " ");
@@ -118,7 +118,7 @@ TalkActionResult_t TalkActions::onPlayerSpeak(Player* player, SpeakClasses type,
 	}
 	else {
 		str_words_first_word = words;
-		str_param_first_word = std::string(""); 
+		str_param_first_word = std::string("");
 	}
 
 	TalkActionList::iterator it;
@@ -128,16 +128,40 @@ TalkActionResult_t TalkActions::onPlayerSpeak(Player* player, SpeakClasses type,
 		if(it->second->getFilterType() == TALKACTION_MATCH_QUOTATION) {
 			cmdstring = str_words_quote;
 			paramstring = str_param_quote;
-		} else if(it->second->getFilterType() == TALKACTION_MATCH_FIRST_WORD) {
+		}
+		else if(it->second->getFilterType() == TALKACTION_MATCH_FIRST_WORD) {
 			cmdstring = str_words_first_word;
 			paramstring = str_param_first_word;
-		} else {
+		}
+		else {
 			continue;
 		}
-		if(cmdstring == it->first || !it->second->isCaseSensitive() && boost::algorithm::iequals(it->first, cmdstring)){
-			TalkAction* talkAction = it->second;
-			uint32_t ret =  talkAction->executeSay(player, cmdstring, paramstring);
-			if(ret == 1){
+		if(cmdstring == it->first || (!it->second->isCaseSensitive() &&
+			boost::algorithm::iequals(it->first, cmdstring)))
+		{
+			bool ret = true;
+			if(player->getAccessLevel() < it->second->getAccessLevel()){
+				if(player->getAccessLevel() > 0){
+					player->sendTextMessage(MSG_STATUS_SMALL, "You can not execute this command.");
+					ret = false;
+				}
+			}
+			else{
+				TalkAction* talkAction = it->second;
+
+				if(talkAction->isScripted()){
+					ret = talkAction->executeSay(player, cmdstring, paramstring);
+				}
+				else{
+					TalkActionFunction* func = talkAction->getFunction();
+					if(func){
+						func(player, cmdstring, paramstring);
+						ret = false;
+					}
+				}
+			}
+
+			if(ret){
 				return TALKACTION_CONTINUE;
 			}
 			else{
@@ -145,6 +169,7 @@ TalkActionResult_t TalkActions::onPlayerSpeak(Player* player, SpeakClasses type,
 			}
 		}
 	}
+
 	return TALKACTION_CONTINUE;
 }
 
@@ -152,7 +177,9 @@ TalkActionResult_t TalkActions::onPlayerSpeak(Player* player, SpeakClasses type,
 TalkAction::TalkAction(LuaScriptInterface* _interface) :
 Event(_interface),
 filterType(TALKACTION_MATCH_QUOTATION),
-caseSensitive(false)
+caseSensitive(false),
+accessLevel(0),
+function(NULL)
 {
 	//
 }
@@ -170,7 +197,8 @@ bool TalkAction::configureEvent(xmlNodePtr p)
 		commandString = str;
 	}
 	else{
-		std::cout << "Error: [TalkAction::configureEvent] No words for TalkAction or Spell." << std::endl;
+		std::cout << "Error: [TalkAction::configureEvent] No words for TalkAction or Spell." 
+			<< std::endl;
 		return false;
 	}
 
@@ -184,6 +212,10 @@ bool TalkAction::configureEvent(xmlNodePtr p)
 
 	if(readXMLInteger(p, "case-sensitive", intValue) || readXMLInteger(p, "sensitive", intValue)){
 		caseSensitive = (intValue != 0);
+	}
+
+	if(readXMLInteger(p, "access", intValue)){
+		accessLevel = intValue;
 	}
 
 	return true;

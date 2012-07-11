@@ -63,6 +63,8 @@ protected:
 	LuaScriptInterface m_scriptInterface;
 };
 
+typedef bool (TalkActionFunction)(Player*, const std::string&, const std::string&);
+
 class TalkAction : public Event
 {
 public:
@@ -73,10 +75,13 @@ public:
 	
 	std::string getWords() const {return commandString;}
 	TalkActionFilterType getFilterType() const {return filterType;}
+	TalkActionFunction* getFunction() const {return function;}
 	bool isCaseSensitive() const {return caseSensitive;}
+	int16_t getAccessLevel() const {return accessLevel;}
+	bool isScripted() const {return m_scripted;}
+
 	//scripting
 	uint32_t executeSay(Creature* creature, const std::string& words, const std::string& param);
-	//
 	
 protected:
 	virtual std::string getScriptEventName();
@@ -84,6 +89,8 @@ protected:
 	std::string commandString;
 	TalkActionFilterType filterType;
 	bool caseSensitive;
+	int16_t accessLevel;
+	TalkActionFunction* function;
 };
 
 #endif
