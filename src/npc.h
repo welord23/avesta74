@@ -68,8 +68,8 @@ protected:
 	static int luaSetNpcFocus(lua_State *L);
 	static int luaGetNpcFocus(lua_State *L);
 	static int luaIsNpcIdle(lua_State *L);
-	static int luaResetIdle(lua_State *L);
-	static int luaUpdateIdle(lua_State *L);
+	static int luaResetNpcIdle(lua_State *L);
+	static int luaUpdateNpcIdle(lua_State *L);
 	static int luaQueuePlayer(lua_State *L);
 	static int luaUnqueuePlayer(lua_State *L);
 	static int luaGetQueuedPlayer(lua_State *L);

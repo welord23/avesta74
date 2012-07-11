@@ -648,11 +648,11 @@ void NpcScriptInterface::registerFunctions()
 	lua_register(m_luaState, "getNpcPos", NpcScriptInterface::luaGetNpcPos);
 	lua_register(m_luaState, "getNpcName", NpcScriptInterface::luaGetNpcName);
 
-	lua_register(m_luaState, "getFocus", NpcScriptInterface::luaGetNpcFocus);
-	lua_register(m_luaState, "setFocus", NpcScriptInterface::luaSetNpcFocus);
-	lua_register(m_luaState, "isIdle", NpcScriptInterface::luaIsNpcIdle);
-	lua_register(m_luaState, "resetIdle", NpcScriptInterface::luaResetIdle);
-	lua_register(m_luaState, "updateIdle", NpcScriptInterface::luaUpdateIdle);
+	lua_register(m_luaState, "getNpcFocus", NpcScriptInterface::luaGetNpcFocus);
+	lua_register(m_luaState, "setNpcFocus", NpcScriptInterface::luaSetNpcFocus);
+	lua_register(m_luaState, "isNpcIdle", NpcScriptInterface::luaIsNpcIdle);
+	lua_register(m_luaState, "resetNpcIdle", NpcScriptInterface::luaResetNpcIdle);
+	lua_register(m_luaState, "updateNpcIdle", NpcScriptInterface::luaUpdateNpcIdle);
 	lua_register(m_luaState, "queuePlayer", NpcScriptInterface::luaQueuePlayer);
 	lua_register(m_luaState, "unqueuePlayer", NpcScriptInterface::luaUnqueuePlayer);
 	lua_register(m_luaState, "getQueuedPlayer", NpcScriptInterface::luaGetQueuedPlayer);
@@ -917,7 +917,7 @@ int NpcScriptInterface::luaSetNpcFocus(lua_State* L)
 
 int NpcScriptInterface::luaIsNpcIdle(lua_State *L)
 {
-	// isIdle()
+	// isNpcIdle()
 	ScriptEnviroment* env = getScriptEnv();
 
 	Npc* npc = env->getNpc();
@@ -928,9 +928,9 @@ int NpcScriptInterface::luaIsNpcIdle(lua_State *L)
 	return 1;
 }
 
-int NpcScriptInterface::luaResetIdle(lua_State *L)
+int NpcScriptInterface::luaResetNpcIdle(lua_State *L)
 {
-	// isIdle()
+	// resetNpcIdle()
 	ScriptEnviroment* env = getScriptEnv();
 
 	Npc* npc = env->getNpc();
@@ -941,9 +941,9 @@ int NpcScriptInterface::luaResetIdle(lua_State *L)
 	return 1;
 }
 
-int NpcScriptInterface::luaUpdateIdle(lua_State *L)
+int NpcScriptInterface::luaUpdateNpcIdle(lua_State *L)
 {
-	// updateIdle()
+	// updateNpcIdle()
 	ScriptEnviroment* env = getScriptEnv();
 
 	Npc* npc = env->getNpc();

@@ -15,8 +15,8 @@ function getNext()
 	nextPlayer = getQueuedPlayer()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
-			updateIdle()
-			setFocus(nextPlayer)
+			updateNpcIdle()
+			setNpcFocus(nextPlayer)
 			greet(nextPlayer, _delay * 3)
 			return
 		else
@@ -24,8 +24,8 @@ function getNext()
 		end
 	end
 	
-	setFocus(0)
-	resetIdle()
+	setNpcFocus(0)
+	resetNpcIdle()
 end
 
 local function onActionItem(action)
@@ -54,7 +54,7 @@ end
 
 function _selfSay(message)
 	selfSay(message, _delay)
-	updateIdle()
+	updateNpcIdle()
 end
 
 local function greet(cid, delay)
@@ -65,7 +65,7 @@ function onCreatureAppear(cid)
 end
 
 function onCreatureDisappear(cid)
-	if (getFocus() == cid) then
+	if (getNpcFocus() == cid) then
 		selfSay('See you.', _delay)
 		getNext()
 	else
@@ -74,20 +74,20 @@ function onCreatureDisappear(cid)
 end
 
 function onCreatureMove(cid, oldPos, newPos)
-	if (getFocus() == cid) then
+	if (getNpcFocus() == cid) then
 		faceCreature(cid)
 	end
 end
 
 function onCreatureSay(cid, type, msg)
-	if (getFocus() == 0) then
+	if (getNpcFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
-			updateIdle()
-			setFocus(cid)
+			updateNpcIdle()
+			setNpcFocus(cid)
 			greet(cid, _delay)
 		end
 		
-	elseif (getFocus() ~= cid) then
+	elseif (getNpcFocus() ~= cid) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			selfSay('Just wait, ' .. getCreatureName(cid) .. '.', _delay)
 			queuePlayer(cid)
@@ -152,7 +152,7 @@ function onCreatureSay(cid, type, msg)
 					selfSay('Come back, when you have enough money.', _delay)
 				end
 				
-				updateIdle()
+				updateNpcIdle()
 			else
 				selfSay('Hmm, but next time.', _delay)
 			end
@@ -172,7 +172,7 @@ function onCreatureSay(cid, type, msg)
 					end
 				end
 				
-				updateIdle()
+				updateNpcIdle()
 			else
 				selfSay('Maybe next time.', _delay)
 			end
@@ -193,7 +193,7 @@ function onCreatureSay(cid, type, msg)
 						_state = 1
 					end
 					
-					updateIdle()
+					updateNpcIdle()
 					break
 				end
 			end
@@ -202,8 +202,8 @@ function onCreatureSay(cid, type, msg)
 end
 
 function onThink()
-	if (getFocus() ~= 0) then
-		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
+	if (getNpcFocus() ~= 0) then
+		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
 			selfSay('See you.', _delay)
 			getNext()
 		end

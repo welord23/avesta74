@@ -7,20 +7,20 @@ function getNext()
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setFocus(nextPlayer)
 			greet(nextPlayer, _delay * 2)
-			updateIdle()
+			updateNpcIdle()
 			return
 		else
 			getNext()
 		end
 	end
 	
-	setFocus(0)
-	resetIdle()
+	setNpcFocus(0)
+	resetNpcIdle()
 end
 
 function _selfSay(message)
 	selfSay(message, _delay)
-	updateIdle()
+	updateNpcIdle()
 end
 
 local function greet(cid, delay)
@@ -31,7 +31,7 @@ function onCreatureAppear(cid)
 end
 
 function onCreatureDisappear(cid)
-	if (getFocus() == cid) then
+	if (getNpcFocus() == cid) then
 		selfSay('Good bye. Recommend us, if you were satisfied with our service.')
 		getNext()
 	else
@@ -40,20 +40,20 @@ function onCreatureDisappear(cid)
 end
 
 function onCreatureMove(cid, oldPos, newPos)
-	if (getFocus() == cid) then
+	if (getNpcFocus() == cid) then
 		faceCreature(cid)
 	end
 end
 
 function onCreatureSay(cid, type, msg)
-	if (getFocus() == 0) then
+	if (getNpcFocus() == 0) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
-			setFocus(cid)
-			updateIdle()
+			setNpcFocus(cid)
+			updateNpcIdle()
 			greet(cid, _delay)
 		end
 		
-	elseif (getFocus() ~= cid) then 
+	elseif (getNpcFocus() ~= cid) then 
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			selfSay('One moment please, ' .. getCreatureName(cid) .. '.', _delay)
 			queuePlayer(cid)
@@ -87,8 +87,8 @@ function onCreatureSay(cid, type, msg)
 end
 
 function onThink()
-	if (getFocus() ~= 0) then
-		if (isIdle() or getDistanceToCreature(getFocus()) > 4) then
+	if (getNpcFocus() ~= 0) then
+		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
 			selfSay('Good bye.', _delay)
 			getNext()
 		end
