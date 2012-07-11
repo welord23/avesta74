@@ -1104,10 +1104,10 @@ ReturnValue MoveEvent::canPlayerWearEquip(Player* player, slots_t slot)
 	if(!vocMap.empty() && vocMap.find(player->getVocationId()) == vocMap.end()){
 		return RET_NOTREQUIREDPROFESSION;
 	}
-	if(player->getLevel() < getReqLevel()){
+	if((int32_t)player->getLevel() < getReqLevel()){
 		return RET_NOTREQUIREDLEVEL;
 	}
-	if(player->getMagicLevel() < getReqMagLv()){
+	if((int32_t)player->getMagicLevel() < getReqMagLv()){
 		return RET_NOTENOUGHMAGICLEVEL;
 	}
 	if(!player->isPremium() && isPremium()){

@@ -1475,14 +1475,15 @@ void ProtocolGame::parseBugReport(NetworkMessage &msg)
 void ProtocolGame::parseViolationWindow(NetworkMessage &msg)
 {
 	std::string name = msg.GetString();
-#ifdef __PROTOCOL_77__
-	std::string statement = msg.GetString();
-#endif // __PROTOCOL_77__
 	int32_t reason = msg.GetByte();
 	int32_t action = msg.GetByte();
-	bool IPBanishment = (msg.GetByte() == 0x01);
 	std::string comment = msg.GetString();
-	
+#ifdef __PROTOCOL_77__
+	std::string statement = msg.GetString();
+	uint16_t channelId = msg.GetU16();
+#endif // __PROTOCOL_77__
+	bool IPBanishment = (msg.GetByte() == 0x01);
+
 	addGameTask(&Game::violationWindow, player->getID(), name, reason, comment, action, IPBanishment);
 }
 
