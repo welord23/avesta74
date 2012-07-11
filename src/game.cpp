@@ -811,10 +811,18 @@ bool Game::playerMoveCreature(uint32_t playerId, uint32_t movingCreatureId,
 			player->sendCancelMessage(RET_NOTENOUGHROOM);
 			return false;
 		}
-		else if(movingCreature->getZone() == ZONE_PROTECTION && !toTile->hasFlag(TILESTATE_PROTECTIONZONE)){
+		else if(movingCreature->getZone() == ZONE_PROTECTION &&
+			!toTile->hasFlag(TILESTATE_PROTECTIONZONE))
+		{
 			player->sendCancelMessage(RET_NOTPOSSIBLE);
 			return false;
 		}
+		else if(movingCreature->getNpc() && !Spawns::getInstance()->isInZone(
+			movingCreature->masterPos, movingCreature->masterRadius, toPos))
+		{
+			player->sendCancelMessage(RET_NOTENOUGHROOM);
+            return false;
+        }
 	}
 
 	ReturnValue ret = internalMoveCreature(movingCreature, movingCreature->getTile(), toTile);

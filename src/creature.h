@@ -167,8 +167,8 @@ public:
 	void setMasterPos(const Position& pos, uint32_t radius = 1) { masterPos = pos; masterRadius = radius;}
 
 	virtual int getThrowRange() const {return 1;};
-	virtual bool isPushable() const {return (getWalkDelay() <= 0);};
-	virtual bool isRemoved() const {return isInternalRemoved;};
+	virtual bool isPushable() const {return (getWalkDelay() <= 0);}
+	virtual bool isRemoved() const {return isInternalRemoved;}
 	virtual bool canSeeInvisibility() const { return false;}
 
 	int32_t getWalkDelay(Direction dir) const;

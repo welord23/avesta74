@@ -134,9 +134,9 @@ public:
 	virtual ~Npc();
 
 	virtual Npc* getNpc() {return this;};
-	virtual const Npc* getNpc() const {return this;};
+	virtual const Npc* getNpc() const {return this;}
 
-	virtual bool isPushable() const { return false;};
+	virtual bool isPushable() const { return true;}
 
 	virtual uint32_t idRange(){ return 0x80000000;}
 	static AutoList<Npc> listNpc;
