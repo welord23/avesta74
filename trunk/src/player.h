@@ -177,7 +177,7 @@ public:
 	uint32_t getMagicLevel() const {return getPlayerInfo(PLAYERINFO_MAGICLEVEL);}
 	int32_t getAccessLevel() const {return accessLevel;}
 
-	uint32_t resetIdleTime() {return idleTime = 0;}
+	uint32_t resetIdle() {return idleTime = 0;}
 
 	void setVocation(uint32_t vocId);
 	uint32_t getVocationId() const;

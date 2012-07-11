@@ -1923,7 +1923,6 @@ bool Game::playerMove(uint32_t playerId, Direction dir)
 		return false;
 	}
 
-	player->resetIdleTime();
 	player->onWalk(dir);
 	return (internalMoveCreature(player, dir) == RET_NOERROR);
 }
@@ -2147,6 +2146,7 @@ bool Game::playerAutoWalk(uint32_t playerId, std::list<Direction>& listDir)
 	if(!player || player->isRemoved())
 		return false;
 
+	player->resetIdle();
 	player->setNextWalkTask(NULL);
 	return player->startAutoWalk(listDir);
 }
@@ -2228,6 +2228,8 @@ bool Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 		return false;
 	}
 
+	player->resetIdle();
+
 	if(!player->canDoAction()){
 		uint32_t delay = player->getNextActionTime();
 		SchedulerTask* task = createSchedulerTask(delay, boost::bind(&Game::playerUseItemEx, this,
@@ -2280,6 +2282,8 @@ bool Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 		player->sendCancelMessage(ret);
 		return false;
 	}
+
+	player->resetIdle();
 
 	if(!player->canDoAction()){
 		uint32_t delay = player->getNextActionTime();
@@ -2348,6 +2352,8 @@ bool Game::playerUseBattleWindow(uint32_t playerId, const Position& fromPos, uin
 		player->sendCancelMessage(ret);
 		return false;
 	}
+
+	player->resetIdle();
 
 	if(!player->canDoAction()){
 		uint32_t delay = player->getNextActionTime();
@@ -2466,7 +2472,6 @@ bool Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stac
 		transformItem(item, newId);
 	}
 
-	player->resetIdleTime();
 	return true;
 }
 
@@ -2918,7 +2923,6 @@ bool Game::playerLookAt(uint32_t playerId, const Position& pos, uint16_t spriteI
 	ss << "You see " << thing->getDescription(lookDistance);
 	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 
-	player->resetIdleTime();
 	return true;
 }
 
@@ -3132,7 +3136,7 @@ bool Game::playerTurn(uint32_t playerId, Direction dir)
 	if(!player || player->isRemoved())
 		return false;
 
-	player->resetIdleTime();
+	player->resetIdle();
 	return internalCreatureTurn(player, dir);
 }
 
@@ -3198,8 +3202,6 @@ bool Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 	if(isMuteableChannel){
 		player->removeMessageBuffer();
 	}
-
-	player->resetIdleTime();
 
 	switch(type){
 		case SPEAK_SAY:

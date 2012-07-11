@@ -1646,6 +1646,7 @@ void Player::setNextWalkActionTask(SchedulerTask* task)
 	}
 	delete walkTask;
 	walkTask = task;
+	resetIdle();
 }
 
 void Player::setNextWalkTask(SchedulerTask* task)
@@ -1657,6 +1658,7 @@ void Player::setNextWalkTask(SchedulerTask* task)
 
 	if(task){
 		nextStepEvent = Scheduler::getScheduler().addEvent(task);
+		resetIdle();
 	}
 }
 
