@@ -204,8 +204,9 @@ bool Mailbox::getReceiver(Item* item, std::string& name, uint32_t& dp)
 		return false;
 	}
 
-	if(!item || item->getText() == "") /**No label/letter found or its empty.**/
+	if(!item || item->getText() == "") /**No label/letter found or its empty.**/ {
 		return false;
+	}
 
 	std::string temp;
 	std::istringstream iss(item->getText(), std::istringstream::in);

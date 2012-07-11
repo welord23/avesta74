@@ -63,7 +63,9 @@ public:
 	void removeList() {listMonster.removeList(getID());}
 	void addList() {listMonster.addList(this);}
 
+#ifndef __PROTOCOL_76__
 	virtual bool canSee(const Position& pos) const;
+#endif
 	
 	virtual const std::string& getName() const {return mType->name;}
 	virtual const std::string& getNameDescription() const {return mType->nameDescription;}
