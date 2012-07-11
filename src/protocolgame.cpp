@@ -1475,8 +1475,8 @@ void ProtocolGame::parseBugReport(NetworkMessage &msg)
 void ProtocolGame::parseViolationWindow(NetworkMessage &msg)
 {
 	std::string name = msg.GetString();
-	int32_t reason = msg.GetByte();
-	int32_t action = msg.GetByte();
+	uint8_t reason = msg.GetByte();
+	uint8_t action = msg.GetByte();
 	std::string comment = msg.GetString();
 #ifdef __PROTOCOL_77__
 	std::string statement = msg.GetString();
