@@ -2428,7 +2428,6 @@ int LuaScriptInterface::luaDoSendMagicEffect(lua_State *L)
 
 	uint32_t parameters = lua_gettop(L);
 	SpectatorVec list;
-	bool useList = false;
 	if(parameters > 2){
 		uint32_t cid = popNumber(L);
 		Player* player = env->getPlayerByUID(cid);
@@ -6090,8 +6089,6 @@ int LuaScriptInterface::luaGetIPByPlayerName(lua_State *L)
 	//getIPByPlayerName(playerName)
 	std::string name = popString(L);
 
-	ScriptEnviroment* env = getScriptEnv();
-
 	if(Player* player = g_game.getPlayerByName(name)){
 		lua_pushnumber(L, player->getIP());
 	}
@@ -6331,8 +6328,6 @@ int LuaScriptInterface::luaGetFluidSourceType(lua_State *L)
 {
 	//getFluidSourceType(type)
 	uint32_t type = popNumber(L);
-
-	ScriptEnviroment* env = getScriptEnv();
 
 	const ItemType& it = Item::items[type];
 	if(it.id != 0){
@@ -6973,8 +6968,6 @@ int LuaScriptInterface::luaGetSpectators(lua_State *L)
 	PositionEx centerPos;
 	popPosition(L, centerPos);
 
-	ScriptEnviroment* env = getScriptEnv();
-
 	SpectatorVec list;
 	g_game.getSpectators(list, centerPos, false, multifloor, rangex, rangex, rangey, rangey);
 	if(list.empty()){
@@ -7105,9 +7098,9 @@ int LuaScriptInterface::luaAddIPBan(lua_State *L)
 		length = popNumber(L);
 	if(parameters > 1)
 		mask = popNumber(L);
-	uint32_t ip = popNumber(L);
 
-	//g_bans.addIpBan(ip, mask, (length > 0? std::time(NULL) + length : 0), admin, comment);
+	//uint32_t ip = popNumber(L);
+	//g_bans.addIpBanishment(ip, (length > 0? std::time(NULL) + length : 0), admin, reason, comment);
 
 	lua_pushnumber(L, LUA_TRUE);
 	return 1;
@@ -7128,8 +7121,8 @@ int LuaScriptInterface::luaAddAccountBan(lua_State *L)
 		admin = popNumber(L);
 	if(parameters > 1)
 		length = popNumber(L);
-	uint32_t accno = popNumber(L);
 
+	//uint32_t accno = popNumber(L);
 	//g_bans.addAccountBan(accno, (length > 0? std::time(NULL) + length : 0), admin, comment);
 
 	lua_pushnumber(L, LUA_TRUE);
@@ -7184,7 +7177,6 @@ int LuaScriptInterface::luaGetPlayerBanList(lua_State *L)
 	return 1;
 }
 
-// FERRUS This shouldn't be split into account and players
 int LuaScriptInterface::luaGetAccountBanList(lua_State *L)
 {
 	//getPlayerBanList()

@@ -2572,8 +2572,11 @@ bool Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return false;
 	}
 
-	Item* tradeItem = dynamic_cast<Item*>(internalGetThing(player, pos, stackPos, spriteId, STACKPOS_USE));
-	if(!tradeItem || tradeItem->getClientID() != spriteId || !tradeItem->isPickupable() || tradeItem->getUniqueId() != 0) {
+	Item* tradeItem = dynamic_cast<Item*>(internalGetThing(
+		player, pos, stackPos, spriteId, STACKPOS_USE));
+	if(!tradeItem || tradeItem->getClientID() != spriteId ||
+		!tradeItem->isPickupable() || tradeItem->getUniqueId() != 0) 
+	{
 		player->sendCancelMessage(RET_NOTPOSSIBLE);
 		return false;
 	}
