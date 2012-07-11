@@ -24,12 +24,12 @@ otserv_SOURCES = $(MAYBE_MYSQL) $(MAYBE_SQLITE) $(MAYBE_ODBC) $(MAYBE_PGSQL) \
 	account.cpp container.cpp creature.cpp game.cpp ioaccount.cpp \
 	iomapxml.cpp ioplayer.cpp database.cpp database.h \
 	item.cpp items.cpp luascript.cpp map.cpp monster.cpp networkmessage.cpp npc.cpp \
-	otserv.cpp player.cpp position.cpp protocol74.cpp spells.cpp \
+	otserv.cpp player.cpp position.cpp protocolgame.cpp spells.cpp \
 	status.cpp thing.cpp tile.cpp tools.cpp account.h bootstrap.sh config.h const.h \
 	container.h creature.h definitions.h game.h ioaccount.h \
 	iomap.h iomapxml.h ioplayer.h item.h items.h \
 	luascript.h map.h monster.h networkmessage.h npc.h otsystem.h player.h \
-	position.h protocol74.h scheduler.h spells.h stamp-h status.h \
+	position.h protocolgame.h scheduler.h spells.h status.h \
 	tasks.h templates.h texcept.h thing.h tile.h tools.h spawn.cpp spawn.h \
 	actions.h actions.cpp commands.cpp commands.h depot.cpp depot.h \
 	md5.cpp md5.h fileloader.cpp fileloader.h chat.cpp chat.h logger.cpp logger.h \
@@ -41,6 +41,7 @@ otserv_SOURCES = $(MAYBE_MYSQL) $(MAYBE_SQLITE) $(MAYBE_ODBC) $(MAYBE_PGSQL) \
 	combat.cpp combat.h condition.cpp condition.h weapons.cpp weapons.h \
 	talkaction.cpp talkaction.h vocation.cpp vocation.h scriptmanager.cpp scriptmanager.h \
 	server.cpp connection.cpp outputmessage.cpp tasks.cpp scheduler.cpp protocollogin.cpp \
-	protocol.cpp creatureevent.cpp creatureevent.h sha1.cpp sha1.h beds.cpp beds.h party.cpp party.h
+	protocol.cpp creatureevent.cpp creatureevent.h sha1.cpp sha1.h beds.cpp beds.h \
+	party.cpp party.h globalevent.cpp globalevent.h
 	
 	
