@@ -85,6 +85,9 @@
 
     -- Only one player online per account
     CheckAccounts = false
+	
+	-- Kick player when trying to log on his character
+	KickOnLogin = false
 
 ---- DATABASE ----
 
@@ -95,7 +98,7 @@
     --- SQL connection part
     SQL_DB   = "db.db3"
 
-    -- these settings are not used by SQLite
+    -- These settings are not used by SQLite
     SQL_Host = "localhost"
     SQL_Port = 3306
     SQL_User = "root"
@@ -103,16 +106,15 @@
 
 ---- HOUSES ----
 
-    -- house rent period
-    -- options: daily, weekly, monthly
+    -- House rent period
+    -- Options: daily, weekly, monthly
     HouseRentPeriod = "monthly"
 
     -- Price for a tile
     HousePrice = 100
-
-    HouseLevel = 1
-    PremOnlyHouse = true
-    PremOnlyBeds = false
+	
+	-- Beds only for premium players
+    PremOnlyBeds = true
 
 --- INFO ---
 
@@ -149,7 +151,7 @@
 ---- MAP ----
 
     -- Map location
-    Map = "data/world/world.otbm"
+    Map = "data/world/Fibula.otbm"
 
     -- Mapkind
     -- Options: OTBM for binary map, XML for OTX map
@@ -189,6 +191,15 @@
 
     -- Max number of players allowed
     MaxPlayers = "100"
+	
+--- WAR ---
+
+	-- Players with same Guild ID can't attack each other
+	TeamMode = false
+	
+	-- The damage percent guild members deal to each other with magic spells/runes
+	-- Works only with TeamMode on
+	DamagePercent = 20
 
 --- OTHER ---
 
@@ -205,8 +216,9 @@
     -- Should the server use account balance system or depot system for paying houses?
     UseAccBalance = false
 
-    -- Time after player will be kicked when idle, in minutes
-    MaxIdleTime = 15
+    -- Time after player will be warned and kicked, in miliseconds
+    IdleTimeKick = 60000
+	IdleTimeWarning = 30000
 
     -- Level on which player will get rooked
     LevelToRook = 5
@@ -214,12 +226,12 @@
     -- TownId to which player will be teleported
     RookTempleId = 1
 
-    -- if your website is not showing player deaths, then keep this as 0
+    -- if your website is not showing player deaths, then keep this as false
     StorePlayerDeaths = false
 
     -- ID of temple to which player will get teleported when his prem end out
     -- 0 to disable
-    -- not tested yet
+    -- not tested
     FACCTempleID = 0
 
  

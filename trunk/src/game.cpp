@@ -3308,6 +3308,11 @@ bool Game::playerWhisper(Player* player, const std::string& text)
 
 bool Game::playerYell(Player* player, const std::string& text)
 {
+	if(player->getLevel() < 2){
+		player->sendCancel("You may not yell as long as you are on level 1.");
+		return false;
+	}
+
 	int32_t addExhaustion = 0;
 	bool isExhausted = false;
 	if(!player->hasCondition(CONDITION_YELL)){
