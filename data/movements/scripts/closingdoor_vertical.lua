@@ -1,14 +1,14 @@
-function onStepOut(cid, item, pos)
+function onStepOut(cid, item, topos, frompos)
 	if(item.actionid == 0) then
 		-- This is not a special door
 		return TRUE
 	end
  
-	doRelocate(pos, {x=pos.x, y=pos.y+1, z=pos.z})
+	doRelocate(frompos, {x=frompos.x, y=frompos.y+1, z=frompos.z})
  
 	-- Remove any item that was not moved
 	-- Happens when there is an unmoveable item on the door, ie. a fire field
-	local tmpPos = {x=pos.x, y=pos.y, z=pos.z, stackpos=-1}
+	local tmpPos = {x=frompos.x, y=frompos.y, z=frompos.z, stackpos=-1}
 	local tileCount = getTileThingByPos(tmpPos)
 	local i = 1
 	local tmpItem = {uid = 1}

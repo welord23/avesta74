@@ -10,7 +10,7 @@ local function doTransformTile(item)
 	end
 end
 
-function onStepIn(cid, item, pos)
+function onStepIn(cid, item, topos, frompos)
 	if(item.actionid > 0) then
 		return TRUE
 	end
@@ -19,9 +19,9 @@ function onStepIn(cid, item, pos)
 	local depot = {}
 	for x = -1, 1 do
 		for y = -1, 1 do
-			pos.x = pos.x + x
-			pos.y = pos.y + y
-			depot = getTileItemByType(pos, ITEM_TYPE_DEPOT)
+			topos.x = topos.x + x
+			topos.y = topos.y + y
+			depot = getTileItemByType(topos, ITEM_TYPE_DEPOT)
 			if(depot.uid > 0) then
 				local depotItems = getPlayerDepotItems(cid, getDepotId(depot.uid))
 				local depotStr = "Your depot contains " .. depotItems .. " items."
@@ -32,14 +32,14 @@ function onStepIn(cid, item, pos)
 				return TRUE
 			end
 			-- The pos has changed, change it back
-			pos.x = pos.x - x
-			pos.y = pos.y - y
+			topos.x = topos.x - x
+			topos.y = topos.y - y
 		end
 	end
 	return TRUE
 end
 
-function onStepOut(cid, item, pos)
+function onStepOut(cid, item, topos, frompos)
 	doTransformTile(item)
 	return TRUE
 end
