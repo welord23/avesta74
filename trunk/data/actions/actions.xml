@@ -152,48 +152,6 @@
 	<action itemid="2372" script="musical_instrument.lua"/>
 	<action itemid="2373" script="musical_instrument.lua"/>
 	<action itemid="2374" script="musical_instrument.lua"/>
-
-    <!-- Foods -->
-	<action itemid="2328" script="food.lua"/>
-	<action itemid="2362" script="food.lua"/>
-	<action itemid="2666" script="food.lua"/>
-	<action itemid="2667" script="food.lua"/>
-	<action itemid="2668" script="food.lua"/>
-	<action itemid="2669" script="food.lua"/>
-	<action itemid="2670" script="food.lua"/>
-	<action itemid="2671" script="food.lua"/>
-	<action itemid="2672" script="food.lua"/>
-	<action itemid="2673" script="food.lua"/>
-	<action itemid="2674" script="food.lua"/>
-	<action itemid="2675" script="food.lua"/>
-	<action itemid="2676" script="food.lua"/>
-	<action itemid="2677" script="food.lua"/>
-	<action itemid="2678" script="food.lua"/>
-	<action itemid="2679" script="food.lua"/>
-	<action itemid="2680" script="food.lua"/>
-	<action itemid="2681" script="food.lua"/>
-	<action itemid="2682" script="food.lua"/>
-	<action itemid="2683" script="food.lua"/>
-	<action itemid="2684" script="food.lua"/>
-	<action itemid="2685" script="food.lua"/>
-	<action itemid="2686" script="food.lua"/>
-	<action itemid="2687" script="food.lua"/>
-	<action itemid="2688" script="food.lua"/>
-	<action itemid="2689" script="food.lua"/>
-	<action itemid="2690" script="food.lua"/>
-	<action itemid="2691" script="food.lua"/>
-	<action itemid="2695" script="food.lua"/>
-	<action itemid="2696" script="food.lua"/>
-	<action itemid="2787" script="food.lua"/>
-	<action itemid="2788" script="food.lua"/>
-	<action itemid="2789" script="food.lua"/>
-	<action itemid="2790" script="food.lua"/>
-	<action itemid="2791" script="food.lua"/>
-	<action itemid="2792" script="food.lua"/>
-	<action itemid="2793" script="food.lua"/>
-	<action itemid="2794" script="food.lua"/>
-	<action itemid="2795" script="food.lua"/>
-	<action itemid="2796" script="food.lua"/>
 	
 	<!-- Make Bread -->
 	<action itemid="2692" script="make_bread.lua"/>
