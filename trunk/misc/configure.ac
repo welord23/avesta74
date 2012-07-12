@@ -27,7 +27,10 @@ AC_ARG_ENABLE(skulls, [  --enable-skulls      enable skull system], [OPTIONAL_FL
 AC_ARG_ENABLE(otallocator, [  --enable-otallocator   enable otserv custom allocator], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__OTSERV_ALLOCATOR__"])
 
 # check if we want 76 protocol
-AC_ARG_ENABLE(protocol76, [  --enable-protocol76      enable protocol 76], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__76__"])
+AC_ARG_ENABLE(protocol76, [  --enable-protocol76      enable protocol 76], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__PROTOCOL_76__"])
+
+# check if we want 77 protocol
+AC_ARG_ENABLE(protocol77, [  --enable-protocol77      enable protocol 77], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__PROTOCOL_77__"])
 
 AC_SUBST(OPTIONAL_FLAGS)
 
