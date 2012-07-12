@@ -5,7 +5,7 @@
 function onUse(cid, item, frompos, item2, topos)
 	local isLevelDoor = (item.actionid >= 1001 and item.actionid <= 1999)
 	local isVocationDoor = (item.actionid >= 2001 and item.actionid <= 2008)
-      local playerPos = getPlayerPosition(cid)
+	local playerPos = getPlayerPosition(cid)
 
 
 	if not(isLevelDoor or isVocationDoor) then

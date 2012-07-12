@@ -1,12 +1,10 @@
-
-
-function onStepIn(cid, item, pos)
-	doSendAnimatedText(pos, "D'oh!", 192)
-	doSendMagicEffect(pos, 15)
+function onStepIn(cid, item, topos, frompos)
+	doSendAnimatedText(topos, "D'oh!", 192)
+	doSendMagicEffect(topos, 15)
 	return 1
 end
 
-function onStepOut(cid, item, pos)
+function onStepOut(cid, item, topos, frompos)
 	doPlayerSendTextMessage(cid, 25, "You need new boots!")
 	return 1
 end
