@@ -642,7 +642,9 @@ void Monster::doAttacking(uint32_t interval)
 	const Position& myPos = getPosition();
 	const Position& targetPos = attackedCreature->getPosition();
 
-	for(SpellList::iterator it = mType->spellAttackList.begin(); it != mType->spellAttackList.end(); ++it){
+	for(SpellList::iterator it = mType->spellAttackList.begin();
+		it != mType->spellAttackList.end(); ++it)
+	{
 		bool inRange = false;
 		if(canUseSpell(myPos, targetPos, *it, interval, inRange)){
 			if(it->chance >= (uint32_t)random_range(1, 100)){
@@ -766,7 +768,9 @@ void Monster::onThinkDefense(uint32_t interval)
 	resetTicks = true;
 	defenseTicks += interval;
 
-	for(SpellList::iterator it = mType->spellDefenseList.begin(); it != mType->spellDefenseList.end(); ++it){
+	for(SpellList::iterator it = mType->spellDefenseList.begin();
+		it != mType->spellDefenseList.end(); ++it)
+	{
 		if(it->speed > defenseTicks){
 			resetTicks = false;
 			continue;

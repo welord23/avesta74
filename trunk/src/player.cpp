@@ -704,10 +704,7 @@ void Player::addSkillAdvance(skills_t skill, uint32_t count, bool useMultiplier 
 		sendTextMessage(MSG_EVENT_ADVANCE, advMsg.str());
 
 		//scripting event - onAdvance
-		CreatureEvent* eventAdvance = getCreatureEvent(CREATURE_EVENT_ADVANCE);
-		if(eventAdvance){
-			eventAdvance->executeOnAdvance(this, (skills[skill][SKILL_LEVEL] - 1), skills[skill][SKILL_LEVEL], (levelTypes_t)skill);
-		}
+		onAdvanceEvent((levelTypes_t)skill, (skills[skill][SKILL_LEVEL] - 1), skills[skill][SKILL_LEVEL]);
 
 		sendSkills();
 	}
@@ -1801,26 +1798,30 @@ void Player::addManaSpent(uint32_t amount, bool useMultiplier /*= true*/)
 			amount = uint32_t(amount * getRateValue(LEVEL_MAGIC));
 		}
 		manaSpent += amount * g_config.getNumber(ConfigManager::RATE_MAGIC);
-		uint32_t reqMana = vocation->getReqMana(magLevel + 1);
 
-		if(manaSpent >= reqMana){
+		uint32_t origLevel = magLevel;
+
+		uint32_t reqMana = vocation->getReqMana(origLevel + 1);
+		if(reqMana == 0)
+			return;
+
+		while(manaSpent >= reqMana){
 			manaSpent -= reqMana;
 			magLevel++;
+			reqMana = vocation->getReqMana(magLevel + 1);
+		}
 
+		if (magLevel != origLevel){
 			std::stringstream MaglvMsg;
 			MaglvMsg << "You advanced to magic level " << magLevel << ".";
 			sendTextMessage(MSG_EVENT_ADVANCE, MaglvMsg.str());
 
 			//scripting event - onAdvance
-			CreatureEvent* eventAdvance = getCreatureEvent(CREATURE_EVENT_ADVANCE);
-			if(eventAdvance){
-				eventAdvance->executeOnAdvance(this, (magLevel - 1), magLevel, LEVEL_MAGIC);
-			}
-
-			sendStats();
+			onAdvanceEvent(LEVEL_MAGIC, origLevel, magLevel);
 		}
 
-		magLevelPercent = Player::getPercentLevel(manaSpent, vocation->getReqMana(magLevel + 1));
+		magLevelPercent = Player::getPercentLevel(manaSpent, reqMana);
+		sendStats();
 	}
 }
 
@@ -1862,10 +1863,7 @@ void Player::addExperience(uint64_t exp)
 		sendTextMessage(MSG_EVENT_ADVANCE, levelMsg.str());
 
 		//scripting event - onAdvance
-		CreatureEvent* eventAdvance = getCreatureEvent(CREATURE_EVENT_ADVANCE);
-		if(eventAdvance){
-			eventAdvance->executeOnAdvance(this, prevLevel, newLevel, LEVEL_EXPERIENCE);
-		}
+		onAdvanceEvent(LEVEL_EXPERIENCE, prevLevel, newLevel);
 	}
 
 	currLevelExp = Player::getExpForLevel(level);
@@ -3489,13 +3487,13 @@ void Player::onTargetCreatureGainHealth(Creature* target, int32_t points)
 	}
 }
 
-void Player::onKilledCreature(Creature* target)
+void Player::onKilledCreature(Creature* target, bool lastHit)
 {
 	if(hasFlag(PlayerFlag_NotGenerateLoot)){
 		target->setDropLoot(false);
 	}
 
-	Creature::onKilledCreature(target);
+	Creature::onKilledCreature(target, lastHit);
 
 	if(Player* targetPlayer = target->getPlayer()){
 		if(targetPlayer->getZone() == ZONE_PVP){
@@ -3964,4 +3962,24 @@ void Player::checkIdleTime(uint32_t ticks)
 			sendTextMessage(MSG_STATUS_WARNING, message.str());
 		}
 	}
+}
+
+void Player::onAdvanceEvent(levelTypes_t type, uint32_t oldLevel, uint32_t newLevel)
+{
+	CreatureEventList advanceEvents = getCreatureEvents(CREATURE_EVENT_ADVANCE);
+	for(CreatureEventList::iterator it = advanceEvents.begin(); it != advanceEvents.end(); ++it){
+		(*it)->executeOnAdvance(this, type, oldLevel, newLevel);
+	}
+}
+
+bool Player::onLookEvent(Thing* target, uint32_t itemId)
+{
+	CreatureEventList lookEvents = getCreatureEvents(CREATURE_EVENT_LOOK);
+	for(CreatureEventList::iterator it = lookEvents.begin(); it != lookEvents.end(); ++it){
+		if(!(*it)->executeOnLook(this, target, itemId)){
+			return false;
+		}
+	}
+
+	return true;
 }

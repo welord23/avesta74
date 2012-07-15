@@ -342,7 +342,7 @@ public:
 	virtual void onAttacked();
 	virtual void onAttackedCreatureDrainHealth(Creature* target, int32_t points);
 	virtual void onTargetCreatureGainHealth(Creature* target, int32_t points);
-	virtual void onKilledCreature(Creature* target);
+	virtual void onKilledCreature(Creature* target, bool lastHit);
 	virtual void onGainExperience(uint64_t gainExp);
 	virtual void onAttackedCreatureBlockHit(Creature* target, BlockType_t blockType);
 	virtual void onBlockHit(BlockType_t blockType);
@@ -377,6 +377,10 @@ public:
 #endif
 
 	bool canLogout();
+
+	//creature events
+	void onAdvanceEvent(levelTypes_t type, uint32_t oldLevel, uint32_t newLevel);
+	bool onLookEvent(Thing* target, uint32_t itemId);
 
 	//tile
 	//send methods
