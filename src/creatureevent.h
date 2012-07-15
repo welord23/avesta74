@@ -31,7 +31,8 @@ enum CreatureEventType_t{
 	CREATURE_EVENT_LOGOUT,
 	CREATURE_EVENT_DIE,
 	CREATURE_EVENT_KILL,
-	CREATURE_EVENT_ADVANCE
+	CREATURE_EVENT_ADVANCE,
+	CREATURE_EVENT_LOOK
 };
 
 class CreatureEvent;
@@ -43,22 +44,17 @@ public:
 	virtual ~CreatureEvents();
 
 	// global events
-	uint32_t playerLogIn(Player* player);
-	uint32_t playerLogOut(Player* player);
+	bool playerLogIn(Player* player);
+	bool playerLogOut(Player* player);
 
-	CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
+	CreatureEvent* getEventByName(const std::string& name);
 
 protected:
-
 	virtual LuaScriptInterface& getScriptInterface();
 	virtual std::string getScriptBaseName();
 	virtual Event* getEvent(const std::string& nodeName);
 	virtual bool registerEvent(Event* event, xmlNodePtr p);
 	virtual void clear();
-
-	//global events
-	CreatureEvent* m_logInEvent;
-	CreatureEvent* m_logOutEvent;
 
 	//creature events
 	typedef std::map<std::string, CreatureEvent*> CreatureEventList;
@@ -77,17 +73,14 @@ public:
 
 	CreatureEventType_t getEventType() const { return m_type; }
 	const std::string& getName() const { return m_eventName; }
-	bool isLoaded() const { return m_isLoaded; }
-
-	void clearEvent();
-	void copyEvent(CreatureEvent* creatureEvent);
 
 	//scripting
-	uint32_t executeOnLogin(Player* player);
-	uint32_t executeOnLogout(Player* player);
-	uint32_t executeOnDie(Creature* creature, Item* corpse);
-	uint32_t executeOnKill(Creature* creature, Creature* target);
-	uint32_t executeOnAdvance(Player* player, uint32_t oldLevel, uint32_t newLevel, levelTypes_t type);
+	bool executeOnLogin(Player* player);
+	bool executeOnLogout(Player* player);
+	void executeOnDie(Creature* creature, Item* corpse);
+	void executeOnKill(Creature* creature, Creature* target, bool lastHit);
+	void executeOnAdvance(Player* player, levelTypes_t type, uint32_t oldLevel, uint32_t newLevel);
+	bool executeOnLook(Player* player, Thing* target, uint16_t itemId);
 	//
 
 protected:
@@ -95,7 +88,6 @@ protected:
 
 	std::string m_eventName;
 	CreatureEventType_t m_type;
-	bool m_isLoaded;
 };
 
 

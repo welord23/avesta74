@@ -36,6 +36,7 @@
 #include <list>
 
 typedef std::list<Condition*> ConditionList;
+typedef std::list<CreatureEvent*> CreatureEventList;
 
 enum slots_t {
 	SLOT_WHEREEVER = 0,
@@ -304,7 +305,7 @@ public:
 	virtual void onAttackedCreatureDrainHealth(Creature* target, int32_t points);
 	virtual void onTargetCreatureGainHealth(Creature* target, int32_t points);
 	virtual void onAttackedCreatureKilled(Creature* target);
-	virtual void onKilledCreature(Creature* target);
+	virtual void onKilledCreature(Creature* target, bool lastHit);
 	virtual void onGainExperience(uint64_t gainExp);
 	virtual void onAttackedCreatureBlockHit(Creature* target, BlockType_t blockType);
 	virtual void onBlockHit(BlockType_t blockType);
@@ -434,14 +435,15 @@ protected:
 	uint32_t blockTicks;
 
     //creature script events
-	uint32_t scriptEventsBitField;
 	bool hasEventRegistered(CreatureEventType_t event){
 		return (0 != (scriptEventsBitField & ((uint32_t)1 << event)));
 	}
+	uint32_t scriptEventsBitField;
 	typedef std::list<CreatureEvent*> CreatureEventList;
 	CreatureEventList eventsList;
-	CreatureEventList::iterator findEvent(CreatureEventType_t type);
-	CreatureEvent* getCreatureEvent(CreatureEventType_t type);
+	CreatureEventList getCreatureEvents(CreatureEventType_t type);
+	void onDieEvent(Item* corpse);
+	void onKillEvent(Creature* target, bool lastHit);
 
 	void updateMapCache();
 #ifdef __DEBUG__

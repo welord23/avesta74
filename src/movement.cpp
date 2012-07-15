@@ -119,7 +119,7 @@ std::string MoveEvents::getScriptBaseName()
 
 Event* MoveEvents::getEvent(const std::string& nodeName)
 {
-	if(asLowerCaseString(nodeName) == "movevent"){
+	if(asLowerCaseString(nodeName) == "movevent" || asLowerCaseString(nodeName) == "moveevent"){
 		return new MoveEvent(&m_scriptInterface);
 	}
 	else{
@@ -199,11 +199,15 @@ void MoveEvents::addEvent(MoveEvent* moveEvent, int32_t id, MoveListMap& map)
 	}
 	else{
 		std::list<MoveEvent*>& moveEventList = it->second.moveEvent[moveEvent->getEventType()];
-		for(std::list<MoveEvent*>::iterator it = moveEventList.begin(); it != moveEventList.end(); ++it){
+		for(std::list<MoveEvent*>::iterator it = moveEventList.begin();
+			it != moveEventList.end(); ++it)
+		{
 			if((*it)->getSlot() == moveEvent->getSlot()){
-				std::cout << "Warning: [MoveEvents::addEvent] Duplicate move event found: " << id << std::endl;
+				std::cout << "Warning: [MoveEvents::addEvent] Duplicate move event found: "
+					<< id << std::endl;
 			}
 		}
+
 		moveEventList.push_back(moveEvent);
 	}
 }
@@ -225,6 +229,7 @@ MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t slot)
 		case SLOT_RING: slotp = SLOTP_RING; break;
 		default: slotp = 0; break;
 	}
+
 	MoveListMap::iterator it = m_itemIdMap.find(item->getID());
 	if(it != m_itemIdMap.end()){
 		std::list<MoveEvent*>& moveEventList = it->second.moveEvent[eventType];
@@ -1057,14 +1062,14 @@ uint32_t MoveEvent::executeAddRemItem(Item* item, Item* tileItem, const Position
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
-		#ifdef __DEBUG_LUASCRIPTS__
+#ifdef __DEBUG_LUASCRIPTS__
 		std::stringstream desc;
 		if(tileItem){
 			desc << "tileid: " << tileItem->getID();
 		}
 		desc << " itemid: " << item->getID() << " - " << pos;
 		env->setEventDesc(desc.str());
-		#endif
+#endif
 
 		env->setScriptId(m_scriptId, m_scriptInterface);
 		env->setRealPos(pos);
