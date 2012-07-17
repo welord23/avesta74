@@ -38,7 +38,7 @@ Teleport::~Teleport()
 	//
 }
 
-bool Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
+Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
 {
 	if(ATTR_TELE_DEST == attr){
 		TeleportDest tele_dest;
@@ -46,11 +46,11 @@ bool Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
 				!propStream.GET_UINT16(tele_dest._y) ||
 				!propStream.GET_UINT8(tele_dest._z))
 		{
-			return false;
+			return ATTR_READ_ERROR;
 		}
 
 		setDestPos(Position(tele_dest._x, tele_dest._y, tele_dest._z));
-		return true;
+		return ATTR_READ_CONTINUE;
 	}
 	else
 		return Item::readAttr(attr, propStream);

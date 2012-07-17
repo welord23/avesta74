@@ -103,6 +103,12 @@ enum AttrTypes_t{
 	ATTR_CONTAINER_ITEMS = 22,
 };
 
+enum Attr_ReadValue{
+	ATTR_READ_ERROR,
+	ATTR_READ_CONTINUE,
+	ATTR_READ_END
+};
+
 class ItemAttributes{
 public:
 	ItemAttributes(){
@@ -266,7 +272,7 @@ public:
 		const Item* item = NULL, int32_t subType = -1);
 	static std::string getWeightDescription(const ItemType& it, double weight, uint32_t count = 1);
 
-	virtual bool readAttr(AttrTypes_t attr, PropStream& propStream);
+	virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 	virtual bool unserializeAttr(PropStream& propStream);
 	virtual bool unserializeItemNode(FileLoader& f, NODE node, PropStream& propStream);
 

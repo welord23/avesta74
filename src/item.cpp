@@ -261,14 +261,14 @@ void Item::setSubType(uint16_t n)
 	}
 }
 
-bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
+Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 {
 	switch(attr){
 		case ATTR_COUNT:
 		{
 			uint8_t _count = 0;
 			if(!propStream.GET_UINT8(_count)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setSubType(_count);
@@ -279,7 +279,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint16_t _actionid = 0;
 			if(!propStream.GET_UINT16(_actionid)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setActionId(_actionid);
@@ -290,7 +290,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint16_t _uniqueid;
 			if(!propStream.GET_UINT16(_uniqueid)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setUniqueId(_uniqueid);
@@ -301,7 +301,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			std::string _text;
 			if(!propStream.GET_STRING(_text)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setText(_text);
@@ -312,7 +312,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			std::string _writer;
 			if(!propStream.GET_STRING(_writer)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setWriter(_writer);
@@ -323,7 +323,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			std::string _text;
 			if(!propStream.GET_STRING(_text)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setSpecialDescription(_text);
@@ -334,7 +334,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint8_t _charges = 1;
 			if(!propStream.GET_UINT8(_charges)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			setSubType(_charges);
@@ -345,7 +345,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint32_t duration = 0;
 			if(!propStream.GET_UINT32(duration)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			if(((int32_t)duration) < 0){
@@ -359,7 +359,7 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint8_t state = 0;
 			if(!propStream.GET_UINT8(state)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			if(state != DECAYING_FALSE){
@@ -377,10 +377,10 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint16_t _depotId;
 			if(!propStream.GET_UINT16(_depotId)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
-			return true;
+			return ATTR_READ_CONTINUE;
 		}
 
 		//Door class
@@ -388,10 +388,31 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint8_t _doorId;
 			if(!propStream.GET_UINT8(_doorId)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
-			return true;
+			return ATTR_READ_CONTINUE;
+		}
+
+		//Bed class
+		case ATTR_SLEEPERGUID:
+		{
+			uint32_t _guid;
+			if(!propStream.GET_UINT32(_guid)){
+				return ATTR_READ_ERROR;
+			}
+
+			return ATTR_READ_CONTINUE;
+		}
+
+		case ATTR_SLEEPSTART:
+		{
+			uint32_t sleep_start;
+			if(!propStream.GET_UINT32(sleep_start)){
+				return ATTR_READ_ERROR;
+			}
+
+			return ATTR_READ_CONTINUE;
 		}
 
 		// Teleport class
@@ -402,10 +423,10 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 					!propStream.GET_UINT16(tele_dest._y) ||
 					!propStream.GET_UINT8(tele_dest._z))
 			{
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
-			return true;
+			return ATTR_READ_CONTINUE;
 		}
 
 		// Container class
@@ -413,29 +434,32 @@ bool Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		{
 			uint32_t count;
 			if(!propStream.GET_UINT32(count)){
-				return false;
+				return ATTR_READ_ERROR;
 			}
 
 			//We cant continue parse attributes since there is
 			//container data after this attribute.
-			return true;
+			return ATTR_READ_ERROR;
 		}
 
 		default:
-			return false;
-		break;
+			std::cout << "attr=" << attr <<"\n";
+			return ATTR_READ_ERROR;
 	}
 
-	return true;
+	return ATTR_READ_CONTINUE;
 }
 
 bool Item::unserializeAttr(PropStream& propStream)
 {
 	uint8_t attr_type;
 	while(propStream.GET_UINT8(attr_type) && attr_type != 0){
-		if(!readAttr((AttrTypes_t)attr_type, propStream)){
+		Attr_ReadValue ret = readAttr((AttrTypes_t)attr_type, propStream);
+		if(ret == ATTR_READ_ERROR){
 			return false;
-			break;
+		}
+		else if(ret == ATTR_READ_END){
+			return true;
 		}
 	}
 

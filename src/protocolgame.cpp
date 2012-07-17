@@ -424,10 +424,6 @@ bool ProtocolGame::logout(bool forced)
 				return false;
 			}
 		}
-		else{
-			//execute the script even when we log out
-			g_creatureEvents->playerLogOut(player);
-		}
 	}
 
 	if(Connection* connection = getConnection()){
@@ -532,7 +528,9 @@ void ProtocolGame::disconnect()
 
 void ProtocolGame::parsePacket(NetworkMessage &msg)
 {
-    if(!m_acceptPackets || msg.getMessageLength() <= 0 || !player)
+    if(!player || !m_acceptPackets ||
+		g_game.getGameState() == GAME_STATE_SHUTDOWN ||
+		msg.getMessageLength() <= 0)
 		return;
 
 	m_now = OTSYS_TIME();
@@ -558,6 +556,8 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 	if((player->isRemoved() || player->getHealth() <= 0) && recvbyte != 0x14){
 		return;
 	}
+
+	bool kickPlayer = false;
 
 	switch(recvbyte){
 	case 0x14: // logout
@@ -797,13 +797,20 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
         break;
 
 	default:
-#ifdef __DEBUG__
-		printf("unknown packet header: %x \n", recvbyte);
-		parseDebug(msg);
-#endif
+		std::cout << "Unknown packet header: " << std::hex << (int)recvbyte
+			<< std::dec << ", player " << player->getName() << std::endl;
+		kickPlayer = true;
 		break;
 	}
 
+	if(msg.isOverrun()){ //we've got a badass over here
+		std::cout << "msg.isOverrun() == true, player " << player->getName() << std::endl;
+		kickPlayer = true;
+	}
+
+	if(kickPlayer){
+		player->kickPlayer();
+	}
 }
 
 void ProtocolGame::GetTileDescription(const Tile* tile, NetworkMessage_ptr msg)

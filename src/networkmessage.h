@@ -47,6 +47,7 @@ public:
 	// resets the internal buffer to an empty message
 protected:
 	void Reset(){
+		m_overrun = false;
 		m_MsgSize = 0;
 		m_ReadPos = 4;
 	}
@@ -58,31 +59,55 @@ public:
 
 #ifndef __SWAP_ENDIAN__
 	uint16_t GetU16(){
+		if(!expectRead(2)){
+			return 0;
+		}
+		
 		uint16_t v = *(uint16_t*)(m_MsgBuf + m_ReadPos);
 		m_ReadPos += 2;
 		return v;
 	}
 	uint32_t GetU32(){
+		if(!expectRead(4)){
+			return 0;
+		}
+		
 		uint32_t v = *(uint32_t*)(m_MsgBuf + m_ReadPos);
 		m_ReadPos += 4;
 		return v;
 	}
 	uint32_t PeekU32(){
+		if(!expectRead(4)){
+			return 0;
+		}
+		
 		uint32_t v = *(uint32_t*)(m_MsgBuf + m_ReadPos);
 		return v;
 	}
 #else
 	uint16_t GetU16(){
+		if(!expectRead(2)){
+			return 0;
+		}
+		
 		uint16_t v = *(uint16_t*)(m_MsgBuf + m_ReadPos);
 		m_ReadPos += 2;
 		return swap_uint16(v);
 	}
 	uint32_t GetU32(){
+		if(!expectRead(4)){
+			return 0;
+		}
+		
 		uint32_t v = *(uint32_t*)(m_MsgBuf + m_ReadPos);
 		m_ReadPos += 4;
 		return swap_uint32(v);
 	}
 	uint32_t PeekU32(){
+		if(!expectRead(4)){
+			return 0;
+		}
+		
 		uint32_t v = *(uint32_t*)(m_MsgBuf + m_ReadPos);
 		return swap_uint32(v);
 	}
@@ -100,12 +125,13 @@ public:
 	void SkipBytes(int count){m_ReadPos += count;}
 
 	// simply write functions for outgoing message
-	void AddByte(uint8_t  value){
-		if(!canAdd(1))
-			return;
-		m_MsgBuf[m_ReadPos++] = value;
-		m_MsgSize++;
+	void AddByte(uint8_t value){
+		if(canAdd(1)){
+			m_MsgBuf[m_ReadPos++] = value;
+			m_MsgSize++;
+		}
 	}
+
 #ifndef __SWAP_ENDIAN__
 	void AddU16(uint16_t value){
 		if(canAdd(2)){
@@ -139,7 +165,6 @@ public:
 	void AddString(const std::string &value){AddString(value.c_str());}
 	void AddString(const char* value);
 
-
 	// write functions for complex types
 	void AddPosition(const Position &pos);
 	void AddItem(uint16_t id, uint8_t count);
@@ -155,6 +180,8 @@ public:
 		
 	int32_t decodeHeader();
 
+	bool isOverrun(){ return m_overrun; };
+
 	char* getBuffer() { return (char*)&m_MsgBuf[0]; }
 	char* getBodyBuffer() { m_ReadPos = 2; return (char*)&m_MsgBuf[header_length]; }
 
@@ -163,16 +190,25 @@ public:
 	virtual void clearTrack() {};
 #endif
 
-
-
 protected:
 	inline bool canAdd(int size)
 	{
 		return (size + m_ReadPos < NETWORKMESSAGE_MAXSIZE - 16);
 	};
 
+	inline bool expectRead(int32_t size){
+		if(size >= (NETWORKMESSAGE_MAXSIZE - m_ReadPos)){
+			m_overrun = true;
+			return false;
+		}
+		
+		return true;
+	};
+
 	int32_t m_MsgSize;
 	int32_t m_ReadPos;
+
+	bool m_overrun;
 
 	uint8_t m_MsgBuf[NETWORKMESSAGE_MAXSIZE];
 };

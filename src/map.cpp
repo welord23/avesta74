@@ -1160,8 +1160,8 @@ int AStarNodes::getEstimatedDistance(int32_t x, int32_t y, int32_t xGoal, int32_
 
 Floor::Floor()
 {
-	for(unsigned int i = 0; i < FLOOR_SIZE; ++i){
-		for(unsigned int j = 0; j < FLOOR_SIZE; ++j){
+	for(uint32_t i = 0; i < FLOOR_SIZE; ++i){
+		for(uint32_t j = 0; j < FLOOR_SIZE; ++j){
 			tiles[i][j] = 0;
 		}
 	}

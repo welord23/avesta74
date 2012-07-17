@@ -2307,6 +2307,8 @@ void Player::addList()
 
 void Player::kickPlayer()
 {
+	g_creatureEvents->playerLogOut(this);
+
 	if(client){
 		client->logout(true);
 	}
