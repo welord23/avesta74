@@ -127,7 +127,6 @@ protected:
 	friend class Map;
 };
 
-
 class QTreeLeafNode : public QTreeNode{
 public:
 	QTreeLeafNode();

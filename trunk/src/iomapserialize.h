@@ -70,6 +70,9 @@ protected:
 	bool loadMapRelational(Map* map);
 	bool saveMapRelational(Map* map);
 
+	bool saveItems(Database* db, uint32_t tileId, uint32_t houseId, const Tile* tile);
+	bool loadItems(Database* db, DBResult* result, Cylinder* parent);
+
 	// Binary storage uses a giant BLOB field for storing everything
 	bool loadMapBinary(Map* map);
 	bool saveMapBinary(Map* map);
@@ -77,8 +80,7 @@ protected:
 	bool saveItem(PropWriteStream& stream, const Item* item);
 	bool saveTile(PropWriteStream& stream, const Tile* tile);
 	bool loadItem(PropStream& propStream, Cylinder* parent);
-	bool saveTile(Database* db, uint32_t tileId, const Tile* tile);
-	bool loadTile(Database& db, Tile* tile);
+	bool loadContainer(PropStream& propStream, Container* container);
 };
 
 #endif

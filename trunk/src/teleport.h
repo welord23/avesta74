@@ -32,7 +32,7 @@ public:
 	virtual Teleport* getTeleport() {return this;};
 	virtual const Teleport* getTeleport() const {return this;};
 
-	virtual bool readAttr(AttrTypes_t attr, PropStream& propStream);
+	virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 	virtual bool serializeAttr(PropWriteStream& propWriteStream) const;
 
 	void setDestPos(const Position& pos) {destPos = pos;}
