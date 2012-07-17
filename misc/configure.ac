@@ -30,7 +30,11 @@ AC_ARG_ENABLE(otallocator, [  --enable-otallocator   enable otserv custom alloca
 AC_ARG_ENABLE(protocol76, [  --enable-protocol76      enable protocol 76], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__PROTOCOL_76__"])
 
 # check if we want 77 protocol
-AC_ARG_ENABLE(protocol77, [  --enable-protocol77      enable protocol 77], [OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__PROTOCOL_77__"])
+AM_CONDITIONAL(NEED_ENCRYPTION, false)
+AC_ARG_ENABLE(protocol77, [  --enable-protocol77      enable protocol 77], [
+	AM_CONDITIONAL(NEED_ENCRYPTION, true)
+	OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__PROTOCOL_77__"
+])
 
 AC_SUBST(OPTIONAL_FLAGS)
 

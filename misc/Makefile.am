@@ -20,7 +20,11 @@ if USE_PGSQL
 MAYBE_PGSQL = databasepgsql.cpp databasepgsql.h
 endif
 
-otserv_SOURCES = $(MAYBE_MYSQL) $(MAYBE_SQLITE) $(MAYBE_ODBC) $(MAYBE_PGSQL) \
+if NEED_ENCRYPTION
+MAYBE_ENCRYPTION = rsa.cpp rsa.h
+endif
+
+otserv_SOURCES = $(MAYBE_MYSQL) $(MAYBE_SQLITE) $(MAYBE_ODBC) $(MAYBE_PGSQL) $(MAYBE_ENCRYPTION) \
 	account.cpp container.cpp creature.cpp game.cpp ioaccount.cpp \
 	iomapxml.cpp ioplayer.cpp database.cpp database.h \
 	item.cpp items.cpp luascript.cpp map.cpp monster.cpp networkmessage.cpp npc.cpp \
