@@ -46,6 +46,15 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
+		
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			selfSay('Run away, unworthy ' .. getCreatureName(cid) .. '!', _delay)
+			getNext()
+		end
+	else
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			unqueuePlayer(cid)
+		end
 	end
 end
 
@@ -193,7 +202,7 @@ end
 
 function onThink()
 	if (getNpcFocus() ~= 0) then
-		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
+		if (isNpcIdle()) then
 			selfSay('Run away, unworthy ' .. getCreatureName(getNpcFocus()) .. '!', _delay)
 			getNext()
 		end

@@ -55,6 +55,15 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
+		
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			selfSay('Good bye. Recommend us, if you were satisfied with our service.', _delay)
+			getNext()
+		end
+	else
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			unqueuePlayer(cid)
+		end
 	end
 end
 
@@ -154,7 +163,7 @@ end
 
 function onThink()
 	if (getNpcFocus() ~= 0) then
-		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
+		if (isNpcIdle()) then
 			selfSay('Good bye. Recommend us, if you were satisfied with our service.', _delay)
 			getNext()
 		end
