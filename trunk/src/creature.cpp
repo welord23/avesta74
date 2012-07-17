@@ -1059,7 +1059,13 @@ uint64_t Creature::getGainedExperience(Creature* attacker, bool useMultiplier /*
 {
 	uint64_t retValue = (int64_t)std::floor(getDamageRatio(attacker) * getLostExperience());
 
-	if(Player* player = attacker->getPlayer()){
+	Player* player = attacker->getPlayer();
+	if (!player) {
+		if (attacker->getMaster())
+			player = attacker->getMaster()->getPlayer();
+	}
+
+	if (player) {
 		if(useMultiplier){
 			retValue = (uint64_t)std::floor(retValue * player->getRateValue(LEVEL_EXPERIENCE));
 		}
