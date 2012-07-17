@@ -7,7 +7,7 @@ function getNext()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setNpcFocus(nextPlayer)
-			greet(nextPlayer, _delay * 2)
+			selfSay('I greet thee, my loyal subject.', _delay * 2)
 			updateNpcIdle()
 			return
 		else
@@ -22,10 +22,6 @@ end
 function _selfSay(message)
 	selfSay(message, _delay)
 	updateNpcIdle()
-end
-
-local function greet(cid, delay)
-	selfSay('I greet thee, my loyal subject.', delay)
 end
 
 function onCreatureAppear(cid)
@@ -43,6 +39,15 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
+		
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			selfSay('What a lack of manners!', _delay)
+			getNext()
+		end
+	else
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			unqueuePlayer(cid)
+		end
 	end
 end
 
@@ -52,7 +57,7 @@ function onCreatureSay(cid, type, msg)
 			if (msgcontains(msg, 'hello') or msgcontains(msg, 'hail') or msgcontains(msg, 'salutations')) then
 				updateNpcIdle()
 				setNpcFocus(cid)
-				greet(cid, _delay)
+				selfSay('I greet thee, my loyal subject.', _delay)
 			end
 		end
 		
@@ -261,7 +266,7 @@ end
 
 function onThink()
 	if (getNpcFocus() ~= 0) then
-		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
+		if (isNpcIdle()) then
 			selfSay('What a lack of manners!', _delay)
 			getNext()
 		end

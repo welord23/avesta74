@@ -1,8 +1,7 @@
-
 _state = 0
 _count = 0
 _index = 0
-_delay = 1000
+_delay = 500
 
 items = {}
 items[0] = {name = 'blank rune', id = 2260, subtype = -1, sell = 10, buy = -1}
@@ -10,23 +9,6 @@ items[1] = {name = 'life ring', id = 2168, subtype = -1, sell = 900, buy = -1}
 items[2] = {name = 'crystal ball', id = 2192, subtype = -1, sell = 530, buy = 190}
 items[3] = {name = 'life crystal', id = 2177, subtype = -1, sell = 900, buy = 85}
 items[4] = {name = 'mind stone', id = 2178, subtype = -1, sell = 900, buy = 170}
-
-function getNext()
-	nextPlayer = getQueuedPlayer()
-	if (nextPlayer ~= nil) then
-		if (getDistanceToCreature(nextPlayer) <= 4) then
-			updateNpcIdle()
-			setNpcFocus(nextPlayer)
-			greet(nextPlayer, _delay * 3)
-			return
-		else
-			getNext()
-		end
-	end
-	
-	setNpcFocus(0)
-	resetNpcIdle()
-end
 
 local function onActionItem(action)
 	if ((action == 'buy' and items[_index].sell == -1) or
@@ -52,16 +34,31 @@ local function onActionItem(action)
 	selfSay('Do you want to ' .. action .. ' ' .. plural .. amount .. ' ' .. items[_index].name .. suffix .. ' for ' .. cost .. ' gold?')
 end
 
+function getNext()
+	nextPlayer = getQueuedPlayer()
+	if (nextPlayer ~= nil) then
+		if (getDistanceToCreature(nextPlayer) <= 4) then
+			updateNpcIdle()
+			setNpcFocus(nextPlayer)
+			selfSay('Hi there ' .. getCreatureName(nextPlayer) .. '.', _delay * 3)
+			return
+		else
+			getNext()
+		end
+	end
+	
+	setNpcFocus(0)
+	resetNpcIdle()
+end
+
 function _selfSay(message)
 	selfSay(message, _delay)
 	updateNpcIdle()
 end
 
-local function greet(cid, delay)
-	selfSay('Hi there ' .. getCreatureName(cid) .. '.', delay)
-end
-
+--
 function onCreatureAppear(cid)
+
 end
 
 function onCreatureDisappear(cid)
@@ -76,6 +73,15 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
+		
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			selfSay('See you.', _delay)
+			getNext()
+		end
+	else
+		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
+			unqueuePlayer(cid)
+		end
 	end
 end
 
@@ -84,15 +90,13 @@ function onCreatureSay(cid, type, msg)
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			updateNpcIdle()
 			setNpcFocus(cid)
-			greet(cid, _delay)
+			selfSay('Hi there ' .. getCreatureName(cid) .. '.', _delay)
 		end
-		
 	elseif (getNpcFocus() ~= cid) then
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			selfSay('Just wait, ' .. getCreatureName(cid) .. '.', _delay)
 			queuePlayer(cid)
 		end
-		
 	else
 		if (msgcontains(msg, 'bye')) then
 			selfSay('See you.', _delay)
@@ -203,11 +207,9 @@ end
 
 function onThink()
 	if (getNpcFocus() ~= 0) then
-		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
+		if (isNpcIdle()) then
 			selfSay('See you.', _delay)
 			getNext()
 		end
 	end
 end
-
-
