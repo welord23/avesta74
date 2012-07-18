@@ -18,16 +18,16 @@
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
 
-
 #ifndef __OTSERV_ACTIONS_H__
 #define __OTSERV_ACTIONS_H__
 
+#include "definitions.h"
 #include "position.h"
-
-#include <map>
 #include "luascript.h"
 #include "baseevents.h"
 #include "thing.h"
+
+#include <map>
 
 class Action;
 class Container;

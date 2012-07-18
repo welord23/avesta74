@@ -22,9 +22,11 @@
 #ifndef __OTSERV_COMMANDS_H__
 #define __OTSERV_COMMANDS_H__
 
+#include "definitions.h"
+#include "creature.h"
+
 #include <string>
 #include <map>
-#include "creature.h"
 
 struct Command;
 struct s_defcommands;

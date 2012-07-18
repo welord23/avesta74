@@ -17,25 +17,23 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
-#include "definitions.h"
+#include "otsystem.h"
+#include "server.h"
+#include "game.h"
 
 #include <string>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
 
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
-#include <stdlib.h>
-#include <time.h>
-
-#include "otsystem.h"
-#include "server.h"
-
-#include "game.h"
 
 #if !defined(__WINDOWS__)
     #include <unistd.h> // for access()

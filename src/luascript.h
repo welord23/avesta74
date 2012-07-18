@@ -22,6 +22,9 @@
 #ifndef __OTSERV_LUASCRIPT_H__
 #define __OTSERV_LUASCRIPT_H__
 
+#include "definitions.h"
+#include "position.h"
+
 #include <string>
 #include <map>
 #include <list>
@@ -34,9 +37,6 @@ extern "C"
 #include <lauxlib.h>
 #include <lualib.h>
 }
-
-#include "position.h"
-#include "definitions.h"
 
 class Thing;
 class Creature;

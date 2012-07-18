@@ -17,35 +17,30 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
-#include "definitions.h"
-
-#include <string>
-#include <sstream>
-#include <map>
-#include <algorithm>
-
-#include <boost/config.hpp>
-#include <boost/bind.hpp>
-
 #include "iomap.h"
-
 #include "iomapxml.h"
 #include "iomapotbm.h"
 #include "iomapserialize.h"
-
-#include <stdio.h>
-#include <iomanip>
-
 #include "items.h"
 #include "map.h"
 #include "tile.h"
 #include "combat.h"
 #include "creature.h"
-
 #include "player.h"
 #include "configmanager.h"
+
+#include <string>
+#include <sstream>
+#include <map>
+#include <algorithm>
+#include <cstdio>
+#include <iomanip>
+
+#include <boost/config.hpp>
+#include <boost/bind.hpp>
 
 extern ConfigManager g_config;
 

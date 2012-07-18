@@ -23,6 +23,7 @@
 
 #include "definitions.h"
 #include "logger.h"
+
 #include <list>
 #include <vector>
 #include <algorithm>

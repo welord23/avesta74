@@ -26,7 +26,7 @@
 #include <fstream>
 #include <iomanip>
 #include <ctime>
-#include <stdlib.h>
+#include <cstdlib>
 #include <map>
 
 #include <boost/thread.hpp>

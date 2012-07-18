@@ -18,16 +18,16 @@
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
 
-
 #ifndef __IOMAP_H
 #define __IOMAP_H
 
-#include <string>
-
+#include "definitions.h"
 #include "map.h"
 #include "iomapserialize.h"
 #include "spawn.h"
 #include "house.h"
+
+#include <string>
 
 class IOMap{
 public:

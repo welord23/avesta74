@@ -17,9 +17,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
-#include "definitions.h"
 #include "npc.h"
 #include "game.h"
 #include "tools.h"
@@ -377,13 +377,8 @@ void Npc::onCreatureSay(const Creature* creature, SpeakClasses type, const std::
 
 	//only players for script events
 	if(const Player* player = creature->getPlayer()){
-
 		if(m_npcEventHandler){
 			m_npcEventHandler->onCreatureSay(player, type, text);
-		}
-		
-		if(type == SPEAK_SAY){
-			//
 		}
 	}
 }
@@ -459,19 +454,19 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir)
 	switch(dir){
 		case NORTH:
 			toPos.y -= 1;
-		break;
+			break;
 
 		case SOUTH:
 			toPos.y += 1;
-		break;
+			break;
 
 		case WEST:
 			toPos.x -= 1;
-		break;
+			break;
 
 		case EAST:
 			toPos.x += 1;
-		break;
+			break;
 
 		default:
 			break;
@@ -1077,7 +1072,7 @@ void NpcScript::onCreatureAppear(const Creature* creature)
 	if(m_onCreatureAppear == -1){
 		return;
 	}
-	//onCreatureAppear(creature)
+	//onCreatureAppear(cid)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
@@ -1110,7 +1105,7 @@ void NpcScript::onCreatureDisappear(const Creature* creature)
 	if(m_onCreatureDisappear == -1){
 		return;
 	}
-	//onCreatureDisappear(id)
+	//onCreatureDisappear(cid)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
@@ -1143,7 +1138,7 @@ void NpcScript::onCreatureMove(const Creature* creature, const Position& oldPos,
 	if(m_onCreatureMove == -1){
 		return;
 	}
-	//onCreatureMove(creature, oldPos, newPos)
+	//onCreatureMove(cid, oldPos, newPos)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 

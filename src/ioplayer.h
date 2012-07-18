@@ -21,10 +21,11 @@
 #ifndef __IOPLAYER_H
 #define __IOPLAYER_H
 
-#include <string>
-
+#include "definitions.h"
 #include "player.h"
 #include "database.h"
+
+#include <string>
 
 class PlayerGroup
 {

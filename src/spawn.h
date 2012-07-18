@@ -22,6 +22,7 @@
 #ifndef __OTSERV_SPAWN_H__
 #define __OTSERV_SPAWN_H__
 
+#include "definitions.h"
 #include "tile.h"
 #include "position.h"
 #include "monster.h"

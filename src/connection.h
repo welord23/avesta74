@@ -22,12 +22,12 @@
 #define __OTSERV_CONNECTION_H__
 
 #include "definitions.h"
+#include "networkmessage.h"
+
 #include <boost/asio.hpp>
 #include <boost/utility.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
-
-#include "networkmessage.h"
 
 class Protocol;
 class OutputMessage;

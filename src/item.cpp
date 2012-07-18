@@ -17,9 +17,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
-#include "definitions.h"
 #include "item.h"
 #include "container.h"
 #include "depot.h"
@@ -29,13 +29,10 @@
 #include "house.h"
 #include "game.h"
 #include "luascript.h"
-
 #include "actions.h"
 #include "combat.h"
 #include "weapons.h"
-//[ added for beds system
 #include "beds.h"
-//]
 
 #include <iostream>
 #include <sstream>

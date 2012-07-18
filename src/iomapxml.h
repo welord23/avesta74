@@ -22,6 +22,7 @@
 #ifndef __IOMAPXML_H
 #define __IOMAPXML_H
 
+#include "definitions.h"
 #include "iomap.h"
 
 class Map;

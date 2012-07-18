@@ -17,17 +17,18 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
-#include "definitions.h"
+#include "tools.h"
 #include "vocation.h"
+
 #include <iostream>
+#include <cmath>
+
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
-#include <cmath>
 #include <boost/algorithm/string/predicate.hpp>
-
-#include "tools.h"
 
 Vocations::Vocations()
 {

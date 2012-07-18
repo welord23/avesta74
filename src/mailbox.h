@@ -21,6 +21,7 @@
 #ifndef __OTSERV_MAILBOX_H__
 #define __OTSERV_MAILBOX_H__
 
+#include "definitions.h"
 #include "item.h"
 #include "cylinder.h"
 #include "const.h"

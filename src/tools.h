@@ -21,13 +21,14 @@
 #ifndef __OTSERV_TOOLS_H__
 #define __OTSERV_TOOLS_H__
 
+#include "definitions.h"
 #include "const.h"
 #include "position.h"
 
 #include <string>
 #include <algorithm>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <cmath>
 #include <vector>
 

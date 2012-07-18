@@ -19,14 +19,12 @@
 //////////////////////////////////////////////////////////////////////
 #include "otpch.h"
 
-#include "definitions.h"
 #include "ioplayer.h"
 #include "ioaccount.h"
 #include "item.h"
 #include "town.h"
 #include "configmanager.h"
 #include "tools.h"
-#include "definitions.h"
 
 #include <iostream>
 #include <iomanip>

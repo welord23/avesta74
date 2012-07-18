@@ -24,6 +24,7 @@
 
 class Map;
 
+#include "definitions.h"
 #include "iomapserialize.h"
 #include "database.h"
 #include "map.h"

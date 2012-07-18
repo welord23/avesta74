@@ -22,14 +22,14 @@
 #ifndef __TOWN_H__
 #define __TOWN_H__
 
-#include <boost/algorithm/string/predicate.hpp>
+#include "definitions.h"
+#include "position.h"
 
 #include <string>
 #include <list>
 #include <map>
 
-#include "position.h"
-#include "definitions.h"
+#include <boost/algorithm/string/predicate.hpp>
 
 class Town
 {

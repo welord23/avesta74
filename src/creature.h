@@ -23,7 +23,6 @@
 #define __OTSERV_CREATURE_H__
 
 #include "definitions.h"
-
 #include "templates.h"
 #include "map.h"
 #include "position.h"

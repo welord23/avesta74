@@ -17,10 +17,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
 #include "protocolgame.h"
-
 #include "networkmessage.h"
 #include "outputmessage.h"
 #include "items.h"
@@ -37,12 +37,11 @@
 #include "ioaccount.h"
 #include "connection.h"
 #include "creatureevent.h"
-#include "definitions.h"
 
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <time.h>
+#include <ctime>
 #include <list>
 
 #include <boost/function.hpp>
@@ -1486,7 +1485,7 @@ void ProtocolGame::parseViolationWindow(NetworkMessage &msg)
 	uint8_t action = msg.GetByte();
 	std::string comment = msg.GetString();
 #ifdef __PROTOCOL_77__
-	std::string statement = msg.GetString();
+	uint16_t statementId = msg.GetU16();
 	uint16_t channelId = msg.GetU16();
 #endif // __PROTOCOL_77__
 	bool IPBanishment = (msg.GetByte() == 0x01);

@@ -23,9 +23,9 @@
 
 #include "definitions.h"
 
-#include <boost/thread.hpp>
-
 #include <sstream>
+
+#include <boost/thread.hpp>
 
 #ifdef MULTI_SQL_DRIVERS
 #define DATABASE_VIRTUAL virtual
