@@ -21,10 +21,10 @@
 #ifndef __OTSERV_ACCOUNT_H__
 #define __OTSERV_ACCOUNT_H__
 
+#include "definitions.h"
+
 #include <list>
 #include <string>
-
-#include "definitions.h"
 
 class Account
 {

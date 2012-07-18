@@ -22,10 +22,7 @@
 #ifndef __OTSERV_GAME_H__
 #define __OTSERV_GAME_H__
 
-#include <queue>
-#include <vector>
-#include <set>
-
+#include "definitions.h"
 #include "map.h"
 #include "position.h"
 #include "item.h"
@@ -35,6 +32,10 @@
 #include "spawn.h"
 #include "templates.h"
 #include "scheduler.h"
+
+#include <queue>
+#include <vector>
+#include <set>
 
 class Creature;
 class Monster;

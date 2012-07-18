@@ -18,14 +18,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
 
-#include "definitions.h"
-
-#include <string>
-#include <iostream>
-
-#include "definitions.h"
 #include "tile.h"
 #include "housetile.h"
 #include "game.h"
@@ -36,6 +31,9 @@
 #include "mailbox.h"
 #include "combat.h"
 #include "movement.h"
+
+#include <string>
+#include <iostream>
 
 extern Game g_game;
 extern MoveEvents* g_moveEvents;

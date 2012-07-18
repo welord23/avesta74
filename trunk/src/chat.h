@@ -21,12 +21,12 @@
 #ifndef __OTSERV_CHAT_H__
 #define __OTSERV_CHAT_H__
 
+#include "definitions.h"
+#include "const.h"
+
 #include <map>
 #include <list>
 #include <string>
-
-#include "const.h"
-#include "definitions.h"
 
 class Player;
 

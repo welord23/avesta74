@@ -21,9 +21,11 @@
 #ifndef __MOVEMENT_H__
 #define __MOVEMENT_H__
 
-
+#include "definitions.h"
 #include "luascript.h"
 #include "baseevents.h"
+#include "creature.h"
+
 #include <map>
 
 enum MoveEvent_t{

@@ -21,21 +21,19 @@
 #ifndef __OTSERV_HOUSE_H__
 #define __OTSERV_HOUSE_H__
 
+#include "definitions.h"
+#include "position.h"
+#include "housetile.h"
+#include "player.h"
+
 #include <string>
 #include <list>
 #include <map>
 
 #include "boost/regex.hpp"
 
-#include "definitions.h"
-#include "position.h"
-#include "housetile.h"
-#include "player.h"
-
 class House;
-//[ added for beds system
 class BedItem;
-//]
 
 class AccessList
 {

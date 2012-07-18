@@ -21,6 +21,7 @@
 #ifndef __OTSERV_COMBAT_H__
 #define __OTSERV_COMBAT_H__
 
+#include "definitions.h"
 #include "thing.h"
 #include "condition.h"
 #include "map.h"

@@ -19,7 +19,6 @@
 //////////////////////////////////////////////////////////////////////
 #include "otpch.h"
 
-#include "definitions.h"
 #include "tools.h"
 #include "house.h"
 #include "housetile.h"
@@ -30,11 +29,11 @@
 #include "configmanager.h"
 #include "const.h"
 
+#include <sstream>
+
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <boost/algorithm/string/predicate.hpp>
-
-#include <sstream>
 
 extern Game g_game;
 extern Spells* g_spells;

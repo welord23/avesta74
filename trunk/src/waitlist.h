@@ -21,6 +21,7 @@
 #ifndef __WAITLIST_H__
 #define __WAITLIST_H__
 
+#include "definitions.h"
 #include "game.h"
 #include "networkmessage.h"
 

@@ -17,17 +17,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
-
-#include "definitions.h"
-
-#include <string>
-#include <sstream>
-#include <map>
-#include <fstream>
-
-#include <boost/config.hpp>
-#include <boost/bind.hpp>
 
 #include "otsystem.h"
 #include "tasks.h"
@@ -58,6 +49,14 @@
 #include "exception.h"
 extern boost::recursive_mutex maploadlock;
 #endif
+
+#include <string>
+#include <sstream>
+#include <map>
+#include <fstream>
+
+#include <boost/config.hpp>
+#include <boost/bind.hpp>
 
 extern ConfigManager g_config;
 extern Server* g_server;

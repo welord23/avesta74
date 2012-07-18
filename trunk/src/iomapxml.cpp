@@ -20,8 +20,6 @@
 #include "otpch.h"
 
 #include "iomapxml.h"
-#include "definitions.h"
-
 #include "iomapserialize.h"
 #include "map.h"
 #include "house.h"

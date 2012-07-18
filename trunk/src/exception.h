@@ -20,6 +20,8 @@
 
 #if defined __EXCEPTION_TRACER__
 
+#include "definitions.h"
+
 #ifndef __EXCEPTION_H__
 #define __EXCEPTION_H__
 

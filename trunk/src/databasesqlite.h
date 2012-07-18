@@ -27,6 +27,8 @@
 #error "database.h should be included first."
 #endif
 
+#include "definitions.h"
+
 #include <sqlite3.h>
 #include <sstream>
 #include <map>

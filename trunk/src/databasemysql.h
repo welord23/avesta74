@@ -25,6 +25,8 @@
 #error "database.h should be included first."
 #endif
 
+#include "definitions.h"
+
 #ifdef __MYSQL_ALT_INCLUDE__
 #include <mysql.h>
 #else

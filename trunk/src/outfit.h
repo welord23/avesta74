@@ -21,11 +21,13 @@
 #ifndef __OTSERV_OUTFIT_H__
 #define __OTSERV_OUTFIT_H__
 
+#include "definitions.h"
+#include "enums.h"
+
 #include <list>
 #include <vector>
 #include <string>
 #include <map>
-#include "enums.h"
 
 struct Outfit{
 	uint32_t looktype;

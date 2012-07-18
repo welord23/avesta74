@@ -21,6 +21,8 @@
 #ifndef __OTSERV_FILELOADER_H__
 #define __OTSERV_FILELOADER_H__
 
+#include "definitions.h"
+
 #include <string>
 #include <cstdio>
 #include <cstdlib>

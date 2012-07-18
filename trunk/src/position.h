@@ -20,13 +20,12 @@
 
 #ifndef __OTSERV_POS_H
 #define __OTSERV_POS_H
-//////////////////////////////////////////////////
-// represents a map position
-// for now just a 3d point
-#include <stdlib.h>
+
+#include "definitions.h"
+
+#include <cstdlib>
 #include <cmath>
 #include <iostream>
-
 
 enum Direction {
 	NORTH = 0,

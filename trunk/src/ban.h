@@ -21,9 +21,11 @@
 #ifndef __OTSERV_BAN_H__
 #define __OTSERV_BAN_H__
 
-#include <boost/thread.hpp>
+#include "definitions.h"
+
 #include <list>
 #include <vector>
+#include <boost/thread.hpp>
 
 struct LoginBlock{
 	uint32_t lastLoginTime;

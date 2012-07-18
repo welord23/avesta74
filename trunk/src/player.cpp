@@ -17,16 +17,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
+
 #include "otpch.h"
-
-#include "definitions.h"
-
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-
-#include <stdlib.h>
 
 #include "player.h"
 #include "ioplayer.h"
@@ -43,6 +35,12 @@
 #include "beds.h"
 #include "ban.h"
 #include "town.h"
+
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <algorithm>
+#include <cstdlib>
 
 #include <boost/algorithm/string/predicate.hpp>
 

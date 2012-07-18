@@ -18,8 +18,8 @@
 
 #ifndef __OTSERV_GLOBALEVENT_H__
 #define __OTSERV_GLOBALEVENT_H__
-#include "baseevents.h"
 
+#include "baseevents.h"
 #include "const.h"
 
 #define TIMER_INTERVAL 1000
