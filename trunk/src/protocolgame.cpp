@@ -442,6 +442,11 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 	/*uint16_t clientos =*/ msg.GetU16();
 	uint16_t version  = msg.GetU16();
 
+	if(version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX){
+		disconnectClient(0x0A, STRING_CLIENT_VERSION);
+		return false;
+	}
+
 #ifdef __PROTOCOL_77__
 	if(!RSA_decrypt(g_otservRSA, msg)){
 		getConnection()->closeConnection();
@@ -461,11 +466,6 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 	uint32_t accnumber = msg.GetU32();
 	const std::string name = msg.GetString();
 	const std::string password = msg.GetString();
-	
-	if(version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX){
-		disconnectClient(0x0A, STRING_CLIENT_VERSION);
-		return false;
-	}
 	
 	if(g_game.getGameState() == GAME_STATE_STARTUP){
 		disconnectClient(0x14, "Gameworld is starting up. Please wait.");

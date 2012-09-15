@@ -3941,10 +3941,10 @@ bool Player::transferMoneyTo(const std::string& name, uint32_t amount)
 void Player::checkIdleTime(uint32_t ticks)
 {
 	if(g_config.getNumber(ConfigManager::IDLE_TIME_KICK) > 0 && !hasFlag(PlayerFlag_CanAlwaysLogin)){
-		static uint32_t kickTime = g_config.getNumber(ConfigManager::IDLE_TIME_KICK);
-		static uint32_t warningTime = g_config.getNumber(ConfigManager::IDLE_TIME_WARNING);
-		static uint32_t alreadyIdleTime = warningTime / 60000;
-		static uint32_t remainingTime = (kickTime - warningTime) / 60000;
+		static const uint32_t kickTime = g_config.getNumber(ConfigManager::IDLE_TIME_KICK);
+		static const uint32_t warningTime = g_config.getNumber(ConfigManager::IDLE_TIME_WARNING);
+		static const uint32_t alreadyIdleTime = warningTime / 60000;
+		static const uint32_t remainingTime = (kickTime - warningTime) / 60000;
 
 		idleTime += ticks;
 		if (idleTime >= kickTime) {
