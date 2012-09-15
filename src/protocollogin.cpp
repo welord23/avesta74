@@ -81,6 +81,11 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	uint16_t version  = msg.GetU16();
 	msg.SkipBytes(12);
 
+	if(version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX){
+		disconnectClient(0x0A, STRING_CLIENT_VERSION);
+		return false;
+	}
+
 #ifdef __PROTOCOL_77__
 	if(!RSA_decrypt(g_otservRSA, msg)){
 		getConnection()->closeConnection();
@@ -103,11 +108,6 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
         disconnectClient(0x0A, "You must enter your account number.");
         return false;
     }
-
-	if(version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX){
-		disconnectClient(0x0A, STRING_CLIENT_VERSION);
-		return false;
-	}
 
 	if(g_game.getGameState() == GAME_STATE_STARTUP){
 		disconnectClient(0x0A, "Gameworld is starting up. Please wait.");
