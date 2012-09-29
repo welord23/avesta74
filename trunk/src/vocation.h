@@ -88,7 +88,6 @@ protected:
 	cacheMap cacheSkill[SKILL_LAST + 1];
 };
 
-
 class Vocations
 {
 public:
@@ -96,8 +95,8 @@ public:
 	~Vocations();
 	
 	bool loadFromXml(const std::string& datadir);
-	Vocation* getVocation(uint32_t vocId);
-	int32_t getVocationId(const std::string& name);
+	bool getVocation(const uint32_t& vocationId, Vocation*& vocation);
+	bool getVocationId(const std::string& name, int32_t& vocationId) const;
 	
 private:
 	typedef std::map<uint32_t, Vocation*> VocationsMap;

@@ -182,7 +182,7 @@ public:
 	void resetIdle() {idleTime = 0; idleWarned = false;}
 	void setIdleTime(uint32_t value, bool warned) {idleTime = value; idleWarned = warned;}
 
-	void setVocation(uint32_t vocId);
+	bool setVocation(uint32_t vocId);
 	uint32_t getVocationId() const;
 
 	PlayerSex_t getSex() const {return sex;}
@@ -284,14 +284,16 @@ public:
 	virtual void onWalkComplete();
 
 	void setChaseMode(chaseMode_t mode);
+	chaseMode_t getChaseMode() const {return chaseMode;}
 	void setFightMode(fightMode_t mode);
+	fightMode_t getFightMode() const {return fightMode;}
 	void setSafeMode(bool _safeMode) {safeMode = _safeMode;}
 	bool hasSafeMode() const {return safeMode;}
 
 	//combat functions
 	virtual bool setAttackedCreature(Creature* creature);
 	bool isImmune(CombatType_t type) const;
-	bool isImmune(ConditionType_t type) const;
+	bool isImmune(ConditionType_t type, bool aggressive = true) const;
 	bool hasShield() const;
 	virtual bool isAttackable() const;
 

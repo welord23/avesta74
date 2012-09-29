@@ -659,18 +659,15 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				s << "Atk:" << (int)it.attack;
 			}
 
-			if(it.defence != 0 || it.extraDef != 0){
+			if(it.defense != 0){
 				if(it.attack != 0)
 					s << " ";
 
-				s << "Def:" << (int)it.defence;
-				if(it.extraDef != 0){
-					s << " " << std::showpos << (int)it.extraDef << std::noshowpos;
-				}
+				s << "Def:" << (int)it.defense;
 			}
 
 			if(it.abilities.stats[STAT_MAGICPOINTS] != 0){
-				if(it.attack != 0 || it.defence != 0 || it.extraDef != 0)
+				if(it.attack != 0 || it.defense != 0)
 					s << ", ";
 
 				s << "magic level " << std::showpos << (int)it.abilities.stats[STAT_MAGICPOINTS] << std::noshowpos;

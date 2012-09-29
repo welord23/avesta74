@@ -208,10 +208,12 @@ Player::~Player()
 #endif
 }
 
-void Player::setVocation(uint32_t vocId)
+bool Player::setVocation(uint32_t vocId)
 {
+	if(!g_vocations.getVocation(vocId, vocation)){
+		return false;
+	}
 	vocation_id = (Vocation_t)vocId;
-	vocation = g_vocations.getVocation(vocId);
 
 	//Update health/mana gain condition
 	Condition* condition = getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
@@ -226,6 +228,8 @@ void Player::setVocation(uint32_t vocId)
 	//Set the player's max soul according to their vocation
 	soulMax = vocation->getSoulMax();
 #endif // __PROTOCOL_76__
+
+	return true;
 }
 
 uint32_t Player::getVocationId() const
@@ -500,7 +504,6 @@ int32_t Player::getDefense() const
 	if(weapon){
 		defenseValue = weapon->getDefense();
 		defenseSkill = getWeaponSkill(weapon);
-		extraDef = weapon->getExtraDef();
 	}
 
 	if(shield && shield->getDefense() >= defenseValue){
@@ -3522,13 +3525,13 @@ bool Player::isImmune(CombatType_t type) const
 	return Creature::isImmune(type);
 }
 
-bool Player::isImmune(ConditionType_t type) const
+bool Player::isImmune(ConditionType_t type, bool aggressive /*= true*/)  const
 {
-	if(hasFlag(PlayerFlag_CannotBeAttacked)){
+	if(hasFlag(PlayerFlag_CannotBeAttacked) && aggressive){
 		return true;
 	}
 
-	return Creature::isImmune(type);
+	return Creature::isImmune(type, aggressive);
 }
 
 bool Player::isAttackable() const

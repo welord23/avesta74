@@ -1409,7 +1409,7 @@ bool Creature::isImmune(CombatType_t type) const
 	return ((getDamageImmunities() & (uint32_t)type) == (uint32_t)type);
 }
 
-bool Creature::isImmune(ConditionType_t type) const
+bool Creature::isImmune(ConditionType_t type, bool aggressive /* = true */) const
 {
 	return ((getConditionImmunities() & (uint32_t)type) == (uint32_t)type);
 }
