@@ -1026,22 +1026,20 @@ bool ItemAttributes::validateIntAttrType(itemAttrTypes type)
 {
 	//list of numeric type attributes
 	switch(type){
-	case ATTR_ITEM_ACTIONID:
-	case ATTR_ITEM_UNIQUEID:
-	case ATTR_ITEM_OWNER:
-	case ATTR_ITEM_DURATION:
-	case ATTR_ITEM_DECAYING:
-	//case ATTR_ITEM_WRITTENDATE:
-    case ATTR_ITEM_CHARGES:
-    case ATTR_ITEM_FLUIDTYPE:
-    case ATTR_ITEM_DOORID:
-		return true;
-		break;
+		case ATTR_ITEM_ACTIONID:
+		case ATTR_ITEM_UNIQUEID:
+		case ATTR_ITEM_OWNER:
+		case ATTR_ITEM_DURATION:
+		case ATTR_ITEM_DECAYING:
+		//case ATTR_ITEM_WRITTENDATE:
+		case ATTR_ITEM_CHARGES:
+		case ATTR_ITEM_FLUIDTYPE:
+		case ATTR_ITEM_DOORID:
+			return true;
 
-	default:
-		return false;
-		break;
+		default: return false;
 	}
+
 	return false;
 }
 
@@ -1049,15 +1047,14 @@ bool ItemAttributes::validateStrAttrType(itemAttrTypes type)
 {
 	//list of text type attributes
 	switch(type){
-	case ATTR_ITEM_DESC:
-	case ATTR_ITEM_TEXT:
-	case ATTR_ITEM_WRITTENBY:
-		return true;
-		break;
-	default:
-		return false;
-		break;
+		case ATTR_ITEM_DESC:
+		case ATTR_ITEM_TEXT:
+		case ATTR_ITEM_WRITTENBY:
+			return true;
+
+		default: break;
 	}
+
 	return false;
 }
 

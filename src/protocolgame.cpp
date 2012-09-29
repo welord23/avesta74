@@ -2609,12 +2609,14 @@ void ProtocolGame::AddCreatureSpeak(NetworkMessage_ptr msg, const Creature* crea
 		case SPEAK_CHANNEL_O:
 			msg->AddU16(channelId);
 			break;
-		case SPEAK_RVR_CHANNEL: {
+		case SPEAK_RVR_CHANNEL: 
+		{
             uint32_t t = (OTSYS_TIME() / 1000) & 0xFFFFFFFF;
             msg->AddU32(t - time);
-            } break;
-		default:
 			break;
+        } 
+
+		default: break;
 	}
 	msg->AddString(text);
 }

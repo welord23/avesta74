@@ -125,8 +125,9 @@ function onCreatureSay(cid, type, msg)
 			
 		elseif (_state == 1) then
 			if (msgcontains(msg, 'yes')) then
+				--print(getPlayerStorageValue(cid, 10004) == -1)
 				if (getPlayerStorageValue(cid, 10004) == -1) then
-					if (doPlayerRemoveMoney(cid, 10000) == 1) then
+					if (doPlayerRemoveMoney(cid, 10000)) then
 						setPlayerStorageValue(cid, 10004, 0)
 						doPlayerSetLossPercent(cid, PLAYERLOSS_EXPERIENCE, getPlayerLossPercent(cid, PLAYERLOSS_EXPERIENCE) - 1)
 						doSendMagicEffect(getPlayerPosition(cid), CONST_ME_MAGIC_BLUE)

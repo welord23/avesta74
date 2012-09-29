@@ -3,5 +3,5 @@ function onStepIn(cid, item, topos, frompos)
 		doTransformItem(item.uid, 294)
     end
 	
-    return TRUE
+    return true
 end

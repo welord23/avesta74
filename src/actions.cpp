@@ -553,15 +553,15 @@ ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos
 bool Action::executeUse(Player* player, Item* item, const PositionEx& fromPos,
 	const PositionEx& toPos, bool extendedUse, uint32_t creatureId)
 {
-	//onUse(cid, item1, position1, item2, position2)
+	// onUse(cid, item1, position1, item2, position2)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 	
-		#ifdef __DEBUG_LUASCRIPTS__
+#ifdef __DEBUG_LUASCRIPTS__
 		std::stringstream desc;
 		desc << player->getName() << " - " << item->getID() << " " << fromPos << "|" << toPos;
 		env->setEventDesc(desc.str());
-		#endif
+#endif
 	
 		env->setScriptId(m_scriptId, m_scriptInterface);
 		env->setRealPos(player->getPosition());
@@ -588,10 +588,10 @@ bool Action::executeUse(Player* player, Item* item, const PositionEx& fromPos,
 			LuaScriptInterface::pushPosition(L, posEx, 0);
 		}
 	
-		int32_t result = m_scriptInterface->callFunction(5);
+		bool result = m_scriptInterface->callFunction(5);
 		m_scriptInterface->releaseScriptEnv();
-		
-		return (result != LUA_FALSE);
+
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. Action::executeUse" << std::endl;

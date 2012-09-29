@@ -195,7 +195,6 @@ std::string CreatureEvent::getScriptEventName()
 		return "onLogout";
 	case CREATURE_EVENT_DIE:
 		return "onDie";
-		break;
 	case CREATURE_EVENT_KILL:
 		return "onKill";
 	case CREATURE_EVENT_ADVANCE:

@@ -3,5 +3,6 @@ function onAddItem(item, tile, pos)
 		-- The door isn't locked. Transform it to its correct ID.
 		doTransformItem(item.uid, item.itemid+1)
 	end
-	return TRUE
+	
+	return true
 end

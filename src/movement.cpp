@@ -527,31 +527,24 @@ MoveEvent::~MoveEvent()
 std::string MoveEvent::getScriptEventName()
 {
 	switch(m_eventType){
-	case MOVE_EVENT_STEP_IN:
-		return "onStepIn";
-		break;
-	case MOVE_EVENT_STEP_OUT:
-		return "onStepOut";
-		break;
-	case MOVE_EVENT_EQUIP:
-		return "onEquip";
-		break;
-	case MOVE_EVENT_DEEQUIP:
-		return "onDeEquip";
-		break;
-	case MOVE_EVENT_ADD_ITEM:
-	case MOVE_EVENT_ADD_ITEM_ITEMTILE:
-		return "onAddItem";
-		break;
-	case MOVE_EVENT_REMOVE_ITEM:
-	case MOVE_EVENT_REMOVE_ITEM_ITEMTILE:
-		return "onRemoveItem";
-		break;
-	default:
-		std::cout << "Error: [MoveEvent::getScriptEventName()] No valid event type." <<  std::endl;
-		return "";
-		break;
-	};
+		case MOVE_EVENT_STEP_IN:
+			return "onStepIn";
+		case MOVE_EVENT_STEP_OUT:
+			return "onStepOut";
+		case MOVE_EVENT_EQUIP:
+			return "onEquip";
+		case MOVE_EVENT_DEEQUIP:
+			return "onDeEquip";
+		case MOVE_EVENT_ADD_ITEM:
+		case MOVE_EVENT_ADD_ITEM_ITEMTILE:
+			return "onAddItem";
+		case MOVE_EVENT_REMOVE_ITEM:
+		case MOVE_EVENT_REMOVE_ITEM_ITEMTILE:
+			return "onRemoveItem";
+		default:
+			std::cout << "Error: [MoveEvent::getScriptEventName()] No valid event type." <<  std::endl;
+			return "";
+	}
 }
 
 bool MoveEvent::configureEvent(xmlNodePtr p)
@@ -1009,16 +1002,16 @@ uint32_t MoveEvent::fireEquip(Player* player, Item* item, slots_t slot, bool isR
 
 uint32_t MoveEvent::executeEquip(Player* player, Item* item, slots_t slot)
 {
-	//onEquip(cid, item, slot)
-	//onDeEquip(cid, item, slot)
+	// onEquip(cid, item, slot)
+	// onDeEquip(cid, item, slot)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
-		#ifdef __DEBUG_LUASCRIPTS__
+#ifdef __DEBUG_LUASCRIPTS__
 		std::stringstream desc;
 		desc << player->getName() << " itemid:" << item->getID() << " slot:" << slot;
 		env->setEventDesc(desc.str());
-		#endif
+#endif
 
 		env->setScriptId(m_scriptId, m_scriptInterface);
 		env->setRealPos(player->getPosition());
@@ -1033,10 +1026,10 @@ uint32_t MoveEvent::executeEquip(Player* player, Item* item, slots_t slot)
 		LuaScriptInterface::pushThing(L, item, itemid);
 		lua_pushnumber(L, slot);
 
-		int32_t result = m_scriptInterface->callFunction(3);
+		bool result = m_scriptInterface->callFunction(3);
 		m_scriptInterface->releaseScriptEnv();
 
-		return (result != LUA_FALSE);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. MoveEvent::executeEquip" << std::endl;
@@ -1056,8 +1049,8 @@ uint32_t MoveEvent::fireAddRemItem(Item* item, Item* tileItem, const Position& p
 
 uint32_t MoveEvent::executeAddRemItem(Item* item, Item* tileItem, const Position& pos)
 {
-	//onAddItem(moveitem, tileitem, pos)
-	//onRemoveItem(moveitem, tileitem, pos)
+	// onAddItem(moveitem, tileitem, pos)
+	// onRemoveItem(moveitem, tileitem, pos)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
@@ -1083,10 +1076,10 @@ uint32_t MoveEvent::executeAddRemItem(Item* item, Item* tileItem, const Position
 		LuaScriptInterface::pushThing(L, tileItem, itemidTile);
 		LuaScriptInterface::pushPosition(L, pos, 0);
 
-		int32_t result = m_scriptInterface->callFunction(3);
+		bool result = m_scriptInterface->callFunction(3);
 		m_scriptInterface->releaseScriptEnv();
 
-		return (result != LUA_FALSE);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. MoveEvent::executeAddRemItem" << std::endl;

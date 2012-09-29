@@ -7,9 +7,9 @@ function onUse(cid, item, frompos, item2, topos)
 		doTransformItem(item2.uid, ITEM_WHEAT)
 		doCreateItem(ITEM_BUNCH_WHEAT, 1, topos)
 	else
-		return FALSE
+		return false
 	end
 	
 	doDecayItem(item2.uid)
-	return TRUE
+	return true
 end 

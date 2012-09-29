@@ -1,56 +1,56 @@
 function isSorcerer(cid)
-	if (isPlayer(cid) == TRUE) then
+	if (isPlayer(cid)) then
 		local voc = getPlayerVocation(cid)
 		if (voc == 1 or voc == 5) then
-			return TRUE
+			return true
 		end
 	end
 	
-	return FALSE
+	return false
 end
 
 function isDruid(cid)
-	if (isPlayer(cid) == TRUE) then
+	if (isPlayer(cid)) then
 		local voc = getPlayerVocation(cid)
 		if (voc == 2 or voc == 6) then
-			return TRUE
+			return true
 		end
 	end
 	
-	return FALSE
+	return false
 end
 
 function isPaladin(cid)
 	if (isPlayer(cid) == TRUE) then
 		local voc = getPlayerVocation(cid)
 		if (voc == 3 or voc == 7) then
-			return TRUE
+			return true
 		end
 	end
 	
-	return FALSE
+	return false
 end
 
 function isKnight(cid)
 	if (isPlayer(cid) == TRUE) then
 		local voc = getPlayerVocation(cid)
 		if (voc == 4 or voc == 8) then
-			return TRUE
+			return true
 		end
 	end
 	
-	return FALSE
+	return false
 end
 
 function isPromoted(cid)
-	if (isPlayer(cid) == TRUE) then
+	if (isPlayer(cid)) then
 		local voc = getPlayerVocation(cid)
 		if (voc >= 5 and voc <= 8) then
-			return TRUE
+			return true
 		end
 	end
 	
-	return FALSE
+	return false
 end
 
 function getDirectionTo(pos1, pos2)
@@ -122,7 +122,7 @@ end
 
 -- Functions made by Jiddo
 function doPlayerGiveItem(cid, itemid, count, charges)
-	local hasCharges = (isItemRune(itemid) == TRUE or isItemFluidContainer(itemid) == TRUE)
+	local hasCharges = (isItemRune(itemid) or isItemFluidContainer(itemid))
 	if(hasCharges and charges == nil) then
 		charges = 1
 	end
@@ -133,26 +133,27 @@ function doPlayerGiveItem(cid, itemid, count, charges)
     	if(hasCharges) then
     		tempcount = charges
     	end
+		
     	if(isItemStackable(itemid) == TRUE) then
     		tempcount = math.min (100, count)
    		end
     	
-       	local ret = doPlayerAddItem(cid, itemid, tempcount)
-       	if(ret == LUA_ERROR) then
+       local ret = doPlayerAddItem(cid, itemid, tempcount)
+       if(ret == false) then
         	ret = doCreateItem(itemid, tempcount, getPlayerPosition(cid))
-        end
+		end
         
-        if(ret ~= LUA_ERROR) then
+		if(ret ~= false) then
         	if(hasCharges) then
         		count = count-1
         	else
         		count = count-tempcount
         	end
-        else
-        	return LUA_ERROR
-        end
+		else
+			return false
+		end
 	end
-    return LUA_NO_ERROR
+	return true
 end
 
 function doPlayerTakeItem(cid, itemid, count)
@@ -160,42 +161,43 @@ function doPlayerTakeItem(cid, itemid, count)
 		
 		while count > 0 do
 			local tempcount = 0
-    		if(isItemStackable(itemid) == TRUE) then
+    		if(isItemStackable(itemid)) then
     			tempcount = math.min (100, count)
     		else
     			tempcount = 1
     		end
         	local ret = doPlayerRemoveItem(cid, itemid, tempcount)
         	
-            if(ret ~= LUA_ERROR) then
+            if(ret ~= false) then
             	count = count-tempcount
             else
-            	return LUA_ERROR
+            	return false
             end
 		end
 		
 		if(count == 0) then
-			return LUA_NO_ERROR
+			return true
 		end
 	end
-	return LUA_ERROR
+	return false
 end
 
 function doPlayerBuyItem(cid, itemid, count, cost, charges)
-    if(doPlayerRemoveMoney(cid, cost) == TRUE) then
-    	return doPlayerGiveItem(cid, itemid, count, charges)
-    end
-	return LUA_ERROR
+	if(doPlayerRemoveMoney(cid, cost)) then
+		return doPlayerGiveItem(cid, itemid, count, charges)
+	end
+	
+	return false
 end
 
 function doPlayerSellItem(cid, itemid, count, cost)
-	if(doPlayerTakeItem(cid, itemid, count) == LUA_NO_ERROR) then
-		if(doPlayerAddMoney(cid, cost) ~= LUA_NO_ERROR) then
+	if(doPlayerTakeItem(cid, itemid, count)) then
+		if(doPlayerAddMoney(cid, cost) ~= true) then
 			error('Could not add money to ' .. getPlayerName(cid) .. '(' .. cost .. 'gp)')
 		end
-		return LUA_NO_ERROR
+		return true
 	end
-	return LUA_ERROR
+	return false
 	
 end
 -- End of functions made by Jiddo
@@ -242,13 +244,12 @@ end
 
 exhaustion = 
 {
-
 	check = function (cid, storage)
 		local exhaust = getPlayerStorageValue(cid, storage)  
 		if (os.time() >= exhaust) then
-			return FALSE
+			return false
 		else
-			return TRUE
+			return true
 		end
 	end,
 
@@ -258,7 +259,7 @@ exhaustion =
 		if (left >= 0) then
 			return left
 		else
-			return FALSE
+			return false
 		end
 	end,
 	
@@ -269,10 +270,10 @@ exhaustion =
 	make = function (cid, storage, time)
 		local exhaust = exhaustion.get(cid, storage)
 		if (exhaust > 0) then
-			return FALSE
+			return false
 		else
 			exhaustion.set(cid, storage, time)
-			return TRUE
+			return true
 		end
 	end
 }

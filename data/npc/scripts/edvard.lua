@@ -6,7 +6,7 @@ function getNext()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setFocus(nextPlayer)
-			selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.', _delay * 2)
+			greet(nextPlayer, _delay * 2)
 			updateNpcIdle()
 			return
 		else
@@ -23,7 +23,14 @@ function _selfSay(message)
 	updateNpcIdle()
 end
 
+local function greet(cid, delay)
+	selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.', delay)
+end
+
 function onCreatureAppear(cid)
+end
+
+function onCreatureMove(cid, oldPos, newPos)
 end
 
 function onCreatureDisappear(cid)
@@ -38,15 +45,6 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
-		
-		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
-			selfSay('Good bye.', _delay)
-			getNext()
-		end
-	else
-		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
-			unqueuePlayer(cid)
-		end
 	end
 end
 
@@ -55,7 +53,7 @@ function onCreatureSay(cid, type, msg)
 		if ((msgcontains(msg, 'hi') or msgcontains(msg, 'hello')) and getDistanceToCreature(cid) <= 4) then
 			setNpcFocus(cid)
 			updateNpcIdle()
-			selfSay('Welcome to Edron Furniture Store, ' .. getCreatureName(cid) .. '.', _delay)
+			greet(cid, _delay)
 		end
 		
 	elseif (getNpcFocus() ~= cid) then 

@@ -226,17 +226,17 @@ std::string TalkAction::getScriptEventName()
 	return "onSay";
 }
 
-uint32_t TalkAction::executeSay(Creature* creature, const std::string& words, const std::string& param)
+bool TalkAction::executeSay(Creature* creature, const std::string& words, const std::string& param)
 {
-	//onSay(cid, words, param)
+	// onSay(cid, words, param)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 	
-		#ifdef __DEBUG_LUASCRIPTS__
+#ifdef __DEBUG_LUASCRIPTS__
 		std::stringstream desc;
 		desc << creature->getName() << " - " << words << " " << param;
 		env->setEventDesc(desc.str());
-		#endif
+#endif
 	
 		env->setScriptId(m_scriptId, m_scriptInterface);
 		env->setRealPos(creature->getPosition());
@@ -250,10 +250,10 @@ uint32_t TalkAction::executeSay(Creature* creature, const std::string& words, co
 		lua_pushstring(L, words.c_str());
 		lua_pushstring(L, param.c_str());
 	
-		int32_t result = m_scriptInterface->callFunction(3);
+		bool result = m_scriptInterface->callFunction(3);
 		m_scriptInterface->releaseScriptEnv();
 		
-		return (result != LUA_FALSE);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. TalkAction::executeSay" << std::endl;

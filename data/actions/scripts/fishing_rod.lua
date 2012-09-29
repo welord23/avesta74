@@ -10,17 +10,17 @@ function onUse(cid, item, frompos, item2, topos)
 		if formula > 0.70 then
 			doTransformItem(item2.uid, 492)
 			doDecayItem(item2.uid)
-			doPlayerAddSkillTry(cid, 6, 2)
-			doPlayerAddItem(cid,2667, 1)
+			doPlayerAddSkillTry(cid, LEVEL_SKILL_FISHING, 2)
+			doPlayerAddItem(cid, 2667, 1)
 		else
-			doPlayerAddSkillTry(cid, 6, 1)
+			doPlayerAddSkillTry(cid, LEVEL_SKILL_FISHING, 1)
 		end
 		
-		doSendMagicEffect(topos, 1)
+		doSendMagicEffect(topos, CONST_ME_LOSEENERGY)
 
 	elseif (item2.itemid == 491 or item2.itemid == 492) then
-		doSendMagicEffect(topos, 1)
+		doSendMagicEffect(topos, CONST_ME_LOSEENERGY)
 	end
 	
-	return TRUE
+	return true
 end

@@ -82,7 +82,6 @@ bool Combat::getMinMaxValues(Creature* creature, Creature* target, int32_t& min,
 					max = (int32_t)((player->getLevel() * 2 + player->getMagicLevel() * 3) * 1. * mina + minb);
 					min = (int32_t)((player->getLevel() * 2 + player->getMagicLevel() * 3) * 1. * maxa + maxb);
 					return true;
-					break;
 				}
 
 				case FORMULA_SKILL:
@@ -104,7 +103,6 @@ bool Combat::getMinMaxValues(Creature* creature, Creature* target, int32_t& min,
 					}
 
                     return true;
-					break;
 				}
 				
 				case FORMULA_VALUE:
@@ -113,14 +111,12 @@ bool Combat::getMinMaxValues(Creature* creature, Creature* target, int32_t& min,
                     max = (int32_t)maxa;
                     
                     return true;
-                    break;
                 }
 
 				default:
 					min = 0;
 					max = 0;
 					return false;
-					break;
 			}
 
 			//std::cout << "No callback set for combat" << std::endl;
@@ -179,20 +175,10 @@ CombatType_t Combat::ConditionToDamageType(ConditionType_t type)
 ConditionType_t Combat::DamageToConditionType(CombatType_t type)
 {
 	switch(type){
-		case COMBAT_FIREDAMAGE:
-			return CONDITION_FIRE;
-			break;
-
-		case COMBAT_ENERGYDAMAGE:
-			return CONDITION_ENERGY;
-			break;
-
-		case COMBAT_POISONDAMAGE:
-			return CONDITION_POISON;
-			break;
-
-		default:
-			break;
+		case COMBAT_FIREDAMAGE: return CONDITION_FIRE;
+		case COMBAT_ENERGYDAMAGE: return CONDITION_ENERGY;
+		case COMBAT_POISONDAMAGE: return CONDITION_POISON;
+		default: break;
 	}
 
 	return CONDITION_NONE;
@@ -673,7 +659,7 @@ void Combat::combatTileEffects(const SpectatorVec& list, Creature* caster, Tile*
 			}
 			else if(params.isAggressive){
 				const ItemType& it = Item::items[itemId];
-				if(!it.blockSolid){
+				if(!it.blockSolid){ // fix me
 					p_caster->addInFightTicks(true);
 				}
 				else{

@@ -83,7 +83,7 @@ public:
 	bool isScripted() const {return m_scripted;}
 
 	//scripting
-	uint32_t executeSay(Creature* creature, const std::string& words, const std::string& param);
+	bool executeSay(Creature* creature, const std::string& words, const std::string& param);
 	
 protected:
 	virtual std::string getScriptEventName();

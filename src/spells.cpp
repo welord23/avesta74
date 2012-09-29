@@ -298,25 +298,24 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 		case SOUTHWEST:
 			pos.x -= 1;
 			pos.y += 1;
-		break;
+			break;
 
 		case NORTHWEST:
 			pos.x -= 1;
 			pos.y -= 1;
-		break;
+			break;
 
 		case NORTHEAST:
 			pos.x += 1;
 			pos.y -= 1;
-		break;
+			break;
 
 		case SOUTHEAST:
 			pos.x += 1;
 			pos.y += 1;
-		break;
-
-		default:
 			break;
+
+		default: break;
 	}
 
 	return pos;
@@ -423,7 +422,7 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 
 bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 {
-	//onCastSpell(cid, var)
+	// onCastSpell(cid, var)
 	if(m_scriptInterface->reserveScriptEnv()){
 		ScriptEnviroment* env = m_scriptInterface->getScriptEnv();
 
@@ -444,10 +443,10 @@ bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 		lua_pushnumber(L, cid);
 		m_scriptInterface->pushVariant(L, var);
 
-		int32_t result = m_scriptInterface->callFunction(2);
+		bool result = m_scriptInterface->callFunction(2);
 		m_scriptInterface->releaseScriptEnv();
 
-		return (result != LUA_ERROR);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. CombatSpell::executeCastSpell" << std::endl;
@@ -1283,10 +1282,10 @@ bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 		lua_pushnumber(L, cid);
 		m_scriptInterface->pushVariant(L, var);
 
-		int32_t result = m_scriptInterface->callFunction(2);
+		bool result = m_scriptInterface->callFunction(2);
 		m_scriptInterface->releaseScriptEnv();
 
-		return (result != LUA_ERROR);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. InstantSpell::executeCastSpell" << std::endl;
@@ -1566,7 +1565,6 @@ bool InstantSpell::SearchPlayer(const InstantSpell* spell, Creature* creature, c
 					ss << "south";
 					break;
 				case DIR_E:
-
 					ss << "east";
 					break;
 
@@ -2299,10 +2297,10 @@ bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 		lua_pushnumber(L, cid);
 		m_scriptInterface->pushVariant(L, var);
 
-		int32_t result = m_scriptInterface->callFunction(2);
+		bool result = m_scriptInterface->callFunction(2);
 		m_scriptInterface->releaseScriptEnv();
 
-		return (result != LUA_ERROR);
+		return result;
 	}
 	else{
 		std::cout << "[Error] Call stack overflow. RuneSpell::executeCastSpell" << std::endl;

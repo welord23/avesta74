@@ -46,29 +46,20 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
-		
-		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
-			selfSay('Run away, unworthy ' .. getCreatureName(cid) .. '!', _delay)
-			getNext()
-		end
-	else
-		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
-			unqueuePlayer(cid)
-		end
 	end
 end
 
 local function greet(cid, delay)
-	if (isDruid(cid) == TRUE) then
+	if (isDruid(cid)) then
 		selfSay('Hail, friend of nature! How may I help you?', delay)
 		
-	elseif (isKnight(cid) == TRUE) then
+	elseif (isKnight(cid)) then
 		selfSay('Another creature who believes thinks physical strength is more important than wisdom! Why are you disturbing me?', delay)
 		
-	elseif (isSorcerer(cid) == TRUE) then
+	elseif (isSorcerer(cid)) then
 		selfSay('It\'s good to see somebody who has chosen the path of wisdom. What do you want?', delay)
 		
-	elseif (isPaladin(cid) == TRUE) then
+	elseif (isPaladin(cid)) then
 		selfSay('Neither strong enough to be a knight nor wise enough to be a real mage. You like it easy, don\'t you? Why are you disturbing me?', delay)
 	end
 end
@@ -202,7 +193,7 @@ end
 
 function onThink()
 	if (getNpcFocus() ~= 0) then
-		if (isNpcIdle()) then
+		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
 			selfSay('Run away, unworthy ' .. getCreatureName(getNpcFocus()) .. '!', _delay)
 			getNext()
 		end
