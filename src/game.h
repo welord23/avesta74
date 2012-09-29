@@ -63,7 +63,8 @@ enum GameState_t {
 	GAME_STATE_NORMAL,
 	GAME_STATE_CLOSED,
 	GAME_STATE_SHUTDOWN,
-	GAME_STATE_CLOSING
+	GAME_STATE_CLOSING,
+	GAME_STATE_LAST = GAME_STATE_CLOSING
 };
 
 enum LightState_t {
@@ -504,6 +505,7 @@ public:
 
 	void doDeathDelay(Creature* creature);
 	void loadPlayersRecord();
+	void reloadInfo(ReloadTypes_t info);
 
 protected:
     bool playerSayCommand(Player* player, SpeakClasses type, const std::string& text);

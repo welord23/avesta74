@@ -21,7 +21,7 @@ function isDruid(cid)
 end
 
 function isPaladin(cid)
-	if (isPlayer(cid) == TRUE) then
+	if (isPlayer(cid)) then
 		local voc = getPlayerVocation(cid)
 		if (voc == 3 or voc == 7) then
 			return true
@@ -32,7 +32,7 @@ function isPaladin(cid)
 end
 
 function isKnight(cid)
-	if (isPlayer(cid) == TRUE) then
+	if (isPlayer(cid)) then
 		local voc = getPlayerVocation(cid)
 		if (voc == 4 or voc == 8) then
 			return true
@@ -134,7 +134,7 @@ function doPlayerGiveItem(cid, itemid, count, charges)
     		tempcount = charges
     	end
 		
-    	if(isItemStackable(itemid) == TRUE) then
+    	if(isItemStackable(itemid)) then
     		tempcount = math.min (100, count)
    		end
     	

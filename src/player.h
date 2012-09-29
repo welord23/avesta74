@@ -176,7 +176,8 @@ public:
 	uint32_t getAccount() const {return accountNumber;}
 	uint32_t getLevel() const {return level;}
 	uint32_t getMagicLevel() const {return getPlayerInfo(PLAYERINFO_MAGICLEVEL);}
-	int32_t getAccessLevel() const {return accessLevel;}
+	int16_t getAccessLevel() const {return accessLevel;}
+	std::string getGroupName() const {return groupName;}
 
 	void checkIdleTime(uint32_t ticks);
 	void resetIdle() {idleTime = 0; idleWarned = false;}
@@ -632,7 +633,8 @@ protected:
 	uint32_t levelPercent;
 	uint32_t magLevel;
 	uint32_t magLevelPercent;
-	int32_t accessLevel;
+	int16_t accessLevel;
+	std::string groupName;
 	uint64_t experience;
 	uint32_t damageImmunities;
 	uint32_t conditionImmunities;

@@ -18,7 +18,7 @@ Bit = {
 			elseif (number == 2) then
 				return 10
 			else
-				return FALSE
+				return 0
 			end
 		else
 			local ret = ""

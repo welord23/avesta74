@@ -140,6 +140,13 @@ public:
 	DATABASE_VIRTUAL DBResult* storeQuery(const std::string &query) { return 0; }
 
 	/**
+	 * Returns ID of last inserted row
+	 *
+	 * @return id of last inserted row, 0 if last query did not result in any rows with auto_increment keys
+	 */
+	DATABASE_VIRTUAL uint64_t getLastInsertedRowID() {return 0;}
+
+	/**
 	* Escapes string for query.
 	*
 	* Prepares string to fit SQL queries including quoting it.
@@ -165,6 +172,21 @@ public:
 	* @param DBResult* resource to be freed
 	*/
 	DATABASE_VIRTUAL void freeResult(DBResult *res) {};
+
+	/**
+	 * Retrieve id of last inserted row
+	 *
+	 * @return id on success, 0 if last query did not result on any rows with auto_increment keys
+	 */
+	DATABASE_VIRTUAL uint64_t getLastInsertId() {return 0;}
+
+	/**
+	* Get case insensitive string comparison operator
+	*
+	* @return the case insensitive operator
+	*/
+	DATABASE_VIRTUAL std::string getStringComparer() {return "= ";}
+	DATABASE_VIRTUAL std::string getUpdateLimiter() {return " LIMIT 1;";}	
 
 protected:
 	_Database() : m_connected(false) {};

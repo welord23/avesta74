@@ -43,6 +43,7 @@
 #include "raids.h"
 #include "spawn.h"
 #include "ioaccount.h"
+#include "movement.h"
 #include "globalevent.h"
 
 #if defined __EXCEPTION_TRACER__
@@ -66,6 +67,10 @@ extern BanManager g_bans;
 extern Chat g_chat;
 extern TalkActions* g_talkactions;
 extern Spells* g_spells;
+extern Monsters g_monsters;
+extern MoveEvents* g_moveEvents;
+extern Npcs g_npcs;
+extern CreatureEvents* g_creatureEvents;
 extern GlobalEvents* g_globalEvents;
 
 Game::Game()
@@ -2949,8 +2954,14 @@ bool Game::playerLookAt(uint32_t playerId, const Position& pos, uint16_t spriteI
 
 	std::stringstream ss;
 	ss << "You see " << thing->getDescription(lookDistance);
-	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 
+	//x-ray (special description)
+	if(player->hasFlag(PlayerFlag_CanSeeSpecialDescription)){
+		ss << std::endl;
+		ss << thing->getXRayDescription();
+	}
+
+	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 	return true;
 }
 
@@ -4630,4 +4641,45 @@ bool Game::violationWindow(uint32_t playerId, std::string name, uint8_t reason, 
 
 	IOAccount::instance()->saveAccount(account);
 	return true;
+}
+
+void Game::reloadInfo(ReloadTypes_t info)
+{
+	switch(info){
+		case RELOAD_TYPE_ACTIONS:
+			g_actions->reload();
+			break;
+		case RELOAD_TYPE_MONSTERS:
+			g_monsters.reload();
+			break;
+		case RELOAD_TYPE_NPCS:
+			g_npcs.reload();
+			break;
+		case RELOAD_TYPE_CONFIG:
+			g_config.reload();
+			break;
+		case RELOAD_TYPE_TALKACTIONS:
+			g_talkactions->reload();
+			break;
+		case RELOAD_TYPE_MOVEMENTS:
+			g_moveEvents->reload();
+			break;
+		case RELOAD_TYPE_SPELLS:
+			g_spells->reload();
+			g_monsters.reload();
+			break;
+		case RELOAD_TYPE_RAIDS:
+			Raids::getInstance()->reload();
+			Raids::getInstance()->startup();
+			break;
+		case RELOAD_TYPE_CREATURESCRIPTS:
+			g_creatureEvents->reload();
+			break;
+		case RELOAD_TYPE_ITEMS:
+			Item::items.reload();
+			break;
+		case RELOAD_TYPE_GLOBALEVENTS:
+			g_globalEvents->reload();
+			break;
+	}
 }

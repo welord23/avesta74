@@ -31,8 +31,8 @@ class Vocation
 {
 public:
 	~Vocation();
-	const std::string& getVocName() const {return name;}
-	const std::string& getVocDescription() const {return description;}
+	const std::string& getName() const {return name;}
+	const std::string& getDescription() const {return description;}
 	uint32_t getReqSkillTries(int skill, int level);
 	uint32_t getReqMana(int magLevel);
 	
