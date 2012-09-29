@@ -282,7 +282,7 @@ public:
 	bool executeCastSpell(Creature* creature, const LuaVariant& var);
 
 	virtual bool isInstant() const { return false;}
-	uint32_t getRuneItemId(){return runeId;};
+	uint32_t getRuneItemId(){return runeId;}
 
 protected:
 	virtual std::string getScriptEventName();

@@ -10,12 +10,12 @@ function onStepIn(cid, item, topos, frompos)
 			doTransformItem(item.uid, item.itemid - 1)
 		end
 	end
-	return TRUE
+	return true
 end
 
 function onStepOut(cid, item, topos, frompos)
 	doTransformItem(item.uid, item.itemid - 1)
-	return TRUE
+	return true
 end
 
 function onRemoveItem(item, tile, pos)
@@ -23,11 +23,11 @@ function onRemoveItem(item, tile, pos)
 		doTransformItem(item.uid, item.itemid - 1)
 		doSendMagicEffect(getThingPos(item.uid), CONST_ME_POFF)
 	end
-	return TRUE
+	return true
 end
 
 function onAddItem(item, tileitem, pos)
 	doTransformItem(item.uid, item.itemid - 1)
 	doSendMagicEffect(pos, CONST_ME_POFF)
-	return TRUE
+	return true
 end

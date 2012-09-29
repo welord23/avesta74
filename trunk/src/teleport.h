@@ -30,8 +30,8 @@ public:
 	Teleport(uint16_t _type);
 	~Teleport();
 	
-	virtual Teleport* getTeleport() {return this;};
-	virtual const Teleport* getTeleport() const {return this;};
+	virtual Teleport* getTeleport() {return this;}
+	virtual const Teleport* getTeleport() const {return this;}
 
 	virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 	virtual bool serializeAttr(PropWriteStream& propWriteStream) const;

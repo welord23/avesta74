@@ -12,7 +12,7 @@ end
 
 function onStepIn(cid, item, topos, frompos)
 	if(item.actionid > 0) then
-		return TRUE
+		return true
 	end
 
 	doTransformTile(item)
@@ -36,10 +36,10 @@ function onStepIn(cid, item, topos, frompos)
 			topos.y = topos.y - y
 		end
 	end
-	return TRUE
+	return true
 end
 
 function onStepOut(cid, item, topos, frompos)
 	doTransformTile(item)
-	return TRUE
+	return true
 end

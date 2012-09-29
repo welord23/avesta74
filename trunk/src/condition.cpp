@@ -64,7 +64,6 @@ bool Condition::unserialize(PropStream& propStream)
 	while(propStream.GET_UINT8(attr_type) && attr_type != CONDITIONATTR_END){
 		if(!unserializeProp((ConditionAttr_t)attr_type, propStream)){
 			return false;
-			break;
 		}
 	}
 
@@ -83,7 +82,6 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 
 			conditionType = (ConditionType_t)value;
 			return true;
-			break;
 		}
 
 		case CONDITIONATTR_ID:
@@ -95,7 +93,6 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 
 			id = (ConditionId_t)value;
 			return true;
-			break;
 		}
 
 		case CONDITIONATTR_TICKS:
@@ -107,13 +104,11 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 
 			ticks = value;
 			return true;
-			break;
 		}
 
 		case CONDITIONATTR_END:
 		{
 			return true;
-			break;
 		}
 
 		default:
@@ -160,58 +155,49 @@ Condition* Condition::createCondition(ConditionId_t _id, ConditionType_t _type, 
 		case CONDITION_ENERGY:
 		{
 			return new ConditionDamage(_id, _type);
-			break;
 		}
 
 		case CONDITION_HASTE:
 		case CONDITION_PARALYZE:
 		{
 			return new ConditionSpeed(_id, _type, _ticks, param);
-			break;
 		}
 
 		case CONDITION_INVISIBLE:
 		{
 			return new ConditionInvisible(_id, _type, _ticks);
-			break;
 		}
 
 		case CONDITION_OUTFIT:
 		{
 			return new ConditionOutfit(_id, _type, _ticks);
-			break;
 		}
 
 		case CONDITION_LIGHT:
 		{
 			return new ConditionLight(_id, _type, _ticks, param & 0xFF, (param & 0xFF00) >> 8);
-			break;
 		}
 
 		case CONDITION_REGENERATION:
 		{
 			return new ConditionRegeneration(_id, _type, _ticks);
-			break;
 		}
 
 #ifdef __PROTOCOL_76__
 		case CONDITION_SOUL:
 		{
 			return new ConditionSoul(_id, _type, _ticks);
-			break;
 		}
 #endif // __PROTOCOL_76__
 
 		case CONDITION_MANASHIELD:
 		{
 			return new ConditionManaShield(_id, _type,_ticks);
-			break;
 		}
 
 		case CONDITION_ATTRIBUTES:
 		{
 			return new ConditionAttributes(_id, _type,_ticks);
-			break;
 		}
 
 		case CONDITION_INFIGHT:
@@ -223,13 +209,11 @@ Condition* Condition::createCondition(ConditionId_t _id, ConditionType_t _type, 
 		case CONDITION_TRADE_MUTED:
 		{
 			return new ConditionGeneric(_id, _type,_ticks);
-			break;
 		}
 
 		default:
 		{
 			return NULL;
-			break;
 		}
 	}
 }
@@ -893,28 +877,24 @@ bool ConditionRegeneration::setParam(ConditionParam_t param, int32_t value)
 		{
 			healthGain = value;
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_HEALTHTICKS:
 		{
 			healthTicks = value;
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_MANAGAIN:
 		{
 			manaGain = value;
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_MANATICKS:
 		{
 			manaTicks = value;
 			return true;
-			break;
 		}
 
 		default:
@@ -1011,14 +991,12 @@ bool ConditionSoul::setParam(ConditionParam_t param, int32_t value)
 		{
 			soulGain = value;
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_SOULTICKS:
 		{
 			soulTicks = value;
 			return true;
-			break;
 		}
 
 		default:
@@ -1054,21 +1032,18 @@ bool ConditionDamage::setParam(ConditionParam_t param, int32_t value)
 		{
 			owner = value;
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_FORCEUPDATE:
 		{
 			forceUpdate = (value != 0);
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_DELAYED:
 		{
 			delayed = (value != 0);
 			return true;
-			break;
 		}
 
 		case CONDITIONPARAM_MAXVALUE:
@@ -1104,7 +1079,6 @@ bool ConditionDamage::setParam(ConditionParam_t param, int32_t value)
 		default:
 		{
 			return false;
-			break;
 		}
 	}
 
@@ -1868,16 +1842,19 @@ bool ConditionLight::setParam(ConditionParam_t param, int32_t value)
 	bool ret = Condition::setParam(param, value);
 	if(!ret){
 		switch(param){
-		case CONDITIONPARAM_LIGHT_LEVEL:
-			lightInfo.level = value;
-			return true;
-			break;
-		case CONDITIONPARAM_LIGHT_COLOR:
-			lightInfo.color = value;
-			return true;
-			break;
-		default:
-			return false;
+			case CONDITIONPARAM_LIGHT_LEVEL:
+			{
+				lightInfo.level = value;
+				return true;
+			}
+
+			case CONDITIONPARAM_LIGHT_COLOR:
+			{
+				lightInfo.color = value;
+				return true;
+			}
+
+			default: return false;
 		}
 	}
 	return false;

@@ -14,12 +14,11 @@ function onUse(cid, item, frompos, item2, topos)
 		-- a magic sword, 5 meats and a key with actionId 2149
 		parameters = {rewards = {{2400}, {2666, 5}, {2086, 1, 2149}}, storageValue = item.uid, itemName = getItemName(item.itemid)}
 	else
-		return FALSE
+		return false
 	end
 	
 	doPlayerAddQuestReward( parameters)
-	
-	return TRUE
+	return true
 end
 
 function doPlayerAddQuestReward(cid, parameters)
@@ -40,14 +39,14 @@ function doPlayerAddQuestReward(cid, parameters)
 	if (rewardProtection ~= nil) then
 		if (getPlayerAccess(cid) >= rewardProtection) then
 			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "This " .. itemName .. " is empty.")
-			return TRUE
+			return true
 		end
 	end
 	
 	if (storageValue ~= nil) then
 		if (getPlayerStorageValue(cid, storageValue) > 0) then
 			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "This " .. itemName .. " is empty.")
-			return TRUE
+			return true
 		end
 	end
 	
@@ -55,12 +54,12 @@ function doPlayerAddQuestReward(cid, parameters)
 		if (type(requiredVocation) == "table") then
 			if (isInArray(requiredVocation, getPlayerVocation(cid)) == FALSE) then
 				doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Your vocation can not to take this reward.")
-				return TRUE
+				return true
 			end
 		else
 			if (getPlayerVocation(cid) ~= requiredVocation) then
 				doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Your vocation can not to take this reward.")
-				return TRUE
+				return true
 			end
 		end
     end
@@ -68,30 +67,30 @@ function doPlayerAddQuestReward(cid, parameters)
 	if (requiredSex ~= nil) then
 		if (getPlayerSex(cid) ~= requiredSex) then
 			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Your sex can not to take this reward.")
-			return FALSE
+			return false
 		end
 	end
 
 	if (getPlayerLevel(cid) < requiredLevel) then
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You do not have enough level to take this reward.")
-		return FALSE
+		return false
 	end
 
 	if (getPlayerMagLevel(cid) < requiredMagicLevel) then
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You do not have enough magic level to take this reward.")
-		return FALSE
+		return false
 	end
 	
 	if (requiredStorageValue ~= nil) then
 		if (getPlayerStorageValue(cid, requiredStorageValue) <= 0) then
 			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You do not can take this reward yet.")
-			return FALSE
+			return false
 		end
 	end
 	
-	if (premiumRequired ~= FALSE and isPremium(cid) == FALSE) then
+	if (premiumRequired ~= false and isPremium(cid) == false) then
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "A premium account is required to take this reward.")
-		return FALSE
+		return false
 	end
 
 	if (reward ~= nil and rewards == nil) then
@@ -99,8 +98,7 @@ function doPlayerAddQuestReward(cid, parameters)
 			debugPrint("doPlayerAddQuestReward() - reward ID not found")
 			
 			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Error. Please report to a gamemaster.")
-			
-			return FALSE
+			return false
 		end
 
 		reward[2] = reward[2] or 0
@@ -138,7 +136,7 @@ function doPlayerAddQuestReward(cid, parameters)
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, str)
 		if(failed) then
 			doRemoveItem(rItem.uid)
-			return FALSE
+			return false
 		end
 	else
 		local containerEx = doCreateItemEx(containerId)
@@ -150,7 +148,7 @@ function doPlayerAddQuestReward(cid, parameters)
 			if (j[1] == nil) then
 				debugPrint("doPlayerAddQuestReward() - #" .. i .. ", reward ID not found")				
 				doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Error. Please report to a gamemaster.")				
-				return FALSE
+				return false
 			end
 			
 			j[2] = j[2] or 0
@@ -194,7 +192,7 @@ function doPlayerAddQuestReward(cid, parameters)
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, str)
 		if(failed) then
 			doRemoveItem(rItem.uid)
-			return FALSE
+			return false
 		end
 	end
 
@@ -206,5 +204,5 @@ function doPlayerAddQuestReward(cid, parameters)
 		setPlayerStorageValue(cid, storageValue, 1)
 	end
 	
-	return TRUE
+	return true
 end

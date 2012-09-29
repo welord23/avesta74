@@ -105,8 +105,8 @@ public:
 	const HouseTile* getHouseTile() const;
 	bool isHouseTile() const;
 
-	virtual int getThrowRange() const {return 0;};
-	virtual bool isPushable() const {return false;};
+	virtual int getThrowRange() const {return 0;}
+	virtual bool isPushable() const {return false;}
 
 	Item*          ground;
 	ItemVector     topItems;
@@ -193,7 +193,7 @@ public:
 	virtual const Position& getPosition() const {return tilePos;}
 	const Position& getTilePosition() const {return tilePos;}
 
-	virtual bool isRemoved() const {return false;};
+	virtual bool isRemoved() const {return false;}
 
 private:
 	void onAddTileItem(Item* item);

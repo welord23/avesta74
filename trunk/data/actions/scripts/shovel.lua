@@ -5,7 +5,7 @@ local SCARAB_TILE = 101
 local SCARAB_COIN_TILE = 102
 	
 function onUse(cid, item, frompos, item2, topos)
-	if (isInArray(CLOSED_HOLE, item2.itemid) == TRUE) then
+	if (isIntegerInArray(CLOSED_HOLE, item2.itemid)) then
 		doTransformItem(item2.uid, item2.itemid + 1)
 		
 	elseif (item2.itemid == TILE_SAND) then
@@ -39,9 +39,9 @@ function onUse(cid, item, frompos, item2, topos)
 		
 		doSendMagicEffect(topos, CONST_ME_POFF)
 	else
-		return FALSE
+		return false
 	end
 	
 	doDecayItem(item2.uid)
-	return TRUE
+	return true
 end 

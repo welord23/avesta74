@@ -1047,11 +1047,17 @@ NpcEventsHandler(npc)
 {
 	m_scriptInterface = npc->getScriptInterface();
 
-	if(m_scriptInterface->loadFile(file, npc) == -1){
-		std::cout << "Warning: [NpcScript::NpcScript] Can not load script. " << file << std::endl;
-		std::cout << m_scriptInterface->getLastLuaError() << std::endl;
-		m_loaded = false;
-		return;
+	if(m_scriptInterface->reserveScriptEnv()){
+		m_scriptInterface->getScriptEnv()->setNpc(npc);
+		if(m_scriptInterface->loadFile(file, false) == -1){
+			std::cout << "Warning: [NpcScript::NpcScript] Can not load script. " << file << std::endl;
+			std::cout << m_scriptInterface->getLastLuaError() << std::endl;
+			m_loaded = false;
+			m_scriptInterface->releaseScriptEnv();
+			return;
+		}
+
+		m_scriptInterface->releaseScriptEnv();
 	}
 
 	m_onCreatureSay = m_scriptInterface->getEvent("onCreatureSay");

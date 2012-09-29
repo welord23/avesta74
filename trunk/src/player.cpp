@@ -522,60 +522,20 @@ int32_t Player::getDefense() const
 float Player::getAttackFactor() const
 {
 	switch(fightMode){
-		case FIGHTMODE_ATTACK:
-		{
-			return 1.0f;
-			break;
-		}
-
-		case FIGHTMODE_BALANCED:
-		{
-			return 1.2f;
-			break;
-		}
-
-		case FIGHTMODE_DEFENSE:
-		{
-			return 2.0f;
-			break;
-		}
-
-		default:
-			return 1.0f;
-			break;
+		case FIGHTMODE_ATTACK:	return 1.0f;
+		case FIGHTMODE_BALANCED: return 1.2f;
+		case FIGHTMODE_DEFENSE: return 2.0f;
+		default: return 1.0f;
 	}
 }
 
 float Player::getDefenseFactor() const
 {
 	switch(fightMode){
-		case FIGHTMODE_ATTACK:
-		{
-			return 1.0f;
-			break;
-		}
-
-		case FIGHTMODE_BALANCED:
-		{
-			return 1.2f;
-			break;
-		}
-
-		case FIGHTMODE_DEFENSE:
-		{
-			/*
-			if((OTSYS_TIME() - lastAttack) < getAttackSpeed()){
-				//Attacking will cause us to get into normal defense
-				return 1.2f;
-			}
-            */
-			return 2.0f;
-			break;
-		}
-
-		default:
-			return 1.0f;
-			break;
+		case FIGHTMODE_ATTACK: return 1.0f;
+		case FIGHTMODE_BALANCED: return 1.2f;
+		case FIGHTMODE_DEFENSE: return 2.0f;
+		default: return 1.0f;
 	}
 }
 
@@ -3842,9 +3802,9 @@ bool Player::canLogout()
 	return true;
 }
 
-void Player::setSex(playersex_t player_sex)
+void Player::setSex(PlayerSex_t playerSex)
 {
-	sex = player_sex;
+	sex = playerSex;
 }
 
 void Player::learnInstantSpell(const std::string& name)

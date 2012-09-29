@@ -7,7 +7,7 @@ function getNext()
 	if (nextPlayer ~= nil) then
 		if (getDistanceToCreature(nextPlayer) <= 4) then
 			setNpcFocus(nextPlayer)
-			selfSay('I greet thee, my loyal subject.', _delay * 2)
+			greet(nextPlayer, _delay * 2)
 			updateNpcIdle()
 			return
 		else
@@ -22,6 +22,10 @@ end
 function _selfSay(message)
 	selfSay(message, _delay)
 	updateNpcIdle()
+end
+
+local function greet(cid, delay)
+	selfSay('I greet thee, my loyal subject.', delay)
 end
 
 function onCreatureAppear(cid)
@@ -39,15 +43,6 @@ end
 function onCreatureMove(cid, oldPos, newPos)
 	if (getNpcFocus() == cid) then
 		faceCreature(cid)
-		
-		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
-			selfSay('What a lack of manners!', _delay)
-			getNext()
-		end
-	else
-		if (oldPos.z ~= newPos.z or getDistanceToCreature(cid) > 4) then
-			unqueuePlayer(cid)
-		end
 	end
 end
 
@@ -57,7 +52,7 @@ function onCreatureSay(cid, type, msg)
 			if (msgcontains(msg, 'hello') or msgcontains(msg, 'hail') or msgcontains(msg, 'salutations')) then
 				updateNpcIdle()
 				setNpcFocus(cid)
-				selfSay('I greet thee, my loyal subject.', _delay)
+				greet(cid, _delay)
 			end
 		end
 		
@@ -237,10 +232,10 @@ function onCreatureSay(cid, type, msg)
 		
 		elseif (_state == 1) then
 			if (msgcontains(msg, 'yes')) then
-				if (isPremium(cid) == 1) then
-					if (isPromoted(cid) == 0) then
+				if (isPremium(cid)) then
+					if (isPromoted(cid)) then
 						if (getPlayerLevel(cid) >= 20) then
-							if (doPlayerRemoveMoney(cid, 20000) == 1) then
+							if (doPlayerRemoveMoney(cid, 20000)) then
 								doPlayerSetVocation(cid, getPlayerVocation(cid) + 4)
 								_selfSay('Congratulations! You are now promoted. Visit the sage Eremo for new spells.')
 							else
@@ -266,7 +261,7 @@ end
 
 function onThink()
 	if (getNpcFocus() ~= 0) then
-		if (isNpcIdle()) then
+		if (isNpcIdle() or getDistanceToCreature(getNpcFocus()) > 4) then
 			selfSay('What a lack of manners!', _delay)
 			getNext()
 		end

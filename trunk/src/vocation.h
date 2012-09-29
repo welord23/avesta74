@@ -36,20 +36,20 @@ public:
 	uint32_t getReqSkillTries(int skill, int level);
 	uint32_t getReqMana(int magLevel);
 	
-	uint32_t getHPGain() const {return gainHP;};
-	uint32_t getManaGain() const {return gainMana;};
-	uint32_t getCapGain() const {return gainCap;};
+	uint32_t getHPGain() const {return gainHP;}
+	uint32_t getManaGain() const {return gainMana;}
+	uint32_t getCapGain() const {return gainCap;}
 
-	uint32_t getAttackSpeed() const {return attackSpeed;};
+	uint32_t getAttackSpeed() const {return attackSpeed;}
 	
-	uint32_t getManaGainTicks() const {return gainManaTicks;};
-	uint32_t getManaGainAmount() const {return gainManaAmount;};
-	uint32_t getHealthGainTicks() const {return gainHealthTicks;};
-	uint32_t getHealthGainAmount() const {return gainHealthAmount;};
+	uint32_t getManaGainTicks() const {return gainManaTicks;}
+	uint32_t getManaGainAmount() const {return gainManaAmount;}
+	uint32_t getHealthGainTicks() const {return gainHealthTicks;}
+	uint32_t getHealthGainAmount() const {return gainHealthAmount;}
 
 #ifdef __PROTOCOL_76__
-	uint16_t getSoulMax() const {return maxSoul;};
-	uint16_t getSoulGainTicks() const {return gainSoulTicks;};
+	uint16_t getSoulMax() const {return maxSoul;}
+	uint16_t getSoulGainTicks() const {return gainSoulTicks;}
 #endif // __PROTOCOL_76__
 
 	float meleeDamageMultiplier, distDamageMultiplier, defenseMultiplier, armorMultiplier;

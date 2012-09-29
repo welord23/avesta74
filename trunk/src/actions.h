@@ -100,11 +100,11 @@ public:
 		const PositionEx& posTo, bool extendedUse, uint32_t creatureId);
 	//
 
-	bool getAllowFarUse() const {return allowFarUse;};
-	void setAllowFarUse(bool v){allowFarUse = v;};
+	bool getAllowFarUse() const {return allowFarUse;}
+	void setAllowFarUse(bool v){allowFarUse = v;}
 
-	bool getCheckLineOfSight() const {return checkLineOfSight;};
-	void setCheckLineOfSight(bool v){checkLineOfSight = v;};
+	bool getCheckLineOfSight() const {return checkLineOfSight;}
+	void setCheckLineOfSight(bool v){checkLineOfSight = v;}
 
 	virtual ReturnValue canExecuteAction(const Player* player, const Position& toPos);
 	virtual bool hasOwnErrorHandler() {return false;}

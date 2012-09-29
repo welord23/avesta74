@@ -25,6 +25,11 @@
 
 #define NETWORKMESSAGE_MAXSIZE 16768
 
+//Ranges for ID Creatures
+#define PLAYER_ID_RANGE 0x10000000
+#define MONSTER_ID_RANGE 0x40000000
+#define NPC_ID_RANGE 0x80000000
+
 enum MagicEffectClasses {
 	NM_ME_DRAW_BLOOD  	   = 0x00,
 	NM_ME_LOSE_ENERGY	   = 0x01,

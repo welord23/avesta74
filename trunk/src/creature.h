@@ -129,14 +129,14 @@ protected:
 public:
 	virtual ~Creature();
 
-	virtual Creature* getCreature() {return this;};
-	virtual const Creature* getCreature()const {return this;};
-	virtual Player* getPlayer() {return NULL;};
-	virtual const Player* getPlayer() const {return NULL;};
-	virtual Npc* getNpc() {return NULL;};
-	virtual const Npc* getNpc() const {return NULL;};
-	virtual Monster* getMonster() {return NULL;};
-	virtual const Monster* getMonster() const {return NULL;};
+	virtual Creature* getCreature() {return this;}
+	virtual const Creature* getCreature()const {return this;}
+	virtual Player* getPlayer() {return NULL;}
+	virtual const Player* getPlayer() const {return NULL;}
+	virtual Npc* getNpc() {return NULL;}
+	virtual const Npc* getNpc() const {return NULL;}
+	virtual Monster* getMonster() {return NULL;}
+	virtual const Monster* getMonster() const {return NULL;}
 
 	bool isDying;
 	
@@ -166,7 +166,7 @@ public:
 	const Position& getMasterPos() const { return masterPos;}
 	void setMasterPos(const Position& pos, uint32_t radius = 1) { masterPos = pos; masterRadius = radius;}
 
-	virtual int getThrowRange() const {return 1;};
+	virtual int getThrowRange() const {return 1;}
 	virtual bool isPushable() const {return (getWalkDelay() <= 0);}
 	virtual bool isRemoved() const {return isInternalRemoved;}
 	virtual bool canSeeInvisibility() const { return false;}
@@ -284,8 +284,8 @@ public:
 	virtual void drainHealth(Creature* attacker, CombatType_t combatType, int32_t damage);
 	virtual void drainMana(Creature* attacker, int32_t manaLoss);
 
-	virtual bool challengeCreature(Creature* creature) {return false;};
-	virtual bool convinceCreature(Creature* creature) {return false;};
+	virtual bool challengeCreature(Creature* creature) {return false;}
+	virtual bool convinceCreature(Creature* creature) {return false;}
 
 	virtual void onDie();
 	virtual uint64_t getGainedExperience(Creature* attacker, bool useMultiplier = true) const;

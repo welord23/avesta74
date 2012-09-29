@@ -423,16 +423,9 @@ bool House::canEditAccessList(uint32_t listId, const Player* player)
 	switch(getHouseAccessLevel(player)){
 	case HOUSE_OWNER:
 		return true;
-		break;
 	case HOUSE_SUBOWNER:
 		/*subowners can edit guest access list*/
-		if(listId == GUEST_LIST){
-			return true;
-		}
-		else /*subowner/door list*/{
-			return false;
-		}
-		break;
+		return listId == GUEST_LIST;
 	default:
 		return false;
  	}
@@ -1008,23 +1001,22 @@ bool Houses::payHouses()
 						switch(rentPeriod){
 							case RENTPERIOD_DAILY:
 								period = "daily";
-							break;
+								break;
 
 							case RENTPERIOD_WEEKLY:
 								period = "weekly";
-							break;
+								break;
 
 							case RENTPERIOD_MONTHLY:
 								period = "monthly";
-							break;
+								break;
 
 							case RENTPERIOD_YEARLY:
 								period = "annual";
-							break;
+								break;
 
 							case RENTPERIOD_NEVER:
-								//
-							break;
+								break;
 						}
 
 						std::stringstream warningText;

@@ -124,8 +124,8 @@ public:
 	virtual const std::string& getNameDescription() const {return name;}
 	virtual std::string getDescription(int32_t lookDistance) const;
 
-	void setGUID(uint32_t _guid) {guid = _guid;};
-	uint32_t getGUID() const { return guid;};
+	void setGUID(uint32_t _guid) {guid = _guid;}
+	uint32_t getGUID() const { return guid;}
 	virtual uint32_t idRange(){ return 0x10000000;}
 	static AutoList<Player> listPlayer;
 	void removeList();
@@ -180,12 +180,13 @@ public:
 
 	void checkIdleTime(uint32_t ticks);
 	void resetIdle() {idleTime = 0; idleWarned = false;}
+	void setIdleTime(uint32_t value, bool warned) {idleTime = value; idleWarned = warned;}
 
 	void setVocation(uint32_t vocId);
 	uint32_t getVocationId() const;
 
-	playersex_t getSex() const {return sex;}
-	void setSex(playersex_t);
+	PlayerSex_t getSex() const {return sex;}
+	void setSex(PlayerSex_t);
 	Vocation* getVocation() const {return vocation;}
 	int32_t getPlayerInfo(playerinfo_t playerinfo) const;
 	int64_t getExperience() const {return experience;}
@@ -197,7 +198,7 @@ public:
 	void setTown(uint32_t _town) {town = _town;}
 
 	virtual bool isPushable() const;
-	virtual int getThrowRange() const {return 1;};
+	virtual int getThrowRange() const {return 1;}
 	virtual bool canSeeInvisibility() const;
 	uint32_t isMuted();
 	void addMessageBuffer();
@@ -261,9 +262,9 @@ public:
 	virtual RaceType_t getRace() const {return RACE_BLOOD;}
 
 	//safe-trade functions
-	void setTradeState(tradestate_t state) {tradeState = state;};
-	tradestate_t getTradeState() {return tradeState;};
-	Item* getTradeItem() {return tradeItem;};
+	void setTradeState(tradestate_t state) {tradeState = state;}
+	tradestate_t getTradeState() {return tradeState;}
+	Item* getTradeItem() {return tradeItem;}
 
 	//V.I.P. functions
 	void notifyLogIn(Player* player);
@@ -481,7 +482,7 @@ public:
 	//other send messages
 	void sendAnimatedText(const Position& pos, unsigned char color, std::string text) const
 		{if(client) client->sendAnimatedText(pos,color,text);}
-	void sendCancel(const char* msg) const
+	void sendCancel(const std::string& msg) const
 		{if(client) client->sendCancel(msg);}
 	void sendCancelMessage(ReturnValue message) const;
 	void sendCancelTarget() const
@@ -638,7 +639,7 @@ protected:
 	uint32_t manaSpent;
 	Vocation_t vocation_id;
 	Vocation* vocation;
-	playersex_t sex;
+	PlayerSex_t sex;
 #ifdef __PROTOCOL_76__
 	int32_t soul, soulMax;
 #endif // __PROTOCOL_76__

@@ -32,9 +32,9 @@ function onUse(cid, item, frompos, item2, topos)
 					doAddCondition(cid, poison)
 				
 				elseif item.type == FLUID.MANA then
-					if hasCondition(cid, CONDITION_EXHAUST_COMBAT) == TRUE or hasCondition(cid, CONDITION_EXHAUST_HEAL) == TRUE then
+					if hasCondition(cid, CONDITION_EXHAUST_COMBAT) or hasCondition(cid, CONDITION_EXHAUST_HEAL) then
 						doPlayerSendDefaultCancel(cid, RETURNVALUE_YOUAREEXHAUSTED)
-						return TRUE
+						return true
 					end
 			
 					doPlayerSay(cid, "Aaaah...", 1)
@@ -43,9 +43,9 @@ function onUse(cid, item, frompos, item2, topos)
 					doAddCondition(cid, exhaust)
 				
 				elseif item.type == FLUID.LIFE then
-					if hasCondition(cid, CONDITION_EXHAUST_COMBAT) == TRUE or hasCondition(cid, CONDITION_EXHAUST_HEAL) == TRUE then
+					if hasCondition(cid, CONDITION_EXHAUST_COMBAT) or hasCondition(cid, CONDITION_EXHAUST_HEAL) then
 						doPlayerSendDefaultCancel(cid, RETURNVALUE_YOUAREEXHAUSTED)
-						return TRUE
+						return true
 					end
 				
 					doPlayerSay(cid, "Aaaah...", 1)
@@ -82,7 +82,7 @@ function onUse(cid, item, frompos, item2, topos)
 		elseif item.type ~= 0 and item2.type == 0 then
 			if hasProperty(item2.uid, CONST_PROP_BLOCKSOLID) then
 				-- we can't use it on doors, walls, etc.
-				return FALSE
+				return false
 			end
 			
 			-- transfer fluid to another container
@@ -104,5 +104,5 @@ function onUse(cid, item, frompos, item2, topos)
 		end
 	end
 	
-	return TRUE
+	return true
 end

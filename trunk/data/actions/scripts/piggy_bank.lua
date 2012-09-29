@@ -10,5 +10,5 @@ function onUse(cid, item, frompos, item2, topos)
 		doPlayerAddItem(cid, ITEM_PLATINUM_COIN, 1)
 	end
 		
-	return TRUE
+	return true
 end 

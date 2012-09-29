@@ -2,7 +2,7 @@ local ITEM_CANDELABRUM_ON = 2057
 local ITEM_CANDELABRUM_OFF = 2041
 
 function onUse(cid, item, frompos, item2, topos)	
-	if (isInArray(DECAYTO_ITEM_INCREMENT, item.itemid) == TRUE) then
+	if (isIntegerInArray(DECAYTO_ITEM_INCREMENT, item.itemid)) then
 		doTransformItem(item.uid, item.itemid + 1)
 	elseif (item.itemid == ITEM_CANDELABRUM_ON) then
 		doTransformItem(item.uid, ITEM_CANDELABRUM_OFF)
@@ -11,5 +11,5 @@ function onUse(cid, item, frompos, item2, topos)
 	end
 	
 	doDecayItem(item.uid)
-	return TRUE
+	return true
 end 

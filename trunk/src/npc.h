@@ -134,7 +134,7 @@ public:
 
 	virtual ~Npc();
 
-	virtual Npc* getNpc() {return this;};
+	virtual Npc* getNpc() {return this;}
 	virtual const Npc* getNpc() const {return this;}
 
 	virtual bool isPushable() const { return true;}
@@ -151,8 +151,8 @@ public:
 	bool load();
 	void reload();
 
-	virtual const std::string& getName() const {return name;};
-	virtual const std::string& getNameDescription() const {return name;};
+	virtual const std::string& getName() const {return name;}
+	virtual const std::string& getNameDescription() const {return name;}
 
 	void doSay(std::string msg, uint32_t addDelay);
 	void doMove(Direction dir);

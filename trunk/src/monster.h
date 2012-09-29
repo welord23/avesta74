@@ -56,8 +56,8 @@ public:
 	
 	virtual ~Monster();
 
-	virtual Monster* getMonster() {return this;};
-	virtual const Monster* getMonster() const {return this;};
+	virtual Monster* getMonster() {return this;}
+	virtual const Monster* getMonster() const {return this;}
 
 	virtual uint32_t idRange(){ return 0x40000000;}
 	static AutoList<Monster> listMonster;
@@ -83,7 +83,7 @@ public:
 	bool isHostile() const { return mType->isHostile;}
 	virtual bool canSeeInvisibility() const { return isImmune(CONDITION_INVISIBLE);}
 	uint32_t getManaCost() const {return mType->manaCost;}	
-	void setSpawn(Spawn* _spawn) {spawn = _spawn;};
+	void setSpawn(Spawn* _spawn) {spawn = _spawn;}
 	
 	virtual void onAttackedCreatureDissapear(bool isLogout);
 	virtual void onFollowCreatureDissapear(bool isLogout);

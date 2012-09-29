@@ -18,7 +18,6 @@
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //////////////////////////////////////////////////////////////////////
 
-
 #ifndef __OTSERV_WEAPONS_H__
 #define __OTSERV_WEAPONS_H__
 
@@ -103,7 +102,7 @@ protected:
 
 	virtual void onUsedWeapon(Player* player, Item* item, Tile* destTile) const;
 	virtual void onUsedAmmo(Player* player, Item* item, Tile* destTile) const;
-	virtual bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const {return false;};
+	virtual bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const {return false;}
 
 	int32_t getManaCost(const Player* player) const;
 
@@ -186,7 +185,7 @@ public:
 	virtual int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const;
 
 protected:
-	virtual bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const {return false;};
+	virtual bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const {return false;}
 
 	int32_t minChange;
 	int32_t maxChange;

@@ -75,7 +75,16 @@ function getCount(message)
 	return 1
 end
 
-
+function creatureHasLeft(cid, distance)
+	local c = getCreaturePosition(cid)
+	sx, sy, sz = selfGetPosition()
+	
+	if (c.z ~= sz or getDistanceToCreature(cid) > distance) then
+		return true
+	end
+	
+	return false
+end
 
 
 
