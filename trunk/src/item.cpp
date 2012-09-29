@@ -826,6 +826,25 @@ std::string Item::getDescription(int32_t lookDistance) const
 	return s.str();
 }
 
+std::string Item::getXRayDescription() const
+{
+	std::stringstream ret;
+
+	ret << "ID: " << getID() << std::endl;
+	uint16_t actionId = getActionId();
+	uint16_t uniqueId = getUniqueId();
+	if(actionId > 0)
+		ret << "Action ID: " << actionId << std::endl;
+	if(uniqueId > 0)
+		ret << "Unique ID: " << uniqueId << std::endl;
+#ifdef __DEBUG__
+	if (getContainer())
+		ret << "There are " << getContainer()->getTotalAmountOfItemsInside() - 1 << " things inside of this." << std::endl;
+#endif
+	ret << Thing::getXRayDescription();
+	return ret.str();
+}
+
 std::string Item::getWeightDescription() const
 {
 	double weight = getWeight();

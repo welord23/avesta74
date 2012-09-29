@@ -427,7 +427,6 @@ protected:
 	static int luaGetTopCreature(lua_State *L);
 	static int luaGetAllCreatures(lua_State *L);
 	static int luaGetThingDefaultDescription(lua_State *L);
-	static int luaGetItemTypeDefaultDescription(lua_State *L);
 	static int luaGetItemSpecialDescription(lua_State *L);
 
 	//set item
@@ -549,14 +548,11 @@ protected:
 	static int luaGetDepotId(lua_State *L);
 
 	// bans
-	static int luaAddPlayerBan(lua_State *L);
-	static int luaAddAccountBan(lua_State *L);
+	static int luaAddBan(lua_State *L);
 	static int luaAddIPBan(lua_State *L);
-	static int luaRemoveAccountBan(lua_State *L);
-	static int luaRemovePlayerBan(lua_State *L);
+	static int luaRemoveBan(lua_State *L);
 	static int luaRemoveIPBan(lua_State *L);
 	static int luaGetPlayerBanList(lua_State *L);
-	static int luaGetAccountBanList(lua_State *L);
 	static int luaGetIPBanList(lua_State *L);
 
 	//

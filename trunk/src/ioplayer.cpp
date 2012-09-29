@@ -71,6 +71,7 @@ bool IOPlayer::loadPlayer(Player* player, const std::string& name, bool preload 
 
 	player->setGUID(result->getDataInt("id"));
 	player->accountNumber = result->getDataInt("account_id");
+	//player->groupName = result->getDataString("groupname"); fix me
 
 	const PlayerGroup* group = getPlayerGroup(result->getDataInt("group_id"));
 	if(group){

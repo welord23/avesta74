@@ -114,6 +114,15 @@ public:
 	}
 	
 	virtual std::string getDescription(int32_t lookDistance) const = 0;
+	virtual std::string getXRayDescription() const {
+		if(isRemoved()){
+			return "Thing you looked at seems to be removed.";
+		}
+		std::stringstream ret;
+		ret << "Position: [";
+		ret << getPosition().x << ", " << getPosition().y << ", " << getPosition().z << "]";
+		return ret.str();
+	}
 
 	Cylinder* getParent() {return parent;}
 	const Cylinder* getParent() const {return parent;}

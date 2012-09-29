@@ -1,12 +1,6 @@
 -- Load Lua-made functions
 dofile(getDataDir() .. 'functions.lua')
 
-TRUE = 1
-FALSE = 0
-
-LUA_ERROR = -1
-LUA_NO_ERROR = 0
-
 NORTH = 0
 EAST = 1
 SOUTH = 2
@@ -299,7 +293,7 @@ ITEM_PLATINUM_COIN = 2152
 ITEM_CRYSTAL_COIN = 2160
 
 function doPlayerGiveItem(cid, itemid, count, charges)
-	local hasCharges = (isItemRune(itemid) == TRUE or isItemFluidContainer(itemid) == TRUE)
+	local hasCharges = (isItemRune(itemid) or isItemFluidContainer(itemid))
 	if(hasCharges and charges == nil) then
 		charges = 1
 	end
@@ -310,53 +304,52 @@ function doPlayerGiveItem(cid, itemid, count, charges)
     	if(hasCharges) then
     		tempcount = charges
     	end
-    	if(isItemStackable(itemid) == TRUE) then
+    	if(isItemStackable(itemid)) then
     		tempcount = math.min (100, count)
    		end
  
-       	local ret = doPlayerAddItem(cid, itemid, tempcount)
-       	if(ret == LUA_ERROR) then
+       local ret = doPlayerAddItem(cid, itemid, tempcount)
+       if (not ret) then
         	ret = doCreateItem(itemid, tempcount, getPlayerPosition(cid))
-        end
+       end
  
-        if(ret ~= LUA_ERROR) then
+       if(ret) then
         	if(hasCharges) then
         		count = count-1
         	else
         		count = count-tempcount
         	end
-        else
-        	return LUA_ERROR
-        end
+       else
+        	return false
+       end
 	end
-    return LUA_NO_ERROR
+   return true
 end
 
 function doPlayerTakeItem(cid, itemid, count)
 	if(getPlayerItemCount(cid,itemid) >= count) then
- 
 		while count > 0 do
 			local tempcount = 0
-    		if(isItemStackable(itemid) == TRUE) then
+    		if (isItemStackable(itemid)) then
     			tempcount = math.min (100, count)
     		else
     			tempcount = 1
     		end
         	local ret = doPlayerRemoveItem(cid, itemid, tempcount)
  
-            if(ret ~= LUA_ERROR) then
-            	count = count-tempcount
-            else
-            	return LUA_ERROR
-            end
+           if(doPlayerRemoveItem(cid, itemid, tempcount)) then
+				count = count-tempcount
+			else
+            	return false
+           end
 		end
  
 		if(count == 0) then
-			return LUA_NO_ERROR
+			return true
 		end
  
 	else
-		return LUA_ERROR
+		return false
 	end
 end
  
@@ -369,45 +362,41 @@ function doPlayerAddMoney(cid, amount)
 	local gold = amount
 	local ret = 0
 	if(crystals > 0) then
-		ret = doPlayerGiveItem(cid, ITEM_CRYSTAL_COIN, crystals)
-		if(ret ~= LUA_NO_ERROR) then
-			return LUA_ERROR
+		if(doPlayerGiveItem(cid, ITEM_CRYSTAL_COIN, crystals)) then
+			return true
 		end
 	end
 	if(platinum > 0) then
-		ret = doPlayerGiveItem(cid, ITEM_PLATINUM_COIN, platinum)
-		if(ret ~= LUA_NO_ERROR) then
-			return LUA_ERROR
+		if(doPlayerGiveItem(cid, ITEM_PLATINUM_COIN, platinum)) then
+			return true
 		end
 	end
 	if(gold > 0) then
-		ret = doPlayerGiveItem(cid, ITEM_GOLD_COIN, gold)
-		if(ret ~= LUA_NO_ERROR) then
-			return LUA_ERROR
+		if(doPlayerGiveItem(cid, ITEM_GOLD_COIN, gold)) then
+			return true
 		end
 	end
-	return LUA_NO_ERROR
+	return false
 end
  
  
 function doPlayerBuyItem(cid, itemid, count, cost, charges)
-    if(doPlayerRemoveMoney(cid, cost) == TRUE) then
-    	return doPlayerGiveItem(cid, itemid, count, charges)
-    else
-        return LUA_ERROR
-    end
+	if(doPlayerRemoveMoney(cid, cost)) then
+		return doPlayerGiveItem(cid, itemid, count, charges)
+	else
+		return false
+	end
 end
  
  
 function doPlayerSellItem(cid, itemid, count, cost)
- 
-	if(doPlayerTakeItem(cid, itemid, count) == LUA_NO_ERROR) then
-		if(doPlayerAddMoney(cid, cost) ~= LUA_NO_ERROR) then
+	if(doPlayerTakeItem(cid, itemid, count)) then
+		if(doPlayerAddMoney(cid, cost)) then
 			error('Could not add money to ' .. getPlayerName(cid) .. '(' .. cost .. 'gp)')
 		end
-		return LUA_NO_ERROR
+			return true
 	else
-		return LUA_ERROR
+		return false
 	end
  
 end

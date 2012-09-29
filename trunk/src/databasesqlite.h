@@ -48,10 +48,17 @@ public:
 	DATABASE_VIRTUAL bool executeQuery(const std::string &query);
 	DATABASE_VIRTUAL DBResult* storeQuery(const std::string &query);
 
+	DATABASE_VIRTUAL uint64_t getLastInsertedRowID();
+
 	DATABASE_VIRTUAL std::string escapeString(const std::string &s);
 	DATABASE_VIRTUAL std::string escapeBlob(const char* s, uint32_t length);
 
 	DATABASE_VIRTUAL void freeResult(DBResult *res);
+
+	DATABASE_VIRTUAL uint64_t getLastInsertId() {return (uint64_t)sqlite3_last_insert_rowid(m_handle);}
+
+	DATABASE_VIRTUAL std::string getStringComparer() {return "LIKE ";}
+	DATABASE_VIRTUAL std::string getUpdateLimiter() {return ";";}
 
 protected:
 	std::string _parse(const std::string &s);

@@ -26,7 +26,7 @@ function onLogin(cid)
 	registerCreatureEvent(cid, "stagesAdvance")
 	
 	checkStages(cid)
-	return 1
+	return true
 end
 
 function onAdvance(cid, type, oldlevel, newlevel)
@@ -34,5 +34,5 @@ function onAdvance(cid, type, oldlevel, newlevel)
 		checkStages(cid)
 	end
 	
-	return 1
+	return true
 end
