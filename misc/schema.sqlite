@@ -49,6 +49,7 @@ CREATE TABLE "players" (
     "save" INTEGER NOT NULL DEFAULT 1,
     "conditions" BLOB NOT NULL,
     "redskulltime" INTEGER NOT NULL DEFAULT 0,
+	"redskull" BOOLEAN NOT NULL DEFAULT 0,
     "guildnick" VARCHAR(255) NOT NULL DEFAULT '',
     "loss_experience" INTEGER NOT NULL DEFAULT 10,
     "loss_mana" INTEGER NOT NULL DEFAULT 10,
@@ -173,12 +174,6 @@ CREATE TABLE "player_deaths" (
     "lasthit_killer" VARCHAR(255) NOT NULL DEFAULT '',
     "mostdamage_killer" VARCHAR(255) NOT NULL DEFAULT '',
     FOREIGN KEY ("player_id") REFERENCES "players" ("id")
-);
-
-CREATE TABLE "player_kills" (
-	"player_id" INTEGER NOT NULL,
-	"time" INTEGER NOT NULL,
-	FOREIGN KEY ("player_id") REFERENCES "players" ("id")
 );
 
 CREATE TABLE "bans" (

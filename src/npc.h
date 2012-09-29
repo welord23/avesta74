@@ -194,7 +194,7 @@ protected:
 	virtual std::string getDescription(int32_t lookDistance) const;
 
 	bool isImmune(CombatType_t type) const {return true;}
-	bool isImmune(ConditionType_t type) const {return true;}
+	bool isImmune(ConditionType_t type, bool aggressive = true) const {return true;}
 	virtual bool isAttackable() const { return attackable; }
 	virtual bool getNextStep(Direction& dir);
 
