@@ -40,7 +40,7 @@ I'm using Visual Studio 2010 Ultimate, you may find some inaccuracies when using
             * libraries\inc\sqlite
           * Multi-processor compilation (optional), you can set it to 'Yes', that will speed compilation
         * Preprocessor
-          * Preprocessor definitions, click on it, choose edit, and add:
+          * Preprocessor definitions, click on it, choose edit, and add (don't add the word 'optional'):
             * {{{__USE_OTPCH__}}}
             * {{{__USE_MYSQL__ }}}
             * {{{NDEBUG}}} _(optional)_
