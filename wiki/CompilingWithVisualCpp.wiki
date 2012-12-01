@@ -12,6 +12,11 @@ I'm using Visual Studio 2010 Ultimate, you may find some inaccuracies when using
   * source code (you need some tool for that, I use TortoiseSVN)
 
 == Steps ==
+  # Download source code
+    * Install TortoiseSVN
+    * Create folder, right click on it -> SVN Checkout...
+    * set URL of repository to https://avesta74.googlecode.com/svn/trunk
+    * press Ok
   # Create new project
     * click File -> New -> Project...
     * select Visual C++ -> General -> Empty Project
