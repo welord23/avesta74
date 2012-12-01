@@ -28,7 +28,6 @@ I'm using Visual Studio 2010 Ultimate, you may find some inaccuracies when using
     * in the top left corner, set Configuration to 'Release'
     * in tree widget on the left, go to Configuration Properties (you should be there anyway)
       * General, Platform Toolset should be 'v100', Character Set should be 'Use Multi-Byte Character Set ' , rest leave as default
-      * Debugging (optional)
       * C/C++
         * General
           * click Additional Include Directories, drop down button shall appear, click on it, and in new window add following directories:
