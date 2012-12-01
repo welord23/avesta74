@@ -15,7 +15,7 @@ I'm using Visual Studio 2010 Ultimate, you may find some inaccuracies when using
   # Download source code
     * Install TortoiseSVN
     * Create folder, right click on it -> SVN Checkout...
-    * set URL of repository to https://avesta74.googlecode.com/svn/trunk
+    * set URL of repository to {{{https://avesta74.googlecode.com/svn/trunk}}}
     * press Ok
   # Create new project
     * click File -> New -> Project...
